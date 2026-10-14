@@ -1,22 +1,17 @@
-import requests
+from langchain_deepseek import ChatDeepSeek
+
 
 def ask_deepseek(messages, api_key):
-    response = requests.post(
-        "https://api.deepseek.com/chat/completions",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-        },
-        json={
-            "model": "deepseek-flash",
-            "messages": messages,
-            "thinking": {"type": "disabled"},
-            "max_tokens": 1024,
-        },
+    model = ChatDeepSeek(
+        model="deepseek-flash",
+        api_key=api_key,
+        base_url="https://api.deepseek.com",
+        max_tokens=1024,
         timeout=60,
+        max_retries=0,
+        extra_body={"thinking": {"type": "disabled"}},
     )
 
-    response.raise_for_status()
-    data = response.json()
-    answer = data["choices"][0]["message"]["content"]
+    response = model.invoke(messages)
 
-    return answer
+    return response.content

@@ -1,5 +1,5 @@
 import streamlit as st
-import requests
+from openai import APIError, APITimeoutError
 from llm import ask_deepseek
 
 st.set_page_config(page_title="Paper Sage", page_icon="📚")
@@ -21,6 +21,12 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
         
 
+reference_text = st.text_area(
+    "参考资料",
+    placeholder="在这里粘贴一小段论文原文",
+    height=180,
+)
+
 question = st.text_input(
     "你想了解论文的什么内容？",
     placeholder="例如：这篇论文的主要贡献是什么？",
@@ -33,7 +39,12 @@ if st.button("提交问题"):
     else:
         user_message = {
             "role": "user",
-            "content": question.strip(),
+            "content": (
+              f"<reference>\n"
+              f"{reference_text.strip()}\n"
+              f"</reference>\n\n"
+              f"问题：{question.strip()}"  
+            ),
         }
 
         # 页面负责组装本次请求的完整消息
@@ -41,8 +52,11 @@ if st.button("提交问题"):
             {
                 "role": "system",
                 "content": (
-                    "你是一位论文学习助手，请用中文清楚地回答。"
-                    "没有提供论文原文时，不要声称已经阅读论文。"
+                    "你是一位论文阅读助手，请用中文回答。"
+                    "论文事实只能依据本次用户消息中 <reference> 内的资料。"
+                    "聊天历史仅用于理解追问，不作为事实依据。"
+                    "如果参考资料为空或不足，请明确说明资料不足，不要猜测。"
+                    "回答包含“结论”和“原文依据”两部分。"
                 ),
             },
         ] + st.session_state.messages + [user_message]
@@ -69,7 +83,7 @@ if st.button("提交问题"):
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
 
-        except requests.Timeout:
+        except APITimeoutError:
             st.error("请求超时，请稍后重试。")
-        except requests.RequestException as error:
+        except APIError as error:
             st.error(f"调用失败：{error}")

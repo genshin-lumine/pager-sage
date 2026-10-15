@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import APIError, APITimeoutError
 from llm import ask_deepseek
+from json import JSONDecodeError
 
 st.set_page_config(page_title="Paper Sage", page_icon="📚")
 
@@ -55,17 +56,43 @@ if st.button("提交问题"):
                     "你是一位论文阅读助手，请用中文回答。"
                     "论文事实只能依据本次用户消息中 <reference> 内的资料。"
                     "聊天历史仅用于理解追问，不作为事实依据。"
-                    "如果参考资料为空或不足，请明确说明资料不足，不要猜测。"
-                    "回答包含“结论”和“原文依据”两部分。"
+                    "只输出一个 JSON 对象，不要输出代码块或额外文字。"
+                    "必须包含 answer、evidence、insufficient_reason 三个字段。"
+                    "answer 是字符串，存放回答正文。"
+                    "evidence 是字符串数组，每条依据必须逐字摘录参考资料原文。"
+                    "insufficient_reason 是字符串，存放资料不足的原因。"
+                    "资料足够时，evidence 提供支持回答的原文，"
+                    "insufficient_reason 为空字符串。"
+                    "资料为空或不足时，不要猜测；answer 明确说明无法依据资料回答，"
+                    "evidence 使用空数组，insufficient_reason 说明原因。"
+                    'JSON 格式示例：{"answer": "资料不足，无法回答。", '
+                    '"evidence": [], '
+                    '"insufficient_reason": "没有提供参考资料。"}'
                 ),
             },
         ] + st.session_state.messages + [user_message]
 
         try:
+
             with st.spinner("正在等待 DeepSeek 回答……"):
-                answer = ask_deepseek(
+                result = ask_deepseek(
                     messages,
                     st.secrets["DEEPSEEK_API_KEY"],
+                )
+
+            answer = f"**结论**\n\n{result['answer']}"
+            answer += "\n\n**原文依据**"
+
+            if result["evidence"]:
+                for evidence in result["evidence"]:
+                    answer += f"\n\n> {evidence}"
+            else:
+                answer += "\n\n无。"
+
+            if result["insufficient_reason"]:
+                answer += (
+                    "\n\n**资料不足说明**\n\n"
+                    f"{result['insufficient_reason']}"
                 )
 
             assistant_message = {
@@ -87,3 +114,7 @@ if st.button("提交问题"):
             st.error("请求超时，请稍后重试。")
         except APIError as error:
             st.error(f"调用失败：{error}")
+        except JSONDecodeError:
+            st.error("模型返回的内容不是有效的 JSON，请重试。")
+        except ValueError as error:
+            st.error(f"回答结构不符合要求：{error}")

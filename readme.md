@@ -4,7 +4,7 @@
 
 最终目标是基于 **Streamlit + LangChain + LangGraph**，实现按项目组织论文、限定检索范围、自动选择工作流程，以及可追溯到论文原文的证据回答。检索层计划采用 **Dense + BM25 双路召回 → RRF 排名融合 → Rerank 精排**。
 
-**当前阶段：已完成 Day 03。具备基于 Streamlit、LangChain 的 `langchain-deepseek` 集成和 DeepSeek API 的多轮聊天功能，支持手动提供论文摘录并要求回答附上原文依据；有无资料的对照实验、代码修正后的复验和理解检查均已完成。论文检索、LangGraph 和 Agent 工作流尚未实现。**
+**当前阶段：已完成 Day 04。具备基于 Streamlit、LangChain 的 `langchain-deepseek` 集成和 DeepSeek API 的多轮聊天功能，支持手动提供论文摘录、使用 JSON 模式返回回答，并校验、分别读取回答、原文依据和资料不足说明。论文检索、LangGraph 和 Agent 工作流尚未实现。**
 
 ## 1. 学习路径
 
@@ -33,7 +33,7 @@
 - `[ ]`：未完成，包括尚未开始的任务。
 - 做了一部分但尚未达到验收标准的任务仍保留 `[ ]`，把已完成部分写入当天记录。
 
-**当前进度：已完成 3 / 42 个学习日。下一次从 Day 04 开始。** 此数字只表示学习日进度，不代表项目功能完成比例。
+**当前进度：已完成 4 / 42 个学习日。下一次从 Day 05 开始。** 此数字只表示学习日进度，不代表项目功能完成比例。
 
 Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按实际进度调整，已学会的模型调用、会话状态和函数拆分统一记入 Day 01，后续安排在此基础上推进。
 
@@ -42,7 +42,7 @@ Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按�
 - [x] **Day 01｜从页面到多轮模型对话**：创建 Python 虚拟环境；运行 Streamlit；接入 DeepSeek；理解消息角色和返回值；实现聊天历史与清空；封装函数并拆分模块。验收：基础聊天与清空由学习者验证，模块拆分后的语法与引用关系检查通过。
 - [x] **Day 02｜用 LangChain 接入 DeepSeek**：复验现有功能；理解模型对象、消息对象和调用接口；将 `llm.py` 中的模型调用改为 LangChain 实现。验收：页面仍能完成单轮问答、多轮追问和清空，能解释与直接 HTTP 调用的对应关系。
 - [x] **Day 03｜提示词与上下文实验**：整理系统提示词；手动给模型一小段论文原文；比较有无原文时的回答。验收：保存一组对照结果，并解释提示词、外部资料和聊天历史分别起什么作用。
-- [ ] **Day 04｜结构化输出**：学习字典、JSON 和数据校验；定义包含回答、依据和证据不足说明的结果结构。验收：程序可以读取各字段，并识别缺字段或格式错误的结果。
+- [x] **Day 04｜结构化输出**：学习字典、JSON 和数据校验；定义包含回答、依据和证据不足说明的结果结构。验收：程序可以读取各字段，并识别缺字段或格式错误的结果。
 - [ ] **Day 05｜调用失败与输出长度**：理解异常传播；区分认证、限流、超时等常见失败；处理输出被截断的情况。验收：用模拟失败验证提示与历史记录状态，能区分“请求成功”和“回答生成完整”。
 - [ ] **Day 06｜让项目可复现运行**：整理依赖文件、配置示例和启动步骤；学习 Git 的基本提交方式。验收：新建独立环境后可按说明运行，依赖与配置有明确记录。
 - [ ] **Day 07｜基础阶段复盘与样例准备**：解释输入到输出的数据流；选择可提取文字的论文；准备 3 个有原文依据的问题和 1 个论文未提供答案的问题。验收：记录问题及对应页码，完成聊天功能回归检查。
@@ -104,14 +104,26 @@ Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按�
 ```text
 paper-sage/
 ├── app.py                    # Streamlit 页面、消息组装与聊天记录
-├── llm.py                    # 通过 LangChain 调用 DeepSeek 并提取回答
+├── llm.py                    # 通过 LangChain 调用 DeepSeek，返回校验后的字典
+├── answer_parser.py          # JSON 解析、必需字段与数据类型校验
+├── practice_json.py          # 本地 JSON 解析练习，不调用模型
 ├── readme.md                 # 学习路线、任务状态与每日学习记录
 ├── .gitignore
 └── .streamlit/
     └── secrets.toml          # 本地 API Key 配置，不提交到 GitHub
 ```
 
-当前使用 Python 3.12.6，通过 `langchain-deepseek` 提供的 `ChatDeepSeek` 调用 `deepseek-flash`。`ask_deepseek(messages, api_key)` 接收完整消息列表和密钥，向页面返回回答正文字符串。
+当前使用 Python 3.12.6，通过 `langchain-deepseek` 提供的 `ChatDeepSeek` 调用 `deepseek-flash`。`ask_deepseek(messages, api_key)` 接收完整消息列表和密钥，使用 `response_format={"type": "json_object"}` 请求 JSON 输出，再通过 `parse_answer()` 解析并校验，向页面返回字典。
+
+当前结果结构：
+
+| 字段 | Python 类型 | 用途 |
+| --- | --- | --- |
+| `answer` | `str` | 回答正文 |
+| `evidence` | `list[str]` | 原文依据列表；资料不足时按提示词要求返回空列表 |
+| `insufficient_reason` | `str` | 资料不足的原因；资料足够时按提示词要求返回空字符串 |
+
+解析函数检查最外层是否为字典、三个字段是否存在，以及字段和依据列表元素的类型。页面读取字典后组装成 Markdown 字符串，用于展示和保存聊天记录；会话中目前保存的是展示文字，尚未单独保存结构化字段。字段之间的语义关系、引用真实性与结论支持情况仍需后续校验。
 
 截至 Day 02，已检查的主要包版本如下：
 
@@ -123,7 +135,7 @@ paper-sage/
 | `langchain-openai` | 1.7.2 | 当前 DeepSeek 集成使用的模型客户端基础实现 |
 | `openai` | 3.31.0 | 兼容协议客户端及页面捕获的 API 异常类型 |
 
-`ChatDeepSeek` 在本项目中连接 `https://api.deepseek.com`。完整依赖文件与版本锁定安排在 Day 06 整理。
+`ChatDeepSeek` 在本项目中连接 `https://api.deepseek.com`。Day 04 新使用的 `json` 属于 Python 标准库，无需额外安装。完整依赖文件与版本锁定安排在 Day 06 整理。
 
 ### 本地启动（Windows / PowerShell）
 
@@ -152,12 +164,24 @@ DEEPSEEK_API_KEY = "替换为你自己的 API Key"
 
 当前聊天记录保存在 Streamlit 会话内存中，尚未实现长期持久化。页面支持手动粘贴论文摘录，并将资料与问题一起放入本次用户消息；系统提示词要求根据本次资料回答并给出原文依据。Day 03 已通过实际对照实验与修正后的复验：无资料时说明依据不足，有资料时正确回答并引用摘录，具体结果见文末。应用尚未实现 PDF 读取或自动检索，当前引用由模型生成，未经过程序校验。
 
+Day 04 接入结构化输出后，学习者再次完成了有无资料两组实际问答。页面能够分别显示回答、原文依据，以及非空的资料不足说明。JSON 格式或字段校验失败时有相应错误处理分支；后续的失败模拟与会话状态验证安排在 Day 05。
+
+运行本地解析练习：
+
+```powershell
+.\.venv\Scripts\python.exe practice_json.py
+```
+
+练习文件目前保留正常样例；缺字段和格式错误的实验操作、实际报错保存在 Day 04 学习记录中。
+
 ### 学习参考
 
 - [Streamlit 安装与启动](https://docs.streamlit.io/get-started/installation/command-line)
 - [Streamlit Session State](https://docs.streamlit.io/develop/concepts/architecture/session-state)
 - [Streamlit 按钮行为](https://docs.streamlit.io/develop/concepts/design/buttons)
 - [DeepSeek API 入门](https://api-docs.deepseek.com/)
+- [DeepSeek JSON Output](https://api-docs.deepseek.com/zh-cn/guides/json_mode/)
+- [Python 3.12 JSON 解析](https://docs.python.org/3.12/library/json.html)
 - [LangChain 官方学习入口](https://docs.langchain.com/oss/python/learn)
 - [LangChain 的 ChatDeepSeek 集成](https://docs.langchain.com/oss/python/integrations/chat/deepseek)
 - [LangGraph 工作流与 Agent](https://docs.langchain.com/oss/python/langgraph/workflows-agents)
@@ -470,3 +494,120 @@ DEEPSEEK_API_KEY = "替换为你自己的 API Key"
 学习字典、JSON 和数据校验，将回答、依据和证据不足说明整理为程序可以分别读取的字段。
 
 验收标准：程序能读取各字段，并识别缺字段或格式错误的结果。完成验收并更新记录后结束当次学习。
+
+### Day 04｜2026-10-16｜结构化输出与数据校验
+
+- **当天目标**：理解 JSON 文本与 Python 字典的区别；定义并读取回答字段；识别缺字段和 JSON 格式错误；将解析、校验接入真实问答页面。
+- **本次状态**：已完成。
+- **实际用时**：未记录。
+- **当天剩余必做任务**：0。
+
+#### 完成的任务
+
+- [x] 编写 `practice_json.py`，用模拟 JSON 文本观察解析前的 `str` 和解析后的 `dict`。
+- [x] 通过 `result["answer"]` 读取回答，通过 `result["evidence"][0]` 读取第一条原文依据。
+- [x] 编写 `parse_answer()`，检查最外层类型、必需字段、字段类型及依据列表中的元素类型。
+- [x] 运行正常样例，并分别构造缺少 `answer` 和缺少逗号的输入，观察两类错误。
+- [x] 在 `llm.py` 中使用 `bind(response_format={"type": "json_object"})`，并返回解析、校验后的字典。
+- [x] 更新系统提示词，明确三个字段的格式、资料不足时的行为及 JSON 示例。
+- [x] 页面分别读取字段，组装展示文字，并添加 `JSONDecodeError`、`ValueError` 错误处理分支。
+- [x] 定位并修正 JSON 模式参数拼写导致的 HTTP 422 错误。
+- [x] 学习者提供修正后有无资料两组实际页面结果，均符合预期。
+- [x] 更新 README 的文件结构、函数返回值说明、任务状态与学习记录。
+
+#### 代码与文档改动
+
+| 文件 | 改动及原因 |
+| --- | --- |
+| `answer_parser.py` | 新增解析函数，将 JSON 文本转换为字典并检查必需字段和类型。 |
+| `practice_json.py` | 新增本地练习，通过模拟回答学习解析、字段读取和错误识别；当前文件已恢复为正常样例。 |
+| `llm.py` | 开启 JSON 输出模式，调用解析函数；`ask_deepseek()` 的返回值由正文字符串改为校验后的字典。 |
+| `app.py` | 更新系统提示词；读取字典字段并组装展示文字；补充格式与字段校验失败的错误提示。 |
+| `readme.md` | 将 Day 04 标记为完成，进度更新为 4 / 42，下一学习日为 Day 05。 |
+
+当前一次请求的数据流：
+
+**页面组装消息 → JSON 模式调用 DeepSeek → `AIMessage.content` 中的 JSON 文本 → `parse_answer()` 解析与校验 → 返回字典 → 页面读取字段、组装展示文字 → 保存并展示本轮消息。**
+
+#### 学到的概念
+
+- JSON 文本可以保存在 Python 字符串中，外观类似字典不代表它已经是字典。
+- 学习者说明 `json.loads()` 可以将文本解析后按字段读取；讲解中进一步明确：JSON 对象对应 Python 字典，JSON 数组对应列表，解析结果不一定总是字典。
+- JSON 格式正确与满足业务字段要求是两项不同检查。缺少 `answer` 的 JSON 仍可能被正常解析，因此需要额外校验。
+- `isinstance()` 用于检查数据类型；`raise ValueError(...)` 用于主动报告不符合要求的数据，并中断当前函数。
+- `bind()` 设置后续请求使用的参数，实际发送请求的仍是 `invoke()`。
+- 页面中的 `result` 是供程序读取的字典，`answer` 是用于展示和保存聊天历史的字符串。
+- `JSONDecodeError` 是 `ValueError` 的子类，应先捕获更具体的 JSON 格式错误。
+- 字段和类型检查不等于事实核验。当前解析函数不会自动判断依据是否出自资料、是否足以支持结论。
+
+#### 本地解析练习结果
+
+以下结果由学习者实际运行并反馈：
+
+| 输入与操作 | 实际结果 |
+| --- | --- |
+| 正常 JSON 样例 | 解析前为 `str`，解析后为 `dict`；成功读取回答和第一条原文，学习者确认“正常通过”。 |
+| 将模拟 JSON 中的 `"answer":` 改为 `"answer_typo":` | `ValueError: 回答缺少字段：answer` |
+| 恢复字段名后删除回答字段一行末尾的逗号 | `json.decoder.JSONDecodeError: Expecting ',' delimiter: line 4 column 5 (char 61)` |
+
+练习结束后已恢复正确字段名和逗号。类型检查分支已实现并完成代码检查，本次没有逐一构造所有错误类型的运行样例。
+
+#### 问题与解决过程
+
+接入页面后，有无资料两次调用都返回 HTTP 422。错误信息指出 `response_format.type` 收到了 `json.object`。检查发现 `llm.py` 将固定参数值 `json_object` 中的下划线误写成点号。
+
+学习者将其修正为 `response_format={"type": "json_object"}` 并保存，随后两组真实问答通过。此次错误发生在服务端校验请求参数时，尚未执行到本地的 `parse_answer()`。
+
+#### 修正后的实际页面结果
+
+测试问题：**参考资料中的模型在什么翻译任务上取得了多少 BLEU？**
+
+两组操作均从清空会话开始：第一组手动清空参考资料，第二组提供以下摘录，再提交相同问题：
+
+```text
+Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task
+```
+
+摘录来源为此前使用的 [Attention Is All You Need 摘要](https://arxiv.org/abs/1706.03762)。以下保留学习者反馈的页面文字，而非推测或重建模型返回的原始 JSON。
+
+**A 组：参考资料为空。**
+
+```text
+资料不足，无法回答。
+
+原文依据
+
+无。
+
+资料不足说明
+
+用户消息中的 <reference> 内没有提供任何参考资料内容，因此无法依据资料回答该模型在什么翻译任务上取得了多少 BLEU。
+```
+
+**B 组：提供论文摘录。**
+
+```text
+该模型在 WMT 2014 英语到德语翻译任务上取得了 28.4 BLEU。
+
+原文依据
+
+Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task
+```
+
+结果：无资料时显示不足说明与“无”依据；有资料时，任务方向、分数和原文引用与输入摘录一致，未显示资料不足说明。
+
+#### 验证与遗留事项
+
+- **学习者实际运行确认**：本地正常样例、缺字段、格式错误三种情况均有反馈；修正参数拼写后，两组真实页面问答结果符合预期。
+- **本地接口检查**：使用占位密钥检查 JSON 模式和非思考模式的请求参数组装，未发送远端请求。
+- **最终代码检查**：四个 Python 文件语法解析通过；`llm.py` 使用正确的 `json_object` 参数，每次调用路径只有一次 `invoke`，返回 `parse_answer(response.content)`；页面先捕获 `JSONDecodeError` 再捕获 `ValueError`。
+- **验证边界**：此次没有主动在页面中注入异常并验证历史状态，也没有全面复测认证、限流、超时和输出截断；这些属于 Day 05。当前会话仍保存展示文字，尚未持久化结构化结果，也尚未实现自动引用核验。
+- **当天遗留事项**：无；Day 04 验收已完成。
+
+#### 下一次学习
+
+**Day 05：调用失败与输出长度。**
+
+理解异常如何从模型调用传到页面，区分认证、限流、超时等失败，并学习识别回答被截断的情况。
+
+验收标准：使用模拟失败验证页面提示和聊天历史状态，能够区分“请求成功”与“回答生成完整”。完成验收并追加记录后结束当次学习。

@@ -1,4 +1,5 @@
 from langchain_deepseek import ChatDeepSeek
+from answer_parser import parse_answer
 
 
 def ask_deepseek(messages, api_key):
@@ -12,6 +13,11 @@ def ask_deepseek(messages, api_key):
         extra_body={"thinking": {"type": "disabled"}},
     )
 
-    response = model.invoke(messages)
 
-    return response.content
+    json_model = model.bind(
+        response_format = {"type": "json_object"}
+    )
+    
+    response = json_model.invoke(messages)
+
+    return parse_answer(response.content)

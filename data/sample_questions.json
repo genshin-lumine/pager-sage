@@ -1,0 +1,49 @@
+
+{
+  "document": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+  "source_url": "https://papers.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf",
+  "cases": [
+    {
+      "id": "q1",
+      "question": "论文中的编码器由多少个相同的层堆叠而成？",
+      "answerable": true,
+      "expected_answer": "6 层。",
+      "evidence": [
+        "The encoder is composed of a stack of N = 6 identical layers."
+      ],
+      "pdf_page": 2,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q2",
+      "question": "训练使用多少块 GPU，型号是什么？",
+      "answerable": true,
+      "expected_answer": "8 块 NVIDIA P100 GPU。",
+      "evidence": [
+        "We trained our models on one machine with 8 NVIDIA P100 GPUs."
+      ],
+      "pdf_page": 7,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q3",
+      "question": "位置编码使用哪两种函数？",
+      "answerable": true,
+      "expected_answer": "正弦和余弦函数。",
+      "evidence": [
+        "In this work, we use sine and cosine functions of different frequencies:"
+      ],
+      "pdf_page": 6,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q4",
+      "question": "论文中，模型训练实际消耗了多少千瓦时（kWh）的电能",
+      "answerable": false,
+      "expected_answer": "无法依据论文确定。",
+      "evidence": [],
+      "pdf_page": null,
+      "insufficient_reason": "论文报告了硬件、训练时间和 FLOPs，但没有报告实际耗电量，也缺少用于确定耗电量的实际平均功率等数据。相关检查位置是第 7～8 页。"
+    }
+  ]
+}

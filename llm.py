@@ -1,6 +1,10 @@
 from langchain_deepseek import ChatDeepSeek
 from answer_parser import parse_answer
+from openai import LengthFinishReasonError, ContentFilterFinishReasonError
 
+
+class IncompleteAnswerError(Exception):
+    pass
 
 def ask_deepseek(messages, api_key):
     model = ChatDeepSeek(
@@ -18,6 +22,29 @@ def ask_deepseek(messages, api_key):
         response_format = {"type": "json_object"}
     )
     
-    response = json_model.invoke(messages)
+    try:
+        response = json_model.invoke(messages)
+
+    except LengthFinishReasonError as error:
+        raise IncompleteAnswerError(
+            "回答达到长度上限，可能不完整。请缩小问题范围后重试。"
+        ) from error
+
+    except ContentFilterFinishReasonError as error:
+        raise IncompleteAnswerError(
+            "服务因内容过滤未返回完整回答，请调整问题后重试。"
+        ) from error
+
+    finish_reason = response.response_metadata.get("finish_reason")
+
+    if finish_reason == "length":
+        raise IncompleteAnswerError(
+            "回答达到长度上限，可能不完整。请缩小问题范围后重试。"
+        )
+
+    if finish_reason != "stop":
+        raise IncompleteAnswerError(
+            "回答未正常结束，请稍后重试。"
+        )
 
     return parse_answer(response.content)

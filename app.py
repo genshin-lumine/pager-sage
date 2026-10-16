@@ -1,7 +1,13 @@
 import streamlit as st
-from openai import APIError, APITimeoutError
-from llm import ask_deepseek
+from llm import ask_deepseek, IncompleteAnswerError
 from json import JSONDecodeError
+from openai import (
+    APIError,
+    APIConnectionError,
+    APITimeoutError,
+    AuthenticationError,
+    RateLimitError,
+)
 
 st.set_page_config(page_title="Paper Sage", page_icon="📚")
 
@@ -110,11 +116,25 @@ if st.button("提交问题"):
                 with st.chat_message(message["role"]):
                     st.markdown(message["content"])
 
+        except IncompleteAnswerError as error:
+            st.error(str(error))
+        except AuthenticationError:
+            st.error("身份验证失败，请检查 DeepSeek API Key。")
+
+        except RateLimitError:
+            st.error("请求受到限流，请稍后重试。")
+
         except APITimeoutError:
             st.error("请求超时，请稍后重试。")
+
+        except APIConnectionError:
+            st.error("无法连接 DeepSeek，请检查网络连接。")
+
         except APIError as error:
-            st.error(f"调用失败：{error}")
+            st.error(f"模型调用失败：{error}")
+
         except JSONDecodeError:
             st.error("模型返回的内容不是有效的 JSON，请重试。")
+
         except ValueError as error:
             st.error(f"回答结构不符合要求：{error}")

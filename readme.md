@@ -4,7 +4,7 @@
 
 最终目标是基于 **Streamlit + LangChain + LangGraph**，实现按项目组织论文、限定检索范围、自动选择工作流程，以及可追溯到论文原文的证据回答。检索层计划采用 **Dense + BM25 双路召回 → RRF 排名融合 → Rerank 精排**。
 
-**当前阶段：已完成 Day 04。具备基于 Streamlit、LangChain 的 `langchain-deepseek` 集成和 DeepSeek API 的多轮聊天功能，支持手动提供论文摘录、使用 JSON 模式返回回答，并校验、分别读取回答、原文依据和资料不足说明。论文检索、LangGraph 和 Agent 工作流尚未实现。**
+**当前阶段：已完成 Day 05。具备基于 Streamlit、LangChain 和 DeepSeek API 的多轮聊天功能，支持手动提供论文摘录、解析并校验结构化回答；能够区分常见调用失败、检查回答结束原因，并在本地模拟验证中保持失败前的聊天历史。论文检索、LangGraph 和 Agent 工作流尚未实现。**
 
 ## 1. 学习路径
 
@@ -33,7 +33,7 @@
 - `[ ]`：未完成，包括尚未开始的任务。
 - 做了一部分但尚未达到验收标准的任务仍保留 `[ ]`，把已完成部分写入当天记录。
 
-**当前进度：已完成 4 / 42 个学习日。下一次从 Day 05 开始。** 此数字只表示学习日进度，不代表项目功能完成比例。
+**当前进度：已完成 5 / 42 个学习日。Day 06 进行中：依赖文件、配置示例和独立环境运行验证已完成，剩余 Git 提交练习。** 此数字只表示学习日进度，不代表项目功能完成比例。
 
 Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按实际进度调整，已学会的模型调用、会话状态和函数拆分统一记入 Day 01，后续安排在此基础上推进。
 
@@ -43,8 +43,8 @@ Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按�
 - [x] **Day 02｜用 LangChain 接入 DeepSeek**：复验现有功能；理解模型对象、消息对象和调用接口；将 `llm.py` 中的模型调用改为 LangChain 实现。验收：页面仍能完成单轮问答、多轮追问和清空，能解释与直接 HTTP 调用的对应关系。
 - [x] **Day 03｜提示词与上下文实验**：整理系统提示词；手动给模型一小段论文原文；比较有无原文时的回答。验收：保存一组对照结果，并解释提示词、外部资料和聊天历史分别起什么作用。
 - [x] **Day 04｜结构化输出**：学习字典、JSON 和数据校验；定义包含回答、依据和证据不足说明的结果结构。验收：程序可以读取各字段，并识别缺字段或格式错误的结果。
-- [ ] **Day 05｜调用失败与输出长度**：理解异常传播；区分认证、限流、超时等常见失败；处理输出被截断的情况。验收：用模拟失败验证提示与历史记录状态，能区分“请求成功”和“回答生成完整”。
-- [ ] **Day 06｜让项目可复现运行**：整理依赖文件、配置示例和启动步骤；学习 Git 的基本提交方式。验收：新建独立环境后可按说明运行，依赖与配置有明确记录。
+- [x] **Day 05｜调用失败与输出长度**：理解异常传播；区分认证、限流、超时等常见失败；处理输出被截断的情况。验收：用模拟失败验证提示与历史记录状态，能区分“请求成功”和“回答生成完整”。
+- [ ] **Day 06｜让项目可复现运行**：整理依赖文件、配置示例和启动步骤；学习 Git 的基本提交方式。验收：新建独立环境后可按说明运行，依赖与配置有明确记录。当前：独立环境的依赖检查、问答与清空均已通过，Git 提交练习待完成。
 - [ ] **Day 07｜基础阶段复盘与样例准备**：解释输入到输出的数据流；选择可提取文字的论文；准备 3 个有原文依据的问题和 1 个论文未提供答案的问题。验收：记录问题及对应页码，完成聊天功能回归检查。
 
 ### 第二阶段：论文 RAG
@@ -104,16 +104,23 @@ Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按�
 ```text
 paper-sage/
 ├── app.py                    # Streamlit 页面、消息组装与聊天记录
-├── llm.py                    # 通过 LangChain 调用 DeepSeek，返回校验后的字典
+├── llm.py                    # 调用 DeepSeek、检查结束原因，返回校验后的字典
 ├── answer_parser.py          # JSON 解析、必需字段与数据类型校验
 ├── practice_json.py          # 本地 JSON 解析练习，不调用模型
+├── practice_errors.py        # 本地异常传播与历史记录练习，不调用模型
+├── requirements.txt          # 当前 Windows / Python 3.12 环境的依赖版本快照
 ├── readme.md                 # 学习路线、任务状态与每日学习记录
 ├── .gitignore
 └── .streamlit/
+    ├── secrets.toml.example  # 配置模板，仅含占位符，提交到 Git
     └── secrets.toml          # 本地 API Key 配置，不提交到 GitHub
 ```
 
-当前使用 Python 3.12.6，通过 `langchain-deepseek` 提供的 `ChatDeepSeek` 调用 `deepseek-flash`。`ask_deepseek(messages, api_key)` 接收完整消息列表和密钥，使用 `response_format={"type": "json_object"}` 请求 JSON 输出，再通过 `parse_answer()` 解析并校验，向页面返回字典。
+当前使用 Python 3.12.6，通过 `langchain-deepseek` 提供的 `ChatDeepSeek` 调用 `deepseek-flash`。`ask_deepseek(messages, api_key)` 接收完整消息列表和密钥，使用 `response_format={"type": "json_object"}` 请求 JSON 输出。拿到响应后先检查 `finish_reason`，仅在其为 `stop` 时调用 `parse_answer()` 解析并校验，向页面返回字典。
+
+当前客户端也可能在 `invoke()` 返回之前抛出长度限制或内容过滤异常，`llm.py` 将这两类异常转换为 `IncompleteAnswerError`，由页面显示提示。认证失败、限流、超时、连接失败、JSON 格式错误和字段校验失败也有相应处理。只有模型调用、结束状态检查和字段校验均通过后，才追加本轮聊天记录。
+
+`max_tokens=1024` 限制输出 token 数，不等于整个上下文窗口的长度。`finish_reason="stop"` 表示正常结束或遇到指定停止序列，仍不能证明答案事实正确或证据充分。
 
 当前结果结构：
 
@@ -125,7 +132,7 @@ paper-sage/
 
 解析函数检查最外层是否为字典、三个字段是否存在，以及字段和依据列表元素的类型。页面读取字典后组装成 Markdown 字符串，用于展示和保存聊天记录；会话中目前保存的是展示文字，尚未单独保存结构化字段。字段之间的语义关系、引用真实性与结论支持情况仍需后续校验。
 
-截至 Day 02，已检查的主要包版本如下：
+Day 06 再次核对的主要包版本如下：
 
 | 包 | 当前版本 | 用途 |
 | --- | --- | --- |
@@ -135,52 +142,134 @@ paper-sage/
 | `langchain-openai` | 1.7.2 | 当前 DeepSeek 集成使用的模型客户端基础实现 |
 | `openai` | 3.31.0 | 兼容协议客户端及页面捕获的 API 异常类型 |
 
-`ChatDeepSeek` 在本项目中连接 `https://api.deepseek.com`。Day 04 新使用的 `json` 属于 Python 标准库，无需额外安装。完整依赖文件与版本锁定安排在 Day 06 整理。
+`ChatDeepSeek` 在本项目中连接 `https://api.deepseek.com`。代码直接使用的第三方包为 `streamlit`、`langchain-deepseek` 和 `openai`；`json` 属于 Python 标准库，无需额外安装。
 
-### 本地启动（Windows / PowerShell）
+`requirements.txt` 由项目 `.venv` 中的 `pip freeze` 导出，目前包含 66 条指定版本的记录，包括间接依赖及环境中的其他已安装包。它是当前安装状态的快照，不是自动求解生成的锁文件，也不代表最小依赖集合。Day 06 已在本机新建的 Windows / Python 3.12.6 环境中验证；其他操作系统和 Python 版本尚未验证。
 
-在项目根目录执行。首次准备环境时运行：
+### 本地启动（Windows / Git Bash）
 
-```powershell
+先安装 Python 3.12，并准备自己的 DeepSeek API Key。以下命令均在项目根目录执行，逐条执行成功后再继续。首次准备环境时运行：
+
+```bash
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install "streamlit==1.65.0" "langchain-deepseek==1.1.1" "openai==3.31.0"
+./.venv/Scripts/python.exe -m pip install -r requirements.txt
+./.venv/Scripts/python.exe -m pip check
 ```
 
-在项目根目录创建 `.streamlit/secrets.toml`，填写自己的配置：
+`-r` 表示从文件读取依赖清单；`pip check` 检查声明的依赖是否缺失或版本不兼容，预期输出 `No broken requirements found.`。直接指定环境中的 Python 路径，无需先激活环境。
+
+首次配置时，从模板创建本地配置。下面的 `-n` 表示已有目标文件时不覆盖：
+
+```bash
+cp -n .streamlit/secrets.toml.example .streamlit/secrets.toml
+```
+
+在编辑器中打开 `.streamlit/secrets.toml`，将占位符替换为自己的 API Key：
 
 ```toml
-DEEPSEEK_API_KEY = "替换为你自己的 API Key"
+DEEPSEEK_API_KEY = "your-deepseek-api-key"
 ```
+
+模板 `secrets.toml.example` 用于说明配置格式；应用通过 `st.secrets["DEEPSEEK_API_KEY"]` 读取实际配置。已有可用配置时沿用原文件。
 
 启动页面：
 
-```powershell
-.\.venv\Scripts\python.exe -m streamlit run app.py
+```bash
+./.venv/Scripts/python.exe -m streamlit run app.py
 ```
 
 打开终端显示的 `Local URL`。已有虚拟环境和配置时，只需运行启动命令。
 
-当前 `.gitignore` 已排除 `.venv/`、`__pycache__/` 和 `.streamlit/secrets.toml`。发布到 GitHub 时，真实密钥文件和虚拟环境不属于需要上传的项目文件；手动通过网页选择文件上传时也应排除它们。
+如果使用 PowerShell，安装和启动命令也可按以下形式执行；配置文件可在编辑器中从模板复制并填写：
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+当前 `.gitignore` 已排除 `.venv/`、`.venv-check/`、`__pycache__/` 和 `.streamlit/secrets.toml`。提交配置模板与依赖文件，真实密钥文件和虚拟环境保留在本地；手动通过网页选择文件上传时也应排除它们。
+
+### 在独立环境中验证（Windows / Git Bash）
+
+项目已有可用的 `.streamlit/secrets.toml` 时，可以新建 `.venv-check` 验证依赖清单。此处独立的是 Python 包环境，运行时使用当前项目源码与本地配置。
+
+```bash
+py -3.12 -m venv .venv-check
+./.venv-check/Scripts/python.exe -m pip install -r requirements.txt
+./.venv-check/Scripts/python.exe -m pip check
+./.venv-check/Scripts/python.exe -m streamlit run app.py --server.port=8502
+```
+
+打开 `http://localhost:8502`，清空会话，在参考资料中粘贴：
+
+```text
+Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task
+```
+
+提交问题“参考资料中的模型在什么翻译任务上取得了多少 BLEU？”。预期回答包含 WMT 2014、英语到德语、28.4 BLEU，并展示原文依据；之后点击“清空会话”，确认聊天记录消失。Day 06 学习者已确认依赖检查、问答和清空均正常。
+
+### 更新依赖记录
+
+在项目环境中有意调整依赖并验证功能后，再更新快照。Git Bash 命令为：
+
+```bash
+./.venv/Scripts/python.exe -m pip freeze > requirements.txt
+```
+
+PowerShell 中使用明确的文件编码：
+
+```powershell
+.\.venv\Scripts\python.exe -m pip freeze | Set-Content -Encoding utf8 requirements.txt
+```
+
+导出后检查文件差异，并在新环境中验证。`Set-Content` 是 PowerShell 命令，不能直接在 Bash 中使用。
+
+### Git 基本提交流程
+
+编辑文件后，用 `git status --short` 查看状态；`git add <文件路径>` 把指定文件的当前内容加入暂存区；`git diff --cached` 查看待提交差异；`git commit -m "提交说明"` 把暂存区内容记录为本地版本。`git log -1 --oneline` 可查看最新提交。修改已暂存的文件后，需要再次 `git add` 才能把新修改纳入提交。
+
+本地提交与上传 GitHub 是两个步骤，上传远端使用 `git push`。Day 06 当前仍待学习者完成本地提交练习；尚未记录新的提交成功结果。
+
+### 当前能力与本地练习
 
 当前聊天记录保存在 Streamlit 会话内存中，尚未实现长期持久化。页面支持手动粘贴论文摘录，并将资料与问题一起放入本次用户消息；系统提示词要求根据本次资料回答并给出原文依据。Day 03 已通过实际对照实验与修正后的复验：无资料时说明依据不足，有资料时正确回答并引用摘录，具体结果见文末。应用尚未实现 PDF 读取或自动检索，当前引用由模型生成，未经过程序校验。
 
-Day 04 接入结构化输出后，学习者再次完成了有无资料两组实际问答。页面能够分别显示回答、原文依据，以及非空的资料不足说明。JSON 格式或字段校验失败时有相应错误处理分支；后续的失败模拟与会话状态验证安排在 Day 05。
+Day 04 接入结构化输出后，学习者完成了有无资料两组实际问答。Day 05 通过本地模拟进一步验证：调用失败、输出未正常结束、JSON 或字段校验失败时显示对应提示，保留已有历史；正常回答只追加一问一答。模拟验证使用占位密钥，不代表重新验证了远端 API 的实时可用性。
 
 运行本地解析练习：
 
-```powershell
-.\.venv\Scripts\python.exe practice_json.py
+```bash
+./.venv/Scripts/python.exe practice_json.py
 ```
 
 练习文件目前保留正常样例；缺字段和格式错误的实验操作、实际报错保存在 Day 04 学习记录中。
+
+运行本地异常传播练习：
+
+```bash
+./.venv/Scripts/python.exe practice_errors.py
+```
+
+文件当前保留模拟正常返回的版本。将模拟函数中的 `return "模拟回答"` 替换为 `raise TimeoutError("模拟请求超时")`，可以重现失败时跳过历史追加的行为；每次重新运行脚本都从两条历史消息开始。该练习不会调用 API。
 
 ### 学习参考
 
 - [Streamlit 安装与启动](https://docs.streamlit.io/get-started/installation/command-line)
 - [Streamlit Session State](https://docs.streamlit.io/develop/concepts/architecture/session-state)
 - [Streamlit 按钮行为](https://docs.streamlit.io/develop/concepts/design/buttons)
+- [Streamlit AppTest](https://docs.streamlit.io/develop/api-reference/app-testing/st.testing.v1.apptest)
+- [Streamlit 本地配置与密钥](https://docs.streamlit.io/develop/concepts/connections/secrets-management)
+- [Python 3.12 虚拟环境](https://docs.python.org/3.12/library/venv.html)
+- [pip freeze](https://pip.pypa.io/en/stable/cli/pip_freeze/)
+- [pip check](https://pip.pypa.io/en/stable/cli/pip_check/)
+- [Git 暂存文件](https://git-scm.com/docs/git-add)
+- [Git 本地提交](https://git-scm.com/docs/git-commit)
 - [DeepSeek API 入门](https://api-docs.deepseek.com/)
 - [DeepSeek JSON Output](https://api-docs.deepseek.com/zh-cn/guides/json_mode/)
+- [DeepSeek 错误码](https://api-docs.deepseek.com/quick_start/error_codes/)
+- [DeepSeek Chat Completions 与结束原因](https://api-docs.deepseek.com/api/create-chat-completion/)
 - [Python 3.12 JSON 解析](https://docs.python.org/3.12/library/json.html)
 - [LangChain 官方学习入口](https://docs.langchain.com/oss/python/learn)
 - [LangChain 的 ChatDeepSeek 集成](https://docs.langchain.com/oss/python/integrations/chat/deepseek)
@@ -611,3 +700,185 @@ Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task
 理解异常如何从模型调用传到页面，区分认证、限流、超时等失败，并学习识别回答被截断的情况。
 
 验收标准：使用模拟失败验证页面提示和聊天历史状态，能够区分“请求成功”与“回答生成完整”。完成验收并追加记录后结束当次学习。
+
+### Day 05｜2026-10-16｜调用失败、异常传播与输出长度
+
+- **当天目标**：理解异常传播和捕获顺序，细分调用失败提示，识别未正常结束的回答，并用本地模拟验证失败时的聊天历史状态。
+- **本次状态**：已完成。
+- **实际用时**：未记录。
+- **当天剩余必做任务**：0。
+
+#### 完成的任务
+
+- [x] 编写 `practice_errors.py`，分别运行模拟超时与正常返回两种情况，观察历史消息数量为 2 和 4。
+- [x] 理解异常会向外传播，由匹配的 `except` 处理；同一 `try` 中尚未执行的保存代码会被跳过。
+- [x] 为认证失败、限流、超时和连接失败增加专用提示，保留通用 API、JSON 格式与字段校验错误处理。
+- [x] 完成捕获顺序理解检查，能说明通用 `APIError` 放在前面会遮住专用提示。
+- [x] 定义 `IncompleteAnswerError`，在 JSON 解析之前检查 `finish_reason`。
+- [x] 处理客户端在 `invoke()` 返回前抛出的 `LengthFinishReasonError` 和 `ContentFilterFinishReasonError`，保留原始异常原因。
+- [x] 使用本地模拟检查失败提示、已有历史保留，以及正常回答只追加一问一答。
+- [x] 理解合法 JSON 不代表回答已完整生成，区分输出 token 限制与上下文窗口长度。
+- [x] 完成最终模拟验证，更新任务状态、当前功能说明和学习记录。
+
+#### 代码与文档改动
+
+| 文件 | 改动及原因 |
+| --- | --- |
+| `practice_errors.py` | 新增本地练习，通过主动抛出异常或正常返回观察控制流与历史数量变化。 |
+| `app.py` | 添加认证、限流、连接失败与回答未正常结束的专用错误提示，并保持具体异常先于通用异常的顺序。 |
+| `llm.py` | 定义自有异常，转换客户端的提前终止异常，检查响应结束原因，再执行 JSON 解析。 |
+| `readme.md` | 将 Day 05 标记为完成，进度更新为 5 / 42；记录测试层次、结果和下一学习日。 |
+
+正常路径：
+
+**调用模型 → 检查结束原因 → 解析并校验 JSON → 页面组装展示文字 → 追加一问一答。**
+
+失败路径：
+
+**调用或检查中抛出异常 → 页面匹配相应错误分支 → 显示提示 → 保留已有聊天历史。**
+
+#### 学到的概念
+
+- 函数内没有被处理的异常会传到调用方；匹配的 `except` 执行后，程序可以继续执行异常处理块后面的语句。
+- `except` 从上往下匹配，执行第一个匹配分支。认证和限流等专用异常应放在 `APIError` 前，超时应放在连接失败前，JSON 格式错误应放在 `ValueError` 前。
+- `IncompleteAnswerError` 是应用自己的异常类型，用于统一表示回答未正常结束；`raise ... from error` 保留底层异常以便排查。
+- `AIMessage.response_metadata` 中的 `finish_reason` 描述生成结束原因。当前流程仅接受 `stop`；`length` 或其他结束状态、缺失状态均不会作为成功回答保存。
+- `length` 表示生成触及长度限制，即使正文恰好是合法 JSON，也不能据此把它视为完整回答。
+- 当前 `max_tokens=1024` 限制输出 token 数。学习者最初将其表述为上下文长度，讲解中补充区分了输出限制与整个上下文窗口。
+- 请求成功、正常结束、JSON 格式正确、字段符合要求和事实有证据支持，是不同层面的判断；本次仍未实现自动事实与引用核验。
+
+#### 学习者本地练习结果
+
+模拟超时的实际输出：
+
+```text
+准备调用
+进入模拟调用函数
+捕获到错误： 模拟请求超时
+历史消息数量： 2
+```
+
+将抛出异常改为正常返回后的实际输出：
+
+```text
+准备调用
+进入模拟调用函数
+本轮对话已保存
+历史消息数量： 4
+```
+
+学习者解释：第一次捕获到错误，第二次正常执行。补充说明了第一次跳过保存代码后仍会执行最后的数量打印。当前练习文件保留正常返回版本。
+
+#### 问题与解决过程
+
+首版教学示例只在 `invoke()` 返回后检查 `finish_reason`。检查当前安装的客户端实现，并用模拟 HTTP 响应运行实际 SDK 与 LangChain 调用后发现：JSON 模式可能在返回 `AIMessage` 前就抛出 `LengthFinishReasonError` 或 `ContentFilterFinishReasonError`。
+
+这两个异常不是 `APIError` 的子类，原有页面处理也不会将其识别为 `IncompleteAnswerError`，因此只检查响应元数据存在遗漏。此遗漏来自助手给出的首版示例。
+
+学习者随后在 `llm.py` 的 `invoke()` 周围添加专用捕获，将它们转换成 `IncompleteAnswerError`，并用 `from error` 保留原始原因。响应元数据检查继续保留，以覆盖已经返回响应但未正常结束的情况。修正后最终验证通过。
+
+#### 助手执行的本地模拟验证
+
+**第一轮：8 项页面检查全部通过。** 使用 AppTest 执行页面，将 `ask_deepseek()` 替换成模拟返回或异常，并预置两条历史消息。
+
+| 场景 | 实际结果 |
+| --- | --- |
+| 认证失败、限流、超时、连接失败、通用 API 错误 | 5 项均显示对应错误，历史保持原来的两条，未追加失败轮次。 |
+| JSON 格式错误、字段校验错误 | 2 项均显示对应错误，历史保持不变。 |
+| 正常返回 | 只追加一问一答，历史由 2 条变为 4 条。 |
+
+**最终补验：9 项全部通过。** 其中 7 项使用模拟 HTTP 响应运行实际安装的 SDK、LangChain、`llm.py` 和页面；另 2 项直接构造 `AIMessage`，验证返回响应后的检查分支。
+
+| 场景 | 实际结果 |
+| --- | --- |
+| `stop` 且 JSON、字段有效 | 正常解析、展示，历史由 2 条变为 4 条。 |
+| `length` 且正文为合法 JSON | SDK 的提前异常被转换，页面显示长度限制提示；未进入 JSON 解析，历史不变。 |
+| `length` 且正文为残缺 JSON | 优先显示长度限制提示，未把截断误报为普通 JSON 格式问题；历史不变。 |
+| `content_filter` | SDK 的提前异常被转换，页面显示内容过滤提示；历史不变。 |
+| `aborted` | 结束状态检查拒绝该响应，显示未正常结束；历史不变。 |
+| `stop` 但 JSON 格式错误 | 页面显示 JSON 错误；历史不变。 |
+| `stop` 但缺少必需字段 | 页面显示结构校验错误；历史不变。 |
+| 直接返回带 `length` 元数据的 `AIMessage` | 响应检查在 JSON 解析前拦截，历史不变。 |
+| 直接返回缺少结束原因的 `AIMessage` | 响应检查在 JSON 解析前拦截，历史不变。 |
+
+全部模拟使用占位密钥。模拟 HTTP 由本地 `MockTransport` 提供，未向外部模型发送请求；页面测试预置的历史和密钥与实际浏览器会话分开。自动化检查通过终端临时脚本执行，本次未另存为仓库中的测试文件。
+
+#### 验证与遗留事项
+
+- **学习者实际运行**：提供本地异常练习的两组输出，并完成捕获顺序和长度限制的理解检查；保存了最终代码修正。
+- **助手代码检查**：`app.py`、`llm.py`、`answer_parser.py`、`practice_json.py`、`practice_errors.py` 五个文件语法解析通过。
+- **助手模拟验证**：第一轮 8 项页面检查和最终 9 项补验通过，具体覆盖范围见上表。
+- **验证边界**：本次验收针对本地错误处理、结束状态检查和历史状态，未重新调用真实 DeepSeek API，也未模拟完整的网络等待过程。自动重试、事实核验及持久化仍按后续计划推进。
+- **当天遗留事项**：无；Day 05 验收已完成。
+
+#### 下一次学习
+
+**Day 06：让项目可复现运行。**
+
+整理依赖文件、配置示例与启动步骤，学习 Git 基本提交方式，并在独立环境中验证说明是否足够完整。
+
+验收标准：可以按文档准备配置和依赖并启动应用，依赖版本与必要配置有明确记录。完成验收并更新学习记录后结束当次学习。
+
+### Day 06｜2026-10-16｜依赖快照、配置模板与独立环境验证
+
+- **当天目标**：记录依赖与配置，在独立环境中验证启动步骤，并练习 Git 本地提交。
+- **本次状态**：未完成；运行验证已通过，剩余 Git 提交练习。
+- **实际用时**：未记录。
+- **当天剩余必做任务**：完成 Git 暂存、查看待提交差异与本地提交，并核对提交结果。
+
+#### 完成的任务
+
+- [x] 理解项目虚拟环境与外部 Python 环境的区别，明确使用项目环境中的 Python 导出依赖。
+- [x] 生成 `requirements.txt`，保存当前环境的 66 条依赖版本记录。
+- [x] 新建 `.streamlit/secrets.toml.example`，仅填写配置键名和占位符。
+- [x] 在 `.gitignore` 中增加 `.venv-check/`，确认真实配置被忽略、模板可被跟踪。
+- [x] 新建 `.venv-check`，根据依赖清单安装，并通过 `pip check`。
+- [x] 用新环境在 8502 端口启动应用，完成带参考资料的问答与清空会话验证。
+- [x] 更新 README 的依赖说明、配置方式、Bash 与 PowerShell 命令及验证步骤。
+- [ ] 学习者完成 Git 暂存、差异检查与本地提交，并核对最新提交记录。
+
+#### 代码与文档改动
+
+| 文件 | 改动及原因 |
+| --- | --- |
+| `requirements.txt` | 新增当前 Windows / Python 3.12 环境的已安装包版本快照。 |
+| `.streamlit/secrets.toml.example` | 新增只含占位符的配置模板，说明需要填写的键名与格式。 |
+| `.gitignore` | 增加独立验证环境目录，避免将其加入版本管理。 |
+| `readme.md` | 更新运行步骤，加入独立环境验证方法，并追加本次学习记录。 |
+
+`app.py`、`llm.py` 和 `practice_errors.py` 的待提交变化来自 Day 05 的异常处理与练习；本次环境整理没有修改这些文件。Git 检查发现它们仍未提交，将在本次提交练习中一并处理。
+
+#### 学到的概念
+
+- 虚拟环境拥有独立的包安装目录。明确指定 `.venv/Scripts/python.exe`，可以避免导出其他 Python 环境中的包。
+- `python -m pip` 使用所指定 Python 环境中的 pip；`pip freeze` 导出已安装包，`pip install -r` 按文件中的要求安装。
+- `==` 指定包版本。当前快照包含直接依赖、间接依赖及环境中的其他已安装包，不是最小依赖集合，也不是自动求解生成的锁文件。
+- 配置模板记录字段与占位符，实际配置保存个人密钥；应用默认读取 `.streamlit/secrets.toml`，不会自动读取 `.example` 模板。
+- `pip check` 检查包声明的依赖关系；页面问答与清空验证用于检查应用实际行为，两者验证范围不同。
+- 本次复现范围为同一台 Windows 电脑上的 Python 3.12.6 独立包环境，源码与现有本地配置共用；跨平台运行尚未验证。
+
+#### 问题与解决过程
+
+学习者在 Bash 中执行助手最初按 PowerShell 提供的导出命令，收到 `bash: Set-Content: command not found`。原因是终端类型与命令语法不匹配。
+
+改用 Bash 的正斜杠路径与输出重定向：
+
+```bash
+./.venv/Scripts/python.exe -m pip freeze > requirements.txt
+```
+
+随后成功生成文件。后续练习按学习者当前的 Bash 终端给出命令，README 也分别说明两种终端的写法。
+
+#### 验证与遗留事项
+
+- **学习者实际运行确认**：依赖检查通过、问答正常、清空正常。验证使用新环境启动的页面与 WMT 2014 英语到德语、28.4 BLEU 的参考摘录。
+- **助手文件检查**：依赖文件为 66 条 `包名==版本` 记录，与原项目环境导出一致；配置模板 TOML 格式正确且使用预期占位符；真实配置与验证环境已被 Git 忽略，未被跟踪。
+- **助手新环境检查**：`.venv-check` 的 Python 为 3.12.6，未启用系统包共享；已安装包快照与 `requirements.txt` 一致，主要依赖版本与原环境相同。
+- **验证边界**：问答与清空结果来自学习者实际操作反馈；助手没有重新调用远端模型，也没有读取真实密钥。本次没有重复 Day 05 的完整异常模拟测试。
+- **当天遗留事项**：Git 提交练习尚未完成，因此 Day 06 暂不勾选，进度保持 5 / 42。
+
+#### 下一次学习
+
+先完成 Day 06 的 Git 提交练习并更新本次状态，再进入 **Day 07：基础阶段复盘与样例准备**。
+
+Day 07 将解释输入到输出的数据流，选择可提取文字的论文，准备 3 个有原文依据的问题和 1 个无答案问题，并记录对应页码。

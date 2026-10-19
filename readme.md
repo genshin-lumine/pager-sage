@@ -4,7 +4,7 @@
 
 最终目标是基于 **Streamlit + LangChain + LangGraph**，实现按项目组织论文、限定检索范围、自动选择工作流程，以及可追溯到论文原文的证据回答。检索层计划采用 **Dense + BM25 双路召回 → RRF 排名融合 → Rerank 精排**。
 
-**当前阶段：已完成 Day 09，正在构建论文 RAG。现有聊天页面支持手动提供摘录、结构化回答与异常处理；本地脚本已能逐页读取 PDF，并将页面切成带项目、文档、页码和片段标识的文本块。已比较 400 / 100 与 800 / 100 两套分块配置，分别得到 113 和 51 个片段，三条样例原文均保留在对应页的片段中。解析与分块结果目前保存在内存中，尚未接入聊天页面、向量化或自动检索；项目管理和 Agent 工作流仍待实现。**
+**当前阶段：已完成 Day 12，正在构建论文 RAG。现有聊天页面支持手动提供摘录、结构化回答与异常处理。本地流程已能读取 PDF、逐页分块，将 800 / 100 配置的 51 个论文片段编码为 384 维向量，并保存 FAISS 索引、原文、来源及编码配置。正式模块 `retriever.py` 已能把中文问题编码后查询已有索引，返回带名次、分数和完整片段记录的候选列表。四组问题已检查，保留了排序不佳、漏检和相关但不足以回答的案例；自动检索尚未接入聊天页面，项目管理、混合检索和 Agent 工作流仍待实现。**
 
 ## 1. 学习路径
 
@@ -35,7 +35,7 @@
 - `[ ]`：未完成，包括尚未开始的任务。
 - 做了一部分但尚未达到验收标准的任务仍保留 `[ ]`，把已完成部分写入当天记录。
 
-**当前进度：已完成 9 / 42 个学习日。下一次从 Day 10 开始。** 此数字只表示学习日进度，不代表项目功能完成比例。
+**当前进度：已完成 12 / 42 个学习日。下一次从 Day 13 开始。** 此数字只表示学习日进度，不代表项目功能完成比例。
 
 Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按实际进度调整，已学会的模型调用、会话状态和函数拆分统一记入 Day 01，后续安排在此基础上推进。
 
@@ -52,16 +52,16 @@ Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按�
 ### 第二阶段：论文 RAG
 
 - [x] **Day 08｜读取 PDF 并保留来源**：使用 `pypdf` 读取文本型 PDF，封装逐页读取函数；在页面记录中保留文档标识、来源和 PDF 页序号，学习其与印刷页码的区别。验收：11 页记录完整，三条样例原文与页码匹配；空白、混合页面及仅空白字符场景检查通过，空白页保留在结果中。
-- [x] **Day 09｜文档分块与元数据**：学习分块长度与目标重叠，封装逐页分块函数，为片段保留项目、文档、来源、页码和标识。验收：对比 400 / 100 与 800 / 100 两套配置，得到 113 与 51 个片段；来源、长度、三条样例依据及空页面等边界检查通过。当前标识的跨配置重复问题已记录，入库前处理。
-- [ ] **Day 10｜Embedding 与语义相似度**：区分聊天模型与向量模型；生成文本向量；观察相近与不相关文本的相似度。验收：用小样例解释语义检索的基本原理。
-- [ ] **Day 11｜建立向量索引**：选择一个本地向量存储方案；入库前为片段标识引入分块配置或版本区分，避免不同配置的片段相互覆盖；写入向量和元数据，保存并重新加载索引。验收：不同分块配置不会因标识重复而覆盖，重启程序后可查询已建立的索引。
-- [ ] **Day 12｜完成 Dense 检索**：把问题转换成向量；取回相关片段；查看候选文本与来源。验收：用已准备的问题检查答案所在片段是否进入候选结果。
+- [x] **Day 09｜文档分块与元数据**：学习分块长度与目标重叠，封装逐页分块函数，为片段保留项目、文档、来源、页码和标识。验收：对比 400 / 100 与 800 / 100 两套配置，得到 113 与 51 个片段；来源、长度、三条样例依据及空页面等边界检查通过。跨配置标识重复问题已在 Day 11 加入参数区分后处理。
+- [x] **Day 10｜Embedding 与语义相似度**：区分聊天模型与向量模型；在 CPU 上生成中英文文本向量并比较余弦相似度。验收：理解 `(4, 384)` 的含义与归一化后的点积；完成三组问题对照并保留排序失败案例，能解释语义相关不等于有回答依据。
+- [x] **Day 11｜建立向量索引**：片段标识加入分块长度和重叠量，保存八个片段字段；用 FAISS + JSON 保存向量索引与原文记录。验收：三套参数的标识无交叉重复；51 个 384 维向量可在新进程中重新加载并查询到原片段；保存数量检查和读取版本、维度、数量检查通过。
+- [x] **Day 12｜完成 Dense 检索**：按索引保存的编码配置生成问题向量，封装 `retrieve_dense()`，返回带名次、分数和完整来源的候选列表。验收：四组问题的封装前后结果一致；三条有答案问题分别记录 Top-1、Top-3 命中情况，保留漏检和无答案案例；空问题、非法数量、空索引及返回数量限制检查通过。
 - [ ] **Day 13｜跑通基础 RAG**：将检索片段、问题和回答要求组合后发送给模型；展示回答及对应片段。验收：论文问题能附上可核对的来源，证据不足时有明确说明。
 - [ ] **Day 14｜建立 RAG 评估基线**：逐步扩充到约 20 个问题，覆盖事实问答、跨段落问题和无答案问题。验收：记录检索命中、回答正确性、引用支持情况和典型失败案例。
 
 ### 第三阶段：项目与范围管理
 
-- [ ] **Day 15｜设计持久化数据模型**：整理 Project、Document、Chunk 的关系；为项目和文档元数据引入本地持久化。验收：能说明每个标识的用途，重启后数据关系仍可读取。
+- [ ] **Day 15｜设计持久化数据模型**：整理 Project、Document、Chunk 的关系；为项目和文档元数据引入本地持久化，按项目、文档与索引版本规范索引目录命名。验收：能说明每个标识的用途，重启后数据关系仍可读取，索引目录不再依赖学习日命名。
 - [ ] **Day 16｜创建与切换项目**：实现项目创建、列表与切换；展示当前项目的文档。验收：至少两个项目可以独立管理各自的论文。
 - [ ] **Day 17｜文档导入生命周期**：将上传、解析、分块和索引串起来；处理重复上传和失败状态。验收：同一文件重复导入不会无意产生重复记录，失败可以定位到具体环节。
 - [ ] **Day 18｜限定检索文档范围**：支持当前项目全部论文或选定论文；在检索层执行范围约束。验收：返回片段全部属于选定范围，并覆盖空选择的处理。
@@ -101,7 +101,7 @@ Day 01 实际完成内容超过最初的“跑通页面”目标。下面已按�
 
 ## 3. 当前项目与运行方式
 
-### 当前文件结构
+### 当前文件结构（含本地练习文件）
 
 ```text
 paper-sage/
@@ -110,16 +110,26 @@ paper-sage/
 ├── answer_parser.py          # JSON 解析、必需字段与数据类型校验
 ├── pdf_loader.py             # PDF 逐页读取，返回保留来源的页面记录
 ├── chunker.py                # 逐页分块，保留项目、文档、页码及片段标识
+├── index_store.py            # FAISS 索引与 JSON 元数据的保存、读取和基础检查
+├── retriever.py              # 问题向量化、Dense 检索，返回分数与完整片段记录
 ├── practice_json.py          # 本地 JSON 解析练习，不调用模型
 ├── practice_errors.py        # 本地异常传播与历史记录练习，不调用模型
 ├── practice_pdf.py           # 打印 PDF 页面摘要，检查未提取到文字的页码
 ├── practice_chunks.py        # 比较两套分块配置，查看 GPU 样例所在片段
+├── practice_embeddings.py    # 本地向量与相似度练习，当前保留耗电量问题
+├── practice_index.py         # 为 51 个论文片段生成向量，建立并保存索引
+├── practice_load_index.py    # 在新进程读取索引，检查向量与来源对应关系
+├── practice_retrieval.py     # 调用正式检索函数，打印中文问题的候选与来源
 ├── requirements.txt          # 当前 Windows / Python 3.12 环境的依赖版本快照
 ├── readme.md                 # 学习路线、任务状态与每日学习记录
 ├── data/
 │   ├── sample_questions.json # 3 条有答案样例与 1 条资料不足样例
-│   └── papers/
-│       └── attention_is_all_you_need_neurips2017.pdf
+│   ├── papers/
+│   │   └── attention_is_all_you_need_neurips2017.pdf
+│   └── indexes/              # 本地生成文件，不提交到 Git
+│       └── day11_s800_o100/
+│           ├── index.faiss
+│           └── metadata.json
 ├── .gitignore
 └── .streamlit/
     ├── secrets.toml.example  # 配置模板，仅含占位符，提交到 Git
@@ -142,7 +152,7 @@ paper-sage/
 
 解析函数检查最外层是否为字典、三个字段是否存在，以及字段和依据列表元素的类型。页面读取字典后组装成 Markdown 字符串，用于展示和保存聊天记录；会话中目前保存的是展示文字，尚未单独保存结构化字段。字段之间的语义关系、引用真实性与结论支持情况仍需后续校验。
 
-当前主要包版本如下。Day 08 新增 `pypdf`，Day 09 新增 `langchain-text-splitters`，其余已记录版本未变：
+当前主要包版本如下。Day 08 新增 `pypdf`，Day 09 新增 `langchain-text-splitters`，Day 10 新增本地向量模型相关依赖，Day 11 新增 `faiss-cpu`；Day 10 保存的 95 个包版本未变：
 
 | 包 | 当前版本 | 用途 |
 | --- | --- | --- |
@@ -153,10 +163,17 @@ paper-sage/
 | `langchain-openai` | 1.7.2 | 当前 DeepSeek 集成使用的模型客户端基础实现 |
 | `openai` | 3.31.0 | 兼容协议客户端及页面捕获的 API 异常类型 |
 | `pypdf` | 6.21.1 | 本地 PDF 逐页读取与文本提取 |
+| `sentence-transformers` | 6.1.0 | 加载向量模型并编码文本 |
+| `torch` | 2.14.1+cpu | 本地 CPU 模型计算 |
+| `transformers` | 5.20.1 | 向量模型底层实现与分词 |
+| `numpy` | 2.5.4 | 向量数组与数值计算 |
+| `faiss-cpu` | 1.15.1 | CPU 向量索引、相似度查询与索引文件读写 |
 
-`ChatDeepSeek` 在本项目中连接 `https://api.deepseek.com`。代码直接使用的第三方包为 `streamlit`、`langchain-deepseek`、`openai`、`pypdf` 和 `langchain-text-splitters`；`json` 属于 Python 标准库，无需额外安装。
+`ChatDeepSeek` 在本项目中连接 `https://api.deepseek.com`。代码直接使用的第三方包为 `streamlit`、`langchain-deepseek`、`openai`、`pypdf`、`langchain-text-splitters`、`sentence-transformers` 和 `faiss-cpu`（导入名为 `faiss`）；`json`、`pathlib` 属于 Python 标准库，无需额外安装。向量与索引练习使用本地计算，不调用 DeepSeek API。
 
-`requirements.txt` 最初由项目 `.venv` 中的 `pip freeze` 导出，Day 08 补入 `pypdf==6.21.1`，Day 09 再补入 `langchain-text-splitters==1.1.3`，目前共有 68 条指定版本记录，与当前环境快照一致，包括间接依赖及环境中的其他已安装包。它不是自动求解生成的锁文件，也不代表最小依赖集合。Day 06 的 66 条依赖已在本机新建的 Windows / Python 3.12.6 环境中验证；Day 08、Day 09 在现有项目环境中验证新增功能，并通过 `pip check`，未重新创建独立环境。其他操作系统和 Python 版本尚未验证。
+`requirements.txt` 最初由项目 `.venv` 中的 `pip freeze` 导出，Day 08、09 补入 PDF 和分块依赖，Day 10 补入向量模型相关的 27 个包，Day 11 补入 `faiss-cpu==1.15.1`。目前共有 96 条指定版本记录，与当前环境快照一致，包括间接依赖及环境中的其他已安装包。它不是自动求解生成的锁文件，也不代表最小依赖集合。Day 06 的 66 条依赖已在本机新建的 Windows / Python 3.12.6 环境中验证；Day 08～11 在现有项目环境中验证新增功能，并通过 `pip check`，未重新创建独立环境。其他操作系统和 Python 版本尚未验证。
+
+当前锁定的是 `torch==2.14.1+cpu`。新环境先从 PyTorch 官方 CPU 源安装这一版本，再安装完整快照；`pip freeze` 本身不记录下载源。以下三处环境准备命令均包含这一步。
 
 ### 本地启动（Windows / Git Bash）
 
@@ -164,6 +181,7 @@ paper-sage/
 
 ```bash
 py -3.12 -m venv .venv
+./.venv/Scripts/python.exe -m pip install "torch==2.14.1+cpu" --index-url https://download.pytorch.org/whl/cpu
 ./.venv/Scripts/python.exe -m pip install -r requirements.txt
 ./.venv/Scripts/python.exe -m pip check
 ```
@@ -196,12 +214,13 @@ DEEPSEEK_API_KEY = "your-deepseek-api-key"
 
 ```powershell
 py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install "torch==2.14.1+cpu" --index-url https://download.pytorch.org/whl/cpu
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe -m pip check
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-当前 `.gitignore` 已排除 `.venv/`、`__pycache__/` 和 `.streamlit/secrets.toml`。提交配置模板与依赖文件，真实密钥文件和虚拟环境保留在本地；手动通过网页选择文件上传时也应排除它们。
+当前 `.gitignore` 已排除 `.venv/`、`__pycache__/`、`.streamlit/secrets.toml`、`practice_*` 和 `data/indexes/`。八个练习脚本均只在本地保留、未被 Git 跟踪，因此克隆仓库后不会自动获得它们；下方练习命令以本地已有对应文件为前提，Day 10～12 附完整示例便于重建。索引文件由练习生成，克隆后按下方步骤重新构建。忽略文件不等于删除文件，原有练习仍按维护约定保留。提交配置模板、依赖文件及正式模块，真实密钥文件和虚拟环境保留在本地；手动通过网页选择文件上传时也应排除它们。
 
 ### 在独立环境中验证（Windows / Git Bash）
 
@@ -211,6 +230,7 @@ Day 06 使用的 `.venv-check` 已在练习后清理，当前 `.gitignore` 中�
 
 ```bash
 py -3.12 -m venv .venv-check
+./.venv-check/Scripts/python.exe -m pip install "torch==2.14.1+cpu" --index-url https://download.pytorch.org/whl/cpu
 ./.venv-check/Scripts/python.exe -m pip install -r requirements.txt
 ./.venv-check/Scripts/python.exe -m pip check
 ./.venv-check/Scripts/python.exe -m streamlit run app.py --server.port=8502
@@ -238,7 +258,7 @@ PowerShell 中使用明确的文件编码：
 .\.venv\Scripts\python.exe -m pip freeze | Set-Content -Encoding utf8 requirements.txt
 ```
 
-导出后检查文件差异，并在新环境中验证。`Set-Content` 是 PowerShell 命令，不能直接在 Bash 中使用。
+导出后检查文件差异，并在新环境中验证。若仍锁定 CPU 版 PyTorch，应保留上述从官方 CPU 源预先安装的步骤；依赖快照不包含模型权重，首次运行向量练习时还需下载模型。`Set-Content` 是 PowerShell 命令，不能直接在 Bash 中使用。
 
 ### Git 基本提交流程
 
@@ -338,9 +358,11 @@ Day 07 页面回归使用 q2 的 GPU 原文摘录：先问 GPU 数量，再保�
 | --- | --- |
 | `project_id` | 调用方传入的项目标识，当前练习固定为 `demo_project`。 |
 | `document_id` | 沿用来源页面的文档标识。 |
+| `chunk_size` | Day 11 新增，本次调用传入的分块长度。 |
+| `chunk_overlap` | Day 11 新增，本次调用传入的目标重叠量。 |
 | `source` | 沿用来源页面的 PDF 路径。 |
 | `pdf_page` | 沿用从 1 开始的 PDF 页序号。 |
-| `chunk_id` | 由项目、文档、页码和页内片段编号组合的标识。 |
+| `chunk_id` | 由项目、文档、分块长度、重叠量、页码和页内片段编号组合的标识。 |
 | `text` | 当前片段的字符串内容。 |
 
 `length_function=len` 按 Python 字符数计算长度。`chunk_size` 是上限，片段可以更短；`chunk_overlap` 是目标重叠量，实际不保证相邻片段恰好重复指定字符数。当前使用默认分隔符顺序：段落、换行、空格，最后按字符切分，具体行为见 [LangChain 官方分块说明](https://docs.langchain.com/oss/python/integrations/splitters/recursive_text_splitter)。
@@ -352,11 +374,283 @@ Day 07 页面回归使用 q2 的 GPU 原文摘录：先问 GPU 数量，再保�
 | A | 400 | 100 | 113 | 112 | 400 | 1 |
 | B | 800 | 100 | 51 | 198 | 797 | 2 |
 
-本次仅改变分块长度。A 组总片段数更多；B 组的两个相邻片段都包含 GPU 原句，是重叠造成的证据重复。两组都完整保留 GPU 数量和型号，不能仅凭总片段数或关键词匹配数判断检索效果。练习中的 `P100` 筛选用于人工核对，尚未建立检索或向量索引。
+本次仅改变分块长度。A 组总片段数更多；B 组的两个相邻片段都包含 GPU 原句，是重叠造成的证据重复。两组都完整保留 GPU 数量和型号，不能仅凭总片段数或关键词匹配数判断检索效果。此练习中的 `P100` 筛选用于人工核对；Day 11 另用 B 组建立了向量索引。
 
 两套配置的每个片段都能在标注页的提取文本中直接找到，三条有答案样例也都在相应页的片段中保留。空白或仅含空白字符的页不生成片段，但输入页面记录不被修改，后续片段仍沿用原页码。项目字段目前只是元数据，尚未实现项目创建、切换或检索过滤。
 
-**当前片段标识的适用范围**：它可区分本次固定配置结果中的片段，但没有包含分块配置或版本。两套配置存在 51 个相同标识，对应文字全部不同；因此目前分别观察各配置的内存结果，不能直接依靠这些标识将多套结果混存。已在 Day 11 增加入库前的标识调整任务。
+**当前片段标识的适用范围**：Day 11 已将标识改为 `项目:文档:s长度:o重叠:p页码:c页内编号`。400 / 100、800 / 100、800 / 50 三套配置的标识分别无重复，彼此也无交集。新增配置字段直接读取函数参数，而非从 PDF 页面字典取值。此标识仍以固定文档内容与分块规则为前提；文档内容或算法变化时需进一步引入版本。FAISS 当前按向量位置对应片段记录，不会自动按字符串 `chunk_id` 去重或管理更新。
+
+### 文本向量与相似度练习（Day 10）
+
+使用 [intfloat/multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small) 处理中文问题和中英文候选文本，通过 `SentenceTransformer` 在 CPU 上运行。它输出 384 维向量：384 表示数值数量，不是单词或 token 数量；模型将整段文本编码为一个向量。聊天模型负责生成回答，向量模型在这个练习中负责生成用于比较的数值表示。
+
+首次运行需要联网下载模型文件，后续可复用本机缓存；向量计算无需新增 API Key。`device="cpu"` 指定计算设备，当前安装的是 CPU 版 PyTorch，不能仅改为 `"cuda"` 就使用 NVIDIA GPU，还需兼容硬件、驱动及 CUDA 版 PyTorch。少量文本先使用 CPU；本次没有进行 GPU 性能测试。
+
+`practice_embeddings.py` 当前仅保留耗电量问题。若克隆仓库后没有该文件，可在根目录新建同名文件，写入下面的完整练习代码：
+
+```python
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer(
+    "intfloat/multilingual-e5-small",
+    device="cpu",
+)
+
+texts = [
+    "query: 模型训练实际消耗了多少千瓦时的电能？",
+    "passage: We trained our models on one machine with 8 NVIDIA P100 GPUs.",
+    "passage: The encoder is composed of a stack of N = 6 identical layers.",
+    "passage: 今天晚饭准备吃番茄鸡蛋面。",
+]
+
+embeddings = model.encode(
+    texts,
+    convert_to_numpy=True,
+    normalize_embeddings=True,
+)
+
+print("结果类型：", type(embeddings))
+print("结果形状：", embeddings.shape)
+print("第一个向量的前 5 个数：", embeddings[0][:5])
+
+question_vector = embeddings[0]
+for index in range(1, len(texts)):
+    passage_vector = embeddings[index]
+    score = question_vector @ passage_vector
+    print("候选片段：", texts[index])
+    print("相似度：", round(float(score), 4))
+```
+
+运行命令：
+
+```bash
+./.venv/Scripts/python.exe practice_embeddings.py
+```
+
+输入列表第一条是带 `query: ` 前缀的问题，其余是带 `passage: ` 前缀的候选；这两个前缀是本次模型的检索约定，中文也保留英文前缀。返回 `numpy.ndarray`，四条文本对应形状 `(4, 384)`。归一化把每个向量的数学长度变为 1，不改变维度；此时一维数组的点积 `@` 等于余弦相似度。循环跳过问题自身，只比较问题与三个候选。
+
+对照时保持候选不变，每次只替换第一条的问题，依次使用“训练这个模型使用了什么硬件？”、“编码器由多少个相同的层堆叠而成？”和“模型训练实际消耗了多少千瓦时的电能？”。三组实际结果保存在文末 Day 10 记录中，硬件与层数问题的第一名符合预期，耗电量问题的第一名却是晚饭片段。
+
+相似度表示模型计算出的语义匹配程度，不是答案正确率，也不能单独判断证据是否充分。即使手动选回 GPU 片段，它仍未提供实际耗电量，无法回答 kWh。保留这个失败案例，后续扩大样例检查；此练习只使用三个手写候选，Day 11 另行建立整篇论文的索引，仍未实现自动判断可回答性。模型输入上限为 512 tokens，不能把分块的字符数上限直接视为 token 上限。
+
+### 向量索引保存与重新加载（Day 11）
+
+本地方案使用 FAISS 的 `IndexFlatIP` 保存向量，以 JSON 保存按相同顺序排列的片段记录。它逐一比较索引中的向量，按内积查询；问题和片段向量均归一化时，内积等于余弦相似度。当前索引包含 51 个 384 维、`float32` 类型的向量，来源为 800 / 100 配置的整篇论文片段。
+
+编码前已用该模型的 tokenizer 检查全部 51 个输入，包括 `passage: ` 前缀和特殊标记：长度为 63～268 tokens，没有超过 512 tokens。这个检查针对当前固定论文和配置，不能代替后续导入新文档时的长度检查。
+
+`index_store.py` 提供两个接口：
+
+| 接口 | 行为 |
+| --- | --- |
+| `save_index(index, chunks, output_dir, embedding_config)` | 先检查向量与片段数量相同，创建目录，写入 `index.faiss` 和 `metadata.json`。 |
+| `load_index(output_dir)` | 读取 JSON 和 FAISS 文件，检查格式版本为 1、维度一致、向量与片段数量一致，返回 `(index, metadata)`。 |
+
+JSON 保存 `schema_version`、`dimension`、`embedding_config`、`chunks`。编码配置包含模型名、归一化开关及问题和资料前缀；`chunks` 保留八个片段字段和原列表顺序。FAISS 中位置 `i` 的向量对应 `chunks[i]`，不能独立重排其中一份。
+
+克隆仓库后，先按前文安装依赖、准备论文，再在根目录建立以下两个本地练习文件。模型首次使用需要下载，之后可复用缓存。保存目录固定为 `data/indexes/day11_s800_o100`。
+
+将下面代码保存为 `practice_index.py`：
+
+```python
+import faiss
+from sentence_transformers import SentenceTransformer
+from index_store import save_index
+
+from pdf_loader import load_pdf_pages
+from chunker import split_pages
+
+
+pdf_path = "data/papers/attention_is_all_you_need_neurips2017.pdf"
+document_id = "attention_is_all_you_need_neurips2017"
+
+pages = load_pdf_pages(pdf_path, document_id)
+
+chunks = split_pages(
+    pages,
+    project_id="demo_project",
+    chunk_size=800,
+    chunk_overlap=100,
+)
+
+passage_texts = []
+
+for chunk in chunks:
+    passage_texts.append("passage: " + chunk["text"])
+
+model = SentenceTransformer(
+    "intfloat/multilingual-e5-small",
+    device="cpu",
+)
+
+embeddings = model.encode(
+    passage_texts,
+    convert_to_numpy=True,
+    normalize_embeddings=True,
+    show_progress_bar=True,
+)
+
+embeddings = embeddings.astype("float32")
+
+index = faiss.IndexFlatIP(embeddings.shape[1])
+index.add(embeddings)
+
+print("片段数量：", len(chunks))
+print("向量形状：", embeddings.shape)
+print("索引维度：", index.d)
+print("索引中的向量数量：", index.ntotal)
+
+embedding_config = {
+    "model_name": "intfloat/multilingual-e5-small",
+    "normalize_embeddings": True,
+    "passage_prefix": "passage: ",
+    "query_prefix": "query: ",
+}
+
+output_dir = "data/indexes/day11_s800_o100"
+
+save_index(
+    index=index,
+    chunks=chunks,
+    output_dir=output_dir,
+    embedding_config=embedding_config,
+)
+
+print("索引和片段记录已保存到：", output_dir)
+```
+
+运行一次以构建并保存索引：
+
+```bash
+./.venv/Scripts/python.exe practice_index.py
+```
+
+预期输出片段数 51、向量形状 `(51, 384)`、索引维度 384、索引数量 51，并生成 `index.faiss` 与 `metadata.json`。重复运行会重新编码并覆盖该目录内的两个同名文件；不同配置需选择不同保存目录，片段标识不同并不能防止文件被同路径覆盖。
+
+将下面代码保存为 `practice_load_index.py`：
+
+```python
+from index_store import load_index
+
+
+output_dir = "data/indexes/day11_s800_o100"
+
+index, metadata = load_index(output_dir)
+chunks = metadata["chunks"]
+
+print("读取的向量数量：", index.ntotal)
+print("读取的片段数量：", len(chunks))
+print("读取的索引维度：", index.d)
+
+# 取出索引中的第三个向量，作为这次检查的查询向量。
+probe_position = 2
+probe_vector = index.reconstruct(probe_position)
+
+# FAISS 接收二维数组：一行代表一条查询。
+query_vectors = probe_vector.reshape(1, -1)
+
+scores, positions = index.search(query_vectors, k=1)
+
+matched_position = int(positions[0][0])
+matched_chunk = chunks[matched_position]
+
+print("用于查询的片段：", chunks[probe_position]["chunk_id"])
+print("匹配到的片段：", matched_chunk["chunk_id"])
+print("相似度：", round(float(scores[0][0]), 4))
+print("来源：", matched_chunk["source"])
+print("PDF 页码：", matched_chunk["pdf_page"])
+```
+
+在新的 Python 进程中运行：
+
+```bash
+./.venv/Scripts/python.exe practice_load_index.py
+```
+
+这个脚本直接读取已保存的索引与元数据，不重新读取 PDF 或调用 Embedding 模型。`reconstruct(2)` 取出第三个向量，`reshape(1, -1)` 将其变为一行查询，`search(..., k=1)` 返回分数与位置，再据位置读取片段记录。
+
+实际结果为 51 个向量、51 条记录、384 维，查询与匹配标识同为 `demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c3`，相似度显示 1.0，来源是固定论文的 PDF 第 1 页。这验证索引重新加载后可搜索，并能连接原文记录；中文用户问题的检索与答案所在片段命中检查见下节 Day 12。
+
+**当前边界**：读取函数只做格式版本、维度和数量检查，不能发现同数量记录被重新排列或替换，也不自动核验模型配置与向量是否匹配。两个文件须配套保存，目前没有事务写入或完整性校验；模型仓库 revision 尚未固定。当前示例只有一份论文的索引，没有增量更新、删除同步、范围过滤或页面集成。
+
+### 中文问题的 Dense 检索（Day 12）
+
+`retriever.py` 提供 `retrieve_dense(question, model, index, metadata, top_k=3)`。调用方先通过 `load_index()` 加载配套文件，再根据 `metadata["embedding_config"]["model_name"]` 初始化模型；函数复用传入的模型与索引，每次只编码新的问题。查询使用保存的 `query_prefix` 和归一化配置，生成二维 `float32` 数组，通过 FAISS 返回的位置取出原文记录。
+
+返回值是按相似度从高到低排列的列表，每条结果包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| `rank` | 从 1 开始的名次。 |
+| `score` | Python 浮点数，保留原始精度；展示时才取小数位。 |
+| `chunk` | 完整片段字典，包含项目、文档、分块参数、来源、PDF 页码、片段标识和原文。 |
+
+`question` 约定为字符串，去除首尾空白后不能为空；`top_k` 必须为正整数，布尔值也被拒绝。空索引返回空列表；请求数量超过索引数量时按实际数量返回。函数负责返回数据，打印由练习脚本负责，后续页面可复用相同接口。
+
+先按 Day 11 步骤生成本地索引，再将以下代码保存为 `practice_retrieval.py`：
+
+```python
+from sentence_transformers import SentenceTransformer
+from retriever import retrieve_dense
+
+from index_store import load_index
+
+
+output_dir = "data/indexes/day11_s800_o100"
+index, metadata = load_index(output_dir)
+
+embedding_config = metadata["embedding_config"]
+
+model = SentenceTransformer(
+    embedding_config["model_name"],
+    device="cpu",
+)
+
+question = "模型训练实际消耗了多少千瓦时的电能？"
+
+results = retrieve_dense(
+    question=question,
+    model=model,
+    index=index,
+    metadata=metadata,
+    top_k=3,
+)
+
+print("结果类型：", type(results))
+print("结果数量：", len(results))
+
+for result in results:
+    chunk = result["chunk"]
+
+    print()
+    print("排名：", result["rank"])
+    print("相似度：", round(result["score"], 4))
+    print("片段标识：", chunk["chunk_id"])
+    print("来源：", chunk["source"])
+    print("PDF 页码：", chunk["pdf_page"])
+    print("片段原文：", chunk["text"])
+```
+
+运行：
+
+```bash
+./.venv/Scripts/python.exe practice_retrieval.py
+```
+
+当前耗电量问题返回 3 条记录，依次为 `p7:c4`、`p8:c3`、`p8:c1`，分数显示为 0.8284、0.8238、0.8130。这里的短标识省略了共同前缀 `demo_project:attention_is_all_you_need_neurips2017:s800:o100:`。这些片段涉及硬件、训练时间和 FLOPs，人工核对后仍无法确定实际耗电量；检索函数本身不判断能否回答。
+
+本次实际使用的问题原句如下，与 `data/sample_questions.json` 中的问法不完全相同，复测时应固定表述；人工依据沿用样例集。
+
+| 问题原句 | Top-1 命中 | Top-3 命中 | 核对结果 |
+| --- | --- | --- | --- |
+| 训练这个模型使用了什么硬件？ | 否 | 是 | 第 2 名 `p7:c4` 包含 8 块 NVIDIA P100 GPU 的依据。 |
+| 编码器由多少个相同的层堆叠而成？ | 是 | 是 | 第 1 名 `p2:c7` 包含 6 层的依据。 |
+| 论文中的位置编码使用了什么函数？ | 否 | 否 | 前三条均为参考文献；已核对的原文在第 6 页，属于检索漏检。 |
+| 模型训练实际消耗了多少千瓦时的电能？ | 不适用 | 不适用 | 已知无答案样例；相关候选不提供实际耗电量或足够的计算依据。 |
+
+Top-3 命中指前三条中至少一条含有直接依据；这三条有答案样例只能作为当前小样本检查，不能代表整体检索质量。无答案样例不计入有答案问题的命中统计。相似度不是答案正确的概率，当前函数没有分数阈值、自动拒答或引用校验。
+
+Day 12 没有新增依赖，现有环境的 `pip check` 通过。真实问题复核与边界检查见文末学习记录。调用方仍须保证模型、索引和元数据配套；目前未实现额外的模型身份校验、长问题输入检查或元数据完整性校验。自动检索接入问答页面安排在 Day 13；索引目录按项目、文档与版本命名安排在 Day 15，当前目录仍为 `day11_s800_o100`。
 
 ### 学习参考
 
@@ -378,6 +672,14 @@ Day 07 页面回归使用 q2 的 GPU 原文摘录：先问 GPU 数量，再保�
 - [pypdf 安装](https://pypdf.readthedocs.io/en/stable/user/installation.html)
 - [pypdf 文本提取及限制](https://pypdf.readthedocs.io/en/stable/user/extract-text.html)
 - [LangChain 递归字符分块](https://docs.langchain.com/oss/python/integrations/splitters/recursive_text_splitter)
+- [Sentence Transformers 安装](https://sbert.net/docs/installation.html)
+- [SentenceTransformer 参数与编码接口](https://sbert.net/docs/package_reference/sentence_transformer/model.html)
+- [multilingual-e5-small 模型、前缀与相似度说明](https://huggingface.co/intfloat/multilingual-e5-small)
+- [PyTorch 安装与 CPU / CUDA 环境](https://pytorch.org/get-started/locally/)
+- [FAISS 向量格式、索引添加与查询](https://github.com/facebookresearch/faiss/wiki/Getting-started)
+- [FAISS 索引类型与 IndexFlatIP](https://github.com/facebookresearch/faiss/wiki/Faiss-indexes)
+- [FAISS 内积与余弦相似度](https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances)
+- [FAISS 索引文件读写](https://github.com/facebookresearch/faiss/wiki/Index-IO,-cloning-and-hyper-parameter-tuning)
 - [Attention Is All You Need：本项目使用的 NeurIPS 2017 版本](https://papers.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf)
 - [LangChain 官方学习入口](https://docs.langchain.com/oss/python/learn)
 - [LangChain 的 ChatDeepSeek 集成](https://docs.langchain.com/oss/python/integrations/chat/deepseek)
@@ -1268,3 +1570,246 @@ MNO      3
 区分聊天模型和向量模型，把文本转换成向量，用少量相近及不相关文本观察相似度，为后续 Dense 检索做准备。
 
 验收标准：能获得文本向量并比较相似度，用自己的话解释语义相似度与关键词匹配的区别，并记录实际使用的模型和运行方式。
+
+### Day 10｜2026-10-18｜中英文文本向量、余弦相似度与证据边界
+
+- **当天目标**：区分聊天模型和向量模型，在本机生成文本向量，比较相关与不相关候选，并理解相似度的局限。
+- **本次状态**：已完成，总进度为 10 / 42。
+- **实际用时**：未记录。
+- **当天剩余必做任务**：0。
+
+#### 完成的任务
+
+- [x] 用中文问题与英文原文判断相关片段，理解只检查原词出现可能漏掉跨语言匹配。
+- [x] 在项目虚拟环境中安装 CPU 版 PyTorch 与 Sentence Transformers，运行本地多语言模型。
+- [x] 编写并运行 `practice_embeddings.py`，获得 NumPy 数组和 384 维文本向量。
+- [x] 区分向量数量、维度、词数和数值，正确判断两条文本的结果形状为 `(2, 384)`。
+- [x] 了解 `device` 的含义，以及使用 GPU 所需的硬件与依赖条件。
+- [x] 在向量归一化后通过点积计算余弦相似度，逐一比较问题和候选片段。
+- [x] 固定候选，完成硬件、编码器层数和实际耗电量三组问题对照。
+- [x] 保留晚饭片段错误排第一的案例，区分排序相关性与答案证据充分性。
+- [x] 核对本地执行结果与依赖，更新运行说明、任务状态及本次学习记录。
+
+#### 代码与文档改动
+
+| 文件 | 改动及原因 |
+| --- | --- |
+| `practice_embeddings.py` | 学习者按讲解编写向量练习，逐次修改问题并运行；最终保存耗电量问题与三个候选的相似度输出代码。 |
+| `requirements.txt` | 补入当前环境实际新增的 27 个包，共 95 条指定版本记录；此前 68 条版本不变。 |
+| `readme.md` | 更新为 Day 10 完成、进度 10 / 42，补充模型、CPU 安装步骤、完整练习示例、三组结果与能力边界。 |
+
+助手收尾时没有修改学习者的练习代码或聊天应用，也没有执行 Git 提交。当前 `.gitignore` 包含忽略 `practice_*` 的规则，检查确认五个练习脚本均未被 Git 跟踪；本次保留该设置与本地文件，在 README 提供 Day 10 示例以便克隆后重建。原有练习文件仍按维护约定保留，不自动删除。
+
+#### 模型与运行配置
+
+- 模型：`intfloat/multilingual-e5-small`，输出维度 384，输入上限 512 tokens。
+- 运行方式：Windows / Python 3.12.6，`SentenceTransformer(..., device="cpu")`；本地模型计算，不调用聊天 API。
+- 主要新增依赖：`sentence-transformers==6.1.0`、`torch==2.14.1+cpu`、`transformers==5.20.1`；已有 `numpy==2.5.4` 版本未变。
+- 输入约定：问题使用 `query: `，候选使用 `passage: `，包括中文文本；问题和候选由同一个模型编码。
+- 编码设置：`convert_to_numpy=True`、`normalize_embeddings=True`，用问题与候选的一维数组点积作为余弦相似度。
+- PyTorch 检查结果为 `cuda_build: None`、`cuda_available: False`；这说明当前安装不支持 CUDA，不能据此断定电脑没有显卡。
+
+#### 学到的概念与纠正
+
+聊天模型接收消息并生成回答；向量模型把整段文本转换为数值表示，用于比较语义。中文问题与英文原文可能没有相同字面词汇，纯粹检查原词出现会漏掉相关内容。
+
+学习者首次运行得到 `numpy.ndarray`，形状 `(4, 384)`，第一条向量的前五个数为 `[0.08890866, -0.01363697, -0.04262213, -0.03343075, 0.11417024]`。最初把 384 理解为词数，讲解后正确回答两条文本对应 `(2, 384)`：每个向量由 384 个数值组成，各维度不逐一对应输入词语。
+
+`device="cpu"` 指定计算设备。GPU 对批量数值计算通常有优势，但本次未做性能对照，少量文本先使用 CPU；模型文件下载主要受网络影响。切换 CUDA 需要兼容硬件、驱动与对应 PyTorch 构建，不能只改字符串。
+
+归一化把向量的数学长度变为 1，不改变维度。对归一化的一维数组执行 `@`，相当于对应元素相乘后相加，得到余弦相似度。循环从索引 1 开始，避开问题与自身的比较；分数仅显示到四位小数。
+
+#### 三组实际实验结果
+
+三个候选固定如下，每组只替换 `texts[0]` 中的问题：
+
+- A：`We trained our models on one machine with 8 NVIDIA P100 GPUs.`
+- B：`The encoder is composed of a stack of N = 6 identical layers.`
+- C：`今天晚饭准备吃番茄鸡蛋面。`
+
+| 中文问题 | A：GPU 硬件 | B：编码器层数 | C：晚饭 | 实际第一名及解释 |
+| --- | --- | --- | --- | --- |
+| 训练这个模型使用了什么硬件？ | **0.8107** | 0.7666 | 0.7980 | A，包含硬件依据，第一名符合预期；C 仍高于 B，不能据此认定整体排序可靠。 |
+| 编码器由多少个相同的层堆叠而成？ | 0.7220 | **0.8100** | 0.7616 | B，包含 6 层的依据，第一名符合预期。 |
+| 模型训练实际消耗了多少千瓦时的电能？ | 0.7871 | 0.7532 | **0.8000** | C，无关候选排第一；三个候选都没有实际耗电量答案。 |
+
+以上为学习者实际运行并提供的结果，助手收尾时用本地缓存模型复跑，四位小数结果一致。保留第三组作为失败案例，没有更换措辞或候选来隐藏错误。
+
+相似度不等于答案正确概率，不能将 `0.8` 直接设为“存在答案”的标准。检索排序可能出错；即使手动选回主题相关的 A，它也只有 GPU 数量和型号，没有实际 kWh。学习者回答“不能，因为虽然可能正相关，但是这个资料回答不了问题”；助手补充这里更准确的用语是“语义相关”，而非统计学的正相关。
+
+#### 助手验证结果
+
+- 阅读保存的脚本，确认问题、候选、前缀、CPU 设置、归一化和点积索引正确。
+- 使用缓存模型在离线模式执行当前练习，验证结果形状为 `(4, 384)`，全部数值有限，四个向量的范数在误差范围内为 1，问题向量与自身的点积接近 1。
+- 复用该模型另行编码硬件与层数问题，得到 `(2, 384)`，三组相似度与学习者报告一致；运行时最大输入长度为 512 tokens。
+- `pip check` 输出 `No broken requirements found.`，95 条依赖记录与当前 `pip freeze` 快照一致，原有 68 个包未更改版本。
+- 验证通过终端临时脚本执行，没有新增测试文件，没有调用远端聊天 API，也没有重新建立独立虚拟环境或重复验收聊天页面。
+
+#### 当前限制与下一次学习
+
+Day 10 学习任务已完成。当前仅比较三个手写候选，不能用这几次结果概括模型整体质量；尚未批量编码论文、持久化向量、建立完整检索流程或自动校验回答依据。模型名称和库版本已记录，模型仓库 revision 尚未固定，不保证未来不同模型快照的结果逐位一致。
+
+**下一次从 Day 11：建立向量索引开始。** 先解决不同分块配置的 `chunk_id` 重复问题，再把论文片段的向量与来源信息一同保存，检查重新加载后仍可查询。入库时应记录模型及向量化配置，并注意 512 tokens 的限制与字符分块上限不是同一单位。
+
+### Day 11｜2026-10-18｜分块配置标识、FAISS 索引与本地保存
+
+- **当天目标**：区分不同分块参数的片段，生成整篇论文向量，保存索引和原文记录，再从新进程加载并查询。
+- **本次状态**：已完成，总进度为 11 / 42。
+- **实际用时**：未记录。
+- **当天剩余必做任务**：0。
+
+#### 完成的任务
+
+- [x] 学习者提出把分块长度和重叠量加入片段标识，并完成对应修改。
+- [x] 在片段字典中保存 `chunk_size`、`chunk_overlap`，修正从页面字典错误取值的问题。
+- [x] 验证 400 / 100、800 / 100 和 800 / 50 配置的标识互不重复，来源字段与原页面仍匹配。
+- [x] 安装 `faiss-cpu==1.15.1`，确认导入版本与依赖检查通过。
+- [x] 理解文件名只能定位文档，还需保存片段原文、页码、标识以及向量与记录的对应顺序。
+- [x] 补齐带 `passage: ` 前缀的文本列表，将 51 个片段编码成 `(51, 384)` 数组。
+- [x] 用 `IndexFlatIP` 建立索引，转换为 `float32` 后加入归一化向量。
+- [x] 编写 `save_index()` 与 `load_index()`，保存索引、完整片段记录和编码配置，并进行基础检查。
+- [x] 在独立读取脚本中恢复 51 个向量和记录，用第三个已存向量检索回自身，读取来源与页码。
+- [x] 完成实际文件、临时往返和异常分支验证，更新依赖、忽略规则、重建说明和本次学习记录。
+
+#### 代码与文档改动
+
+| 文件 | 改动及原因 |
+| --- | --- |
+| `chunker.py` | 学习者在标识中加入 `s{chunk_size}:o{chunk_overlap}`，并把两个参数写入片段字典；当前记录包含八个字段。 |
+| `practice_chunks.py` | 学习者增加每套配置的第一条片段标识输出，便于观察参数如何进入标识。 |
+| `practice_index.py` | 学习者按框架补齐文本列表构造，串联 PDF 读取、分块、CPU 向量编码、FAISS 索引与保存。 |
+| `index_store.py` | 学习者根据讲解编写可复用的保存与读取函数，检查数量、格式版本和维度。 |
+| `practice_load_index.py` | 学习者新增独立读取与查询检查脚本，通过位置找回对应片段记录。 |
+| `requirements.txt` | 助手补入 `faiss-cpu==1.15.1`，共 96 条指定版本记录，其余 95 条不变。 |
+| `.gitignore` | 助手新增 `data/indexes/`，保留本地索引文件并忽略提交，已有 `practice_*` 规则不变。 |
+| `readme.md` | 助手更新 Day 11 完成状态、当前能力、八个片段字段、文件结构及两个完整练习脚本的重建步骤。 |
+
+核心代码由学习者编写和运行；助手负责讲解、审阅、临时验证及依赖和文档整理。七个练习脚本继续保留在本地，不自动删除；正式保存模块不受 `practice_*` 忽略规则影响，应随项目源码提交。本次未执行 Git 提交或推送。
+
+#### 学到的概念与调试过程
+
+**参数与页面记录是不同的数据来源。** 新的 `chunk_id` 拼接正确，但学习者最初写成 `"chunk_size": page_record["chunk_size"]`，触发 `KeyError: 'chunk_size'`。PDF 页面字典只有文档标识、路径、页码和文本；分块长度与重叠量来自 `split_pages()` 的参数。改为 `"chunk_size": chunk_size`、`"chunk_overlap": chunk_overlap` 后，片段生成正常。
+
+**片段标识与索引位置各有用途。** 学习者最初认为需要保存文件名。进一步讲解了同一篇论文含多个片段，必须保留原文、页码和片段标识。当前 FAISS 索引按加入顺序使用从 0 开始的位置，与 JSON 中的 `chunks[i]` 对应；字符串标识用于追溯，FAISS 不会自动据此去重。构建后独立重排记录会破坏对应关系。
+
+**向量模型和 FAISS 分工不同。** 模型负责将文本编码为 384 维向量，FAISS 接收向量并组织查询。`IndexFlatIP` 使用内积；当前向量归一化后，内积等于余弦相似度。构造索引时传入的是维度，`ntotal` 表示已加入的向量数量。
+
+**保存与读取。** `Path` 处理路径，`mkdir()` 创建目录，`faiss.write_index()` 与 `read_index()` 处理索引文件。`json.dump()` 和 `json.load()` 面向文件，之前的 `json.loads()` 面向字符串。JSON 还记录格式版本、维度和编码配置，便于后续查询使用一致的模型、前缀及归一化方式。
+
+**查询结果到原文。** `reconstruct(2)` 取出第三个向量，`reshape(1, -1)` 整理成一行查询，`search(..., k=1)` 返回分数与位置。`positions[0][0]` 表示第一条查询的第一个结果位置，由它读取片段的来源和页码。
+
+#### 实际结果
+
+| 检查项目 | 结果 |
+| --- | --- |
+| 400 / 100 分块 | 113 个片段，第一条标识含 `:s400:o100:p1:c1`。 |
+| 800 / 100 分块 | 51 个片段，第一条标识含 `:s800:o100:p1:c1`。 |
+| 仅改变重叠的 800 / 50 对照 | 50 个片段，第一条标识含 `:s800:o50:p1:c1`；三套标识两两无交集，配置字段正确。 |
+| 本次编码输入长度 | 用模型 tokenizer 检查 51 个输入，包含前缀和特殊标记后为 63～268 tokens，均不超过 512。 |
+| 学习者构建索引 | 片段数 51，向量形状 `(51, 384)`，索引维度 384，索引内向量数 51。 |
+| 保存目录 | `data/indexes/day11_s800_o100/`，包含 `index.faiss` 和 `metadata.json`。 |
+| 学习者重新读取 | 读取 51 个向量、51 条片段记录、384 维；没有重新生成向量。 |
+| 第三个向量查询 | 输入与结果标识均为 `demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c3`，相似度显示 1.0。 |
+| 来源 | `data/papers/attention_is_all_you_need_neurips2017.pdf`，PDF 页序号为 1。 |
+
+第三套分块参数和输入 token 长度由助手检查；构建、保存、新脚本读取与单条查询由学习者实际运行并报告，助手随后复核。相似度 1.0 是已存向量查询自身的结果，不是论文问答正确率。
+
+#### 助手验证结果
+
+- 保存文件的 51 条记录与重新读取 PDF、分块得到的记录逐条一致，包括顺序、八个字段与原文。
+- 恢复的索引为 `IndexFlatIP`，维度和数量正确，编码配置与构建脚本一致；全部向量为有限的 `float32` 数值，范数接近 1。
+- 用全部 51 个已存向量查询，每条最高相似度均接近 1，匹配向量与查询向量在浮点误差范围内相同。
+- 在新的 Python 进程中运行学习者的读取脚本，输出与报告一致，读取阶段不调用 Embedding 模型。
+- 在临时目录中保存并读回三条合成单位向量，向量、包含非 ASCII 字符的片段记录和编码配置均保持一致。
+- 保存时向量与记录数量不一致，会在创建目标目录前抛出 `ValueError`；读取时不支持的版本、维度不一致、记录数量不一致三种情况也均被拒绝。
+- 原有索引文件哈希在验证前后保持一致；临时文件已清理，没有新增持久化测试文件。
+- `pip check` 通过；96 条依赖与当前环境快照一致，仅新增 FAISS。本次未重新创建独立虚拟环境，也未重复验收聊天页面或调用远端 API。
+
+#### 当前边界与下一次学习
+
+Day 11 必做任务已完成。标识中的分块参数解决了当前固定论文与算法下的跨参数重复，尚未表达文档内容或分块规则版本。改变配置时需要换保存目录；保存函数会覆盖同路径文件，未实现增量更新和事务写入。
+
+读取时的版本、维度、数量检查不是完整的文件一致性验证，无法发现同数量记录被打乱或同维度模型向量被替换。当前检查针对本项目生成的索引，保留向量与记录的配套关系仍是调用方责任。输入长度检查是本次验收中的临时检查，尚未封装进构建脚本；模型仓库 revision 也尚未固定。
+
+**下一次从 Day 12：完成 Dense 检索开始。** 使用保存的编码配置，把中文问题转换成向量，查询已保存的索引，按返回位置取回片段原文和来源，用已准备的问题检查依据片段是否进入候选。Day 10 的无答案与排序失败现象仍需关注，不能把相似度当作证据充分性的判断。
+
+### Day 12｜2026-10-19｜中文问题检索、命中检查与函数封装
+
+- **当天目标**：把用户问题编码后查询已保存的索引，核对候选原文与来源，再将检索逻辑封装成可供项目调用的函数。
+- **本次状态**：已完成，总进度为 12 / 42。
+- **实际用时**：未记录。
+- **当天剩余必做任务**：0。
+
+#### 完成的任务
+
+- [x] 使用保存的模型名、问题前缀与归一化配置，生成形状为 `(1, 384)`、类型为 `float32` 的问题向量。
+- [x] 用 `k=3` 查询本地索引，通过返回位置取回片段原文、标识、来源与 PDF 页码。
+- [x] 区分 Top-1 与 Top-3 命中，对三条有答案问题逐条核对依据，保留排序不佳和漏检结果。
+- [x] 检查实际耗电量这一无答案样例，区分语义相关与足以回答。
+- [x] 新建正式模块 `retriever.py`，封装 `retrieve_dense()`，返回包含 `rank`、`score`、`chunk` 的列表。
+- [x] 修正循环内用字典覆盖结果列表和名次从 0 开始的问题，使用列表追加并从 1 记录名次。
+- [x] 将 `practice_retrieval.py` 改为调用正式函数，验证耗电量问题的候选顺序、分数与来源保持一致。
+- [x] 完成四组真实问题复核、边界检查及依赖检查，更新 README，并总结上次同步后的工作。
+
+#### 代码与文档改动
+
+| 文件 | 改动及原因 |
+| --- | --- |
+| `retriever.py` | 学习者新增正式 Dense 检索函数，复用调用方传入的模型与索引，验证问题和数量，返回结构化候选。 |
+| `practice_retrieval.py` | 学习者新增问题向量化与检索练习，随后改为调用正式函数并负责打印结果；当前保留耗电量问题。 |
+| `readme.md` | 助手更新 Day 12 状态、当前能力、接口与完整运行示例，追加本次结果及待提交工作范围；将已讨论的索引目录命名安排写入 Day 15。 |
+
+今天没有新增依赖或重建论文索引。八个练习文件继续按既有 `practice_*` 规则保留在本地；新增正式模块不受此规则影响。原有三个练习文件仍按维护约定保留，本次未执行清理、Git 提交或推送。
+
+#### 学到的概念与调试过程
+
+**查询向量。** 问题加上保存配置中的 `query: ` 前缀后编码，`(1, 384)` 表示一条向量、384 个数值维度。将问题放在列表中传给 `encode()`，得到供 FAISS 查询使用的二维数组；文档向量继续使用 Day 11 的保存结果。
+
+**名次与片段位置。** `scores[0]` 和 `positions[0]` 分别是第一条查询的候选分数与索引位置。名次用于显示先后顺序，索引位置用于读取 `chunks[position]`；记录中的 `pdf_page` 才是论文来源页码。
+
+**Top-1 与 Top-3。** 硬件问题的第一名是参考文献，第二名包含直接依据，因此 Top-1 未命中、Top-3 命中。学习者最初将二者都判断为未命中，经原文对照后明确：前三条中至少一条有依据就算 Top-3 命中。编码器问题的依据位于第一名，两个检查项均命中。其他候选无关不影响这一命中判断。
+
+**检索漏检与资料不足。** 位置编码问题在论文第 6 页已有依据，但前三候选均为参考文献，属于漏检。耗电量问题虽然检索到硬件、训练时间和 FLOPs，但没有实际电量或足够的功率信息；学习者判断这些片段无法回答。保留原始结果，没有调大候选数或改写问题来掩盖失败。
+
+**收集结果与返回结果。** 初版在循环内执行 `results = {...}`，使列表变成字典，每轮覆盖前一条，最终只返回最后一条记录；初版还直接保存从 0 开始的 `rank`。改为构建单条字典、`results.append(result_records)` 和 `rank + 1`，循环结束后再返回列表。打印逻辑放在调用脚本中，正式函数可供后续页面复用。
+
+#### 四组实际结果
+
+保持同一模型、800 / 100 分块索引与 `k=3`。以下标识省略共同前缀 `demo_project:attention_is_all_you_need_neurips2017:s800:o100:`；分数展示四位小数，函数返回值保留原始精度。
+
+| 本次问题原句 | 第 1 名 | 第 2 名 | 第 3 名 | 依据核对 |
+| --- | --- | --- | --- | --- |
+| 训练这个模型使用了什么硬件？ | `p11:c4`，0.8250 | `p7:c4`，0.8243 | `p10:c3`，0.8241 | Top-1 未命中；Top-3 命中，第二条包含 8 块 NVIDIA P100 GPU 的原文。 |
+| 编码器由多少个相同的层堆叠而成？ | `p2:c7`，0.8109 | `p10:c3`，0.7878 | `p5:c2`，0.7837 | Top-1、Top-3 均命中，第一条明确写出 6 层。 |
+| 论文中的位置编码使用了什么函数？ | `p10:c1`，0.8115 | `p11:c2`，0.8016 | `p11:c3`，0.7982 | Top-1、Top-3 均未命中；依据仍在索引中的第 6 页片段里。 |
+| 模型训练实际消耗了多少千瓦时的电能？ | `p7:c4`，0.8284 | `p8:c3`，0.8238 | `p8:c1`，0.8130 | 相关片段仍不足以确定实际耗电量；不计入有答案问题的命中统计。 |
+
+这些问题沿用 `data/sample_questions.json` 的参考依据，但问法并非逐字相同；本次没有修改原样例集。后续复测应记录具体问法和配置，不能将不同表述的结果直接视为同一次实验。
+
+#### 助手验证结果
+
+- 在本地缓存、CPU 环境中直接调用正式函数，复核四条本次问题原句；每组均返回列表、3 条记录、从 1 开始的名次及降序分数，候选标识和四位小数分数均与学习者输出一致。
+- 三条有答案问题的依据按空白归一化后与片段原文核对，同时检查来源页码；复现硬件问题第二名命中、编码器问题第一名命中、位置编码问题前三未命中。确认位置编码依据仍存在于已保存片段中。
+- 核对每条结果的完整片段记录与保存的元数据一致，查询前后元数据未被修改；索引和 JSON 文件的哈希保持不变。
+- 用两条合成向量检查请求 9 条时只返回 2 条，名次和对应记录正确；请求 1 条时只返回首条。检查问题首尾空白会被去除，并使用配置中的前缀及归一化开关。
+- 空字符串、纯空白问题，以及 `top_k` 为 0、负数、小数、布尔值、字符串或 `None` 时均抛出 `ValueError`，未调用模型；空索引返回空列表，同样未调用模型。
+- `pip check` 通过。检查以临时终端脚本执行，没有新增持久化测试文件；没有重新生成论文向量、调用 DeepSeek、复测聊天页面或重建虚拟环境。
+
+#### 上次同步后的工作范围
+
+收尾时，本地 `main` 与远端跟踪引用 `origin/main` 均指向 `fefc9f6`（添加读取 pdf 论文逻辑，使用 langchain 工具进行文本切割），领先与落后提交数均为 0；该提交中的学习进度为 Day 09。以下总结以本地记录的同步点为基准，Day 10～12 的改动尚未提交。
+
+| 范围 | 完成内容 |
+| --- | --- |
+| Day 10：文本向量 | 使用 `multilingual-e5-small` 在 CPU 上编码中英文文本，理解 384 维向量、前缀、归一化和点积，记录三组排序结果及失败案例。 |
+| Day 11：索引保存 | 片段标识和记录加入分块长度与重叠量；为 51 个片段建立 FAISS 内积索引；新增 `index_store.py` 保存、读取配套向量与 JSON 元数据，检查版本、维度及数量。 |
+| Day 12：问题检索 | 新增 `retriever.py`，完成中文问题向量化、候选返回和来源追溯；核对四组问题并保留真实失败结果，验证数量与空输入边界。 |
+| 运行与记录 | `requirements.txt` 相较同步点新增 28 条依赖记录，共 96 条；补充 CPU 安装源与运行示例，忽略生成的 `data/indexes/`，维护 Day 10～12 的学习日志。 |
+
+本次待提交的正式文件为 `.gitignore`、`chunker.py`、`index_store.py`、`retriever.py`、`requirements.txt` 和 `readme.md`。练习脚本与生成索引按既有忽略规则保留在本地，README 提供相应重建示例。
+
+#### 当前边界与下一次学习
+
+Day 12 必做任务已完成，完成标准是检索流程、来源对应和实验记录正确，并不意味着每个问题的答案都能被召回。当前函数不判断证据是否充分，也未校验模型身份、元数据完整性或长问题输入；调用方须提供配套的模型、索引与元数据。尚未接入 Streamlit 问答页面，也没有 BM25、RRF、Rerank 或 Agent 路由。
+
+**下一次从 Day 13：跑通基础 RAG 开始。** 把检索片段与用户问题交给现有回答模块，在页面展示回答和对应来源，并检查证据不足时的说明。索引目录的正式命名按已讨论安排放在 Day 15，当前目录继续用于学习验收。

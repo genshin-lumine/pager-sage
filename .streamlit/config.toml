@@ -1,0 +1,4 @@
+# 规避文件监视器扫描 Transformers 可选模块时触发的导入错误。
+# 修改代码后重启 Streamlit；页面按钮交互仍会正常重运行。
+[server]
+fileWatcherType = "none"

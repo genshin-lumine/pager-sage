@@ -24,4 +24,6 @@ def parse_answer(raw_response):
         if not isinstance(evidence, str):
             raise ValueError("evidence 中的每条依据必须是字符串")
 
+    if result["insufficient_reason"].strip() and result["evidence"]:
+        raise ValueError("资料不足时，evidence 必须为空列表")
     return result

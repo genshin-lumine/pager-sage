@@ -1,6 +1,10 @@
 import streamlit as st
 from llm import ask_deepseek, IncompleteAnswerError
 from json import JSONDecodeError
+from sentence_transformers import SentenceTransformer
+from index_store import load_index
+from retriever import retrieve_dense
+from rag_context import build_reference_text
 from openai import (
     APIError,
     APIConnectionError,
@@ -11,8 +15,62 @@ from openai import (
 
 st.set_page_config(page_title="Paper Sage", page_icon="📚")
 
+@st.cache_resource(show_spinner="正在加载论文索引和向量模型……")
+def load_retrieval_resources(output_dir):
+    print("正在初始化检索资源")
+
+    index, metadata = load_index(output_dir)
+
+    model = SentenceTransformer(
+        metadata["embedding_config"]["model_name"],
+        device="cpu",
+    )
+
+    return model, index, metadata
+
+def render_message(message):
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+        results = message.get("retrieval_results", [])
+
+        if results:
+            with st.expander("查看本轮检索片段"):
+                st.caption(
+                    "以下是本轮检索到的候选片段，"
+                    "具体回答依据请看上方的原文引用。"
+                )
+
+                for result in results:
+                    chunk = result["chunk"]
+
+                    st.markdown(
+                        f"**片段 {result['rank']} "
+                        f"· PDF 第 {chunk['pdf_page']} 页**"
+                    )
+                    st.caption(f"来源：{chunk['source']}")
+                    st.caption(f"片段标识：{chunk['chunk_id']}")
+                    st.caption(f"相似度：{result['score']:.4f}")
+
+                    st.code(
+                        chunk["text"],
+                        language=None,
+                        wrap_lines=True,
+                    )
+
 st.title("Paper Sage")
-st.caption("我的论文问答工作台 · Day 1")
+try:
+    embedding_model, index, metadata = load_retrieval_resources(
+        "data/indexes/day11_s800_o100"
+    )
+except (OSError, ValueError, RuntimeError) as error:
+    st.error(f"加载检索资源失败：{error}")
+    st.stop()
+
+st.caption(
+    f"当前论文：Attention Is All You Need"
+    f" · 可检索片段：{index.ntotal}"
+)
 
 # 第一次打开会话时，创建聊天记录列表
 if "messages" not in st.session_state:
@@ -24,15 +82,8 @@ if st.button("清空会话"):
 
 # 每次页面重新运行时，重新显示已有记录
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-        
+    render_message(message)
 
-reference_text = st.text_area(
-    "参考资料",
-    placeholder="在这里粘贴一小段论文原文",
-    height=180,
-)
 
 question = st.text_input(
     "你想了解论文的什么内容？",
@@ -44,6 +95,25 @@ if st.button("提交问题"):
     if not question.strip():
         st.warning("请先输入一个问题")
     else:
+        try:
+            with st.spinner("正在检索论文片段……"):
+                retrieval_results = retrieve_dense(
+                    question=question,
+                    model=embedding_model,
+                    index=index,
+                    metadata=metadata,
+                    top_k=3,
+                )
+
+                reference_text = build_reference_text(retrieval_results)
+
+        except (ValueError, RuntimeError) as error:
+            st.error(f"论文检索失败：{error}")
+            st.stop()
+
+        if not retrieval_results:
+            st.warning("当前索引没有可用的论文片段。")
+            st.stop()
         user_message = {
             "role": "user",
             "content": (
@@ -53,7 +123,20 @@ if st.button("提交问题"):
               f"问题：{question.strip()}"  
             ),
         }
+        display_user_message = {
+            "role": "user",
+            "content": question.strip(),
+        }
 
+        history_messages = []
+
+        for message in st.session_state.messages:
+            history_messages.append(
+                {
+                    "role": message["role"],
+                    "content": message["content"],
+                }
+            )
         # 页面负责组装本次请求的完整消息
         messages = [
             {
@@ -76,7 +159,7 @@ if st.button("提交问题"):
                     '"insufficient_reason": "没有提供参考资料。"}'
                 ),
             },
-        ] + st.session_state.messages + [user_message]
+        ] + history_messages + [user_message]
 
         try:
 
@@ -104,17 +187,17 @@ if st.button("提交问题"):
             assistant_message = {
                 "role": "assistant",
                 "content": answer,
+                "retrieval_results": retrieval_results,
             }
 
             # 页面负责保存成功完成的一轮对话
             st.session_state.messages.extend(
-                [user_message, assistant_message]
+                [display_user_message, assistant_message]
             )
 
             # 页面负责展示新消息
-            for message in [user_message, assistant_message]:
-                with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
+            for message in [display_user_message, assistant_message]:
+                render_message(message)
 
         except IncompleteAnswerError as error:
             st.error(str(error))

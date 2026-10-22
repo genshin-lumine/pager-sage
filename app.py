@@ -5,7 +5,13 @@ from sentence_transformers import SentenceTransformer
 from index_store import load_index
 from retriever import retrieve_dense
 from rag_context import build_reference_text
-from project_store import load_project, get_index_dir
+from pathlib import Path
+from project_store import (
+    load_project,
+    get_index_dir,
+    list_projects,
+    create_project,
+)
 from openai import (
     APIError,
     APIConnectionError,
@@ -15,6 +21,24 @@ from openai import (
 )
 
 st.set_page_config(page_title="Paper Sage", page_icon="📚")
+
+with st.sidebar.form("create_project_form", clear_on_submit=True):
+    new_project_name = st.text_input("新项目名称")
+    create_submitted = st.form_submit_button("创建项目")
+
+if create_submitted:
+    try:
+        new_project = create_project(
+            # 传入上面输入框中的名称
+            new_project_name
+        )
+    except (ValueError, OSError) as error:
+        st.sidebar.error(f"创建项目失败：{error}")
+    else:
+        # 替换新项目字典中的项目标识
+        st.session_state["selected_project_id"] = new_project["project_id"]
+
+        st.sidebar.success(f"已创建：{new_project['name']}")
 
 @st.cache_resource(show_spinner="正在加载论文索引和向量模型……")
 def load_retrieval_resources(output_dir):
@@ -62,7 +86,50 @@ def render_message(message):
 st.title("Paper Sage")
 
 try:
-    project = load_project("demo_project")
+    projects = list_projects()
+
+    if not projects:
+        st.info("目前还没有项目。")
+        st.stop()
+
+    project_names = {}
+    for item in projects:
+        project_names[item["project_id"]] = item["name"]
+
+    def format_project_name(project_id):
+        return project_names[project_id]
+
+    selected_project_id = st.sidebar.selectbox(
+        "选择项目",
+        options=list(project_names.keys()),
+        format_func=format_project_name,
+        key="selected_project_id",
+    )
+
+    project = load_project(
+        # 传入下拉框返回的项目标识
+        selected_project_id
+    )
+
+    # 切换项目时，清空当前聊天。
+    if st.session_state.get("active_project_id") != project["project_id"]:
+        st.session_state.messages = []
+        st.session_state.active_project_id = project["project_id"]
+
+    st.sidebar.caption(
+        f"本项目文档数量：{len(project['documents'])}"
+    )
+
+    if not project["documents"]:
+        st.info("当前项目还没有论文。")
+        st.stop()
+
+    for document_record in project["documents"]:
+        # 取得当前文档的 source，用 Path(...).name 得到文件名
+        # 用 st.sidebar.write() 显示这个文件名
+        file_name = Path(document_record["source"]).name
+        st.sidebar.write(file_name)
+
     document = project["documents"][0]
 
     output_dir = get_index_dir(

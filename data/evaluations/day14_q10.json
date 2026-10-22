@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "day14_q10",
+  "recorded_date": "2026-10-21",
+  "source_commit": "5b9ebabfa57b0e15ec4215815ed4dc1a404682cf",
+  "source_commit_note": "整理时的仓库 HEAD；实际页面运行的源码和配置未自动采集。",
+  "dataset": "data/evaluation_questions.json",
+  "dataset_sha256": "59985c6c4b50a2e7316c7b68403802ac1005927afa84ced891c7364158508aa6",
+  "collection_note": "学习者按 q10 测试步骤回传候选标识、页面回答、原文依据显示和资料不足说明。问题原句沿用 q10；未自动采集请求消息、清空状态、分数、运行时间或原始 API 响应。助手核对本地保存的候选及已准备的标准答案，没有重跑检索或调用模型。",
+  "config_reference": {
+    "index_dir": "data/indexes/day11_s800_o100",
+    "metadata_sha256": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546",
+    "index_sha256": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "top_k": 3,
+    "note": "用于核对回传候选的当前保存配置，不是自动采集的运行配置快照。"
+  },
+  "field_notes": {
+    "status": "ok 表示页面正常产生回答及资料不足说明，不等同于无条件回答出具体事实。",
+    "actual_answer": "逐字保存学习者回传的页面回答。",
+    "actual_evidence": "学习者回传依据显示为“无。”，整理为空列表；原始显示另存 actual_evidence_display。这不是原始 API 字段快照。",
+    "actual_insufficient_reason": "逐字保存学习者回传的资料不足说明。",
+    "top1_hit": "无答案题不适用，记为 null，不计入可回答题的命中率分母。",
+    "top3_hit": "无答案题不适用，记为 null；有相关候选不等于有答案依据。",
+    "answer_correct": "论文未给出 CPU 型号，明确说明资料不足且不编造型号，判为 true。",
+    "citation_supported": "本次没有引用可评估，记为 null，不计为引用支持成功或失败。",
+    "error": "回传中没有页面错误，记为 null。"
+  },
+  "results": [
+    {
+      "case_id": "q10",
+      "question": "论文训练模型所用机器的 CPU 型号是什么？",
+      "status": "ok",
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p9:c1"
+      ],
+      "actual_answer": "无法依据资料回答。提供的参考片段未提及训练模型所用机器的 CPU 型号。",
+      "actual_evidence": [],
+      "actual_evidence_display": "无。",
+      "actual_insufficient_reason": "提供的参考片段仅涉及引用文献、模型架构与实验结果，未包含训练机器的 CPU 型号信息。",
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": true,
+      "citation_supported": null,
+      "error": null,
+      "notes": "核对候选：p11:c4 为参考文献，p1:c2 为摘要中的架构与翻译实验描述，p9:c1 为架构变体实验表；均未给出 CPU 型号。前期已核对论文相关硬件说明和全文提取文本，CPU 型号没有提供。页面正常说明不足并显示无依据，判为正常且正确的资料不足回答；与 q4 输出校验失败、q5 因漏检未答出论文已有答案分别记录。"
+    }
+  ],
+  "summary": {
+    "case_count": 1,
+    "normal_response_count": 1,
+    "answer_correct_count": 1,
+    "retrieval_evaluated_count": 0,
+    "citation_evaluated_count": 0
+  }
+}

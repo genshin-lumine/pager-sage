@@ -1,0 +1,235 @@
+{
+  "document": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+  "source_url": "https://papers.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf",
+  "cases": [
+    {
+      "id": "q1",
+      "question": "论文中的编码器由多少个相同的层堆叠而成？",
+      "answerable": true,
+      "expected_answer": "6 层。",
+      "evidence": [
+        "The encoder is composed of a stack of N = 6 identical layers."
+      ],
+      "pdf_page": 2,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q2",
+      "question": "训练使用多少块 GPU，型号是什么？",
+      "answerable": true,
+      "expected_answer": "8 块 NVIDIA P100 GPU。",
+      "evidence": [
+        "We trained our models on one machine with 8 NVIDIA P100 GPUs."
+      ],
+      "pdf_page": 7,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q3",
+      "question": "位置编码使用哪两种函数？",
+      "answerable": true,
+      "expected_answer": "正弦和余弦函数。",
+      "evidence": [
+        "In this work, we use sine and cosine functions of different frequencies:"
+      ],
+      "pdf_page": 6,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q4",
+      "question": "论文中，模型训练实际消耗了多少千瓦时（kWh）的电能",
+      "answerable": false,
+      "expected_answer": "无法依据论文确定。",
+      "evidence": [],
+      "pdf_page": null,
+      "insufficient_reason": "论文报告了硬件、训练时间和 FLOPs，但没有报告实际耗电量，也缺少用于确定耗电量的实际平均功率等数据。相关检查位置是第 7～8 页。"
+    },
+    {
+      "id": "q5",
+      "question": "论文采用了多少个并行注意力头？",
+      "answerable": true,
+      "expected_answer": "8 个并行注意力头。",
+      "evidence": [
+        "In this work we employ h = 8 parallel attention layers, or heads."
+      ],
+      "pdf_page": 5,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q6",
+      "question": "论文训练时使用了哪种优化器？",
+      "answerable": true,
+      "expected_answer": "Adam 优化器。",
+      "evidence": [
+        "We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9."
+      ],
+      "pdf_page": 7,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q7",
+      "question": "学习率预热阶段包含多少个训练步？",
+      "answerable": true,
+      "expected_answer": "4000 个训练步。",
+      "evidence": [
+        "We used warmup_steps = 4000."
+      ],
+      "pdf_page": 7,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q8",
+      "question": "base 模型总共训练了多少步，训练了多长时间？",
+      "answerable": true,
+      "expected_answer": "100,000 步，训练时长为 12 小时。",
+      "evidence": [
+        "We trained the base models for a total of 100,000 steps or 12 hours."
+      ],
+      "pdf_page": 7,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q9",
+      "question": "编码器由多少个相同的层堆叠而成？训练时使用了多少块 GPU，型号是什么？",
+      "answerable": true,
+      "expected_answer": "编码器由 6 个相同的层堆叠而成；训练时使用了 8 块 NVIDIA P100 GPU。",
+      "evidence": [
+        "The encoder is composed of a stack of N = 6 identical layers.",
+        "We trained our models on one machine with 8 NVIDIA P100 GPUs."
+      ],
+      "pdf_page": null,
+      "evidence_pages": [2, 7],
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q10",
+      "question": "论文训练模型所用机器的 CPU 型号是什么？",
+      "answerable": false,
+      "expected_answer": "无法依据论文确定训练机器的 CPU 型号。",
+      "evidence": [],
+      "pdf_page": null,
+      "insufficient_reason": "论文第 7 页的硬件说明报告了 8 块 NVIDIA P100 GPU 和训练计划，但没有报告训练机器的 CPU 型号，不能根据 GPU 型号推测 CPU 型号。"
+    },
+    {
+      "id": "q11",
+      "question": "big 模型总共训练了多少步，训练了多长时间？",
+      "answerable": true,
+      "expected_answer": "300,000 步，训练时长为 3.5 天。",
+      "evidence": [
+        "The big models were trained for 300,000 steps (3.5 days)."
+      ],
+      "pdf_page": 7,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q12",
+      "question": "论文在逐位置前馈网络小节中，输入、输出和内部层的维度分别是多少？",
+      "answerable": true,
+      "expected_answer": "输入和输出维度均为 512，内部层维度为 2048。",
+      "evidence": [
+        "The dimensionality of input and output is dmodel = 512 , and the inner-layer has dimensionality df f = 2048."
+      ],
+      "pdf_page": 5,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q13",
+      "question": "解码时，束搜索的束宽和长度惩罚参数分别是多少？",
+      "answerable": true,
+      "expected_answer": "束宽为 4，长度惩罚参数 α 为 0.6。",
+      "evidence": [
+        "We used beam search with a beam size of 4 and length penaltyα = 0.6 [31]."
+      ],
+      "pdf_page": 8,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q14",
+      "question": "训练时标签平滑的参数值是多少？",
+      "answerable": true,
+      "expected_answer": "标签平滑参数为 0.1。",
+      "evidence": [
+        "During training, we employed label smoothing of value ϵls = 0.1 [30]."
+      ],
+      "pdf_page": 8,
+      "insufficient_reason": ""
+    },
+    {
+      "id": "q15",
+      "question": "论文使用了多少个并行注意力头，训练时采用了什么优化器？",
+      "answerable": true,
+      "expected_answer": "使用 8 个并行注意力头，训练采用 Adam 优化器。",
+      "evidence": [
+        "In this work we employ h = 8 parallel attention layers, or heads.",
+        "We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9."
+      ],
+      "pdf_page": null,
+      "insufficient_reason": "",
+      "evidence_pages": [
+        5,
+        7
+      ]
+    },
+    {
+      "id": "q16",
+      "question": "位置编码采用哪两种函数，学习率预热阶段包含多少个训练步？",
+      "answerable": true,
+      "expected_answer": "位置编码采用正弦和余弦函数，学习率预热阶段包含 4000 个训练步。",
+      "evidence": [
+        "In this work, we use sine and cosine functions of different frequencies:",
+        "We used warmup_steps = 4000."
+      ],
+      "pdf_page": null,
+      "insufficient_reason": "",
+      "evidence_pages": [
+        6,
+        7
+      ]
+    },
+    {
+      "id": "q17",
+      "question": "base 模型在 WMT 2014 英语到德语 newstest2014 测试上的 BLEU 分数是多少，总共训练了多少步？",
+      "answerable": true,
+      "expected_answer": "BLEU 分数为 27.3，总共训练了 100,000 步。",
+      "evidence": [
+        "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-art models on the English-to-German and English-to-French newstest2014 tests at a fraction of the training cost.",
+        "Transformer (base model) 27.3 38.1 3.3 · 1018",
+        "We trained the base models for a total of 100,000 steps or 12 hours."
+      ],
+      "pdf_page": null,
+      "insufficient_reason": "",
+      "evidence_pages": [
+        8,
+        8,
+        7
+      ]
+    },
+    {
+      "id": "q18",
+      "question": "论文报告的训练机器内存（RAM）容量是多少 GB？",
+      "answerable": false,
+      "expected_answer": "无法依据论文确定训练机器的 RAM 容量。",
+      "evidence": [],
+      "pdf_page": null,
+      "insufficient_reason": "论文报告了 GPU 数量、型号与训练计划，没有报告训练机器的 RAM 容量；不能用模型参数量、GPU 数量或型号推断 RAM 容量。"
+    },
+    {
+      "id": "q19",
+      "question": "论文训练环境使用的 CUDA 具体版本号是多少？",
+      "answerable": false,
+      "expected_answer": "无法依据论文确定 CUDA 版本号。",
+      "evidence": [],
+      "pdf_page": null,
+      "insufficient_reason": "论文没有报告训练环境的 CUDA 版本，不能根据 GPU 型号、论文年份或其他外部知识推断。"
+    },
+    {
+      "id": "q20",
+      "question": "论文实验使用的随机种子（random seed）具体数值是多少？",
+      "answerable": false,
+      "expected_answer": "无法依据论文确定实验使用的随机种子数值。",
+      "evidence": [],
+      "pdf_page": null,
+      "insufficient_reason": "论文没有报告实验使用的随机种子数值；文中关于作者排列随机和随机变量的说明不提供实验随机种子。"
+    }
+  ]
+}

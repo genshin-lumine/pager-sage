@@ -5,6 +5,7 @@ from sentence_transformers import SentenceTransformer
 from index_store import load_index
 from retriever import retrieve_dense
 from rag_context import build_reference_text
+from project_store import load_project, get_index_dir
 from openai import (
     APIError,
     APIConnectionError,
@@ -59,9 +60,21 @@ def render_message(message):
                     )
 
 st.title("Paper Sage")
+
 try:
+    project = load_project("demo_project")
+    document = project["documents"][0]
+
+    output_dir = get_index_dir(
+        # 依次传入项目标识、文档标识、索引版本
+        # 从上面的 project 和 document 字典中读取
+        project["project_id"],
+        document["document_id"],
+        document["index_version"]
+    )
+
     embedding_model, index, metadata = load_retrieval_resources(
-        "data/indexes/day11_s800_o100"
+        str(output_dir)
     )
 except (OSError, ValueError, RuntimeError) as error:
     st.error(f"加载检索资源失败：{error}")

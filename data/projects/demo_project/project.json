@@ -1,0 +1,11 @@
+{
+  "project_id": "demo_project",
+  "name": "Demo project",
+  "documents": [
+    {
+      "document_id": "attention_is_all_you_need_neurips2017",
+      "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+      "index_version": "v1"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "run_id": "day14_dense_baseline",
+  "recorded_date": "2026-10-20",
+  "source_commit": "5b9ebabfa57b0e15ec4215815ed4dc1a404682cf",
+  "dataset": "data/sample_questions.json",
+  "dataset_sha256": "f7f818d8b734c2d8e7b180385824c3af4e9dc4f10767c48c8cec194d11c9178c",
+  "config": {
+    "index_dir": "data/indexes/day11_s800_o100",
+    "embedding_model": "intfloat/multilingual-e5-small",
+    "normalize_embeddings": true,
+    "chunk_size": 800,
+    "chunk_overlap": 100,
+    "top_k": 3,
+    "chat_model": "deepseek-flash",
+    "max_tokens": 1024,
+    "max_retries": 0,
+    "thinking": "disabled",
+    "response_format": "json_object"
+  },
+  "collection_note": "学习者按既有样例原句回传的首轮页面结果，由助手整理并核对保存的候选原文。操作要求为每题提交前清空会话；未自动采集会话状态、请求时间、分数或原始 API 响应。recorded_date 是整理日期，不是精确调用时间。",
+  "field_notes": {
+    "status": "ok 表示正常产生了页面回答，不单独代表回答正确；validation_error 表示输出校验未通过。",
+    "retrieved_chunk_ids": "按排名保存学习者回传的标识。null 表示本次未记录；不能视为检索结果为空。",
+    "actual_answer": "学习者回传的页面回答。null 表示没有可供评估的页面回答，不推测被拒绝的原始模型内容。",
+    "actual_evidence": "学习者回传的页面引用；不是原始 API 字段快照。null 表示未获取，[] 才表示观察到明确的空引用列表。",
+    "top1_hit": "有答案题的首条候选是否包含样例直接依据。无答案题为 null，统计时不适用。",
+    "top3_hit": "当前单一事实或同段多信息点题的前三候选是否包含样例直接依据。无答案题为 null，统计时不适用。",
+    "answer_correct": "人工对照预期答案判断；没有有效页面回答时为 null，应另外计入运行失败。",
+    "citation_supported": "人工检查引用来自本次候选且支持回答；页面拷贝的空格、换行差异按空白归一化核对。未取得有效回答及引用时为 null。",
+    "error": "页面原始错误提示；没有错误时为 null。"
+  },
+  "results": [
+    {
+      "case_id": "q1",
+      "question": "论文中的编码器由多少个相同的层堆叠而成？",
+      "status": "ok",
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c7",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p9:c1"
+      ],
+      "actual_answer": "编码器由 N = 6 个相同的层堆叠而成。",
+      "actual_evidence": [
+        "Encoder: The encoder is composed of a stack of N = 6 identical layers."
+      ],
+      "top1_hit": true,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "notes": "第 1 名 p2:c7 包含直接依据；判断依据来自本次回传结果。"
+    },
+    {
+      "case_id": "q2",
+      "question": "训练使用多少块 GPU，型号是什么？",
+      "status": "ok",
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c4"
+      ],
+      "actual_answer": "训练使用 8 块 NVIDIA P100 GPU。",
+      "actual_evidence": [
+        "We trained our models on one machine with 8 NVIDIA P100 GPUs."
+      ],
+      "top1_hit": true,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "notes": "第 1 名 p7:c4 同时覆盖 GPU 数量和型号。"
+    },
+    {
+      "case_id": "q3",
+      "question": "位置编码使用哪两种函数？",
+      "status": "ok",
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p5:c5",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c1",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p6:c2"
+      ],
+      "actual_answer": "该论文的位置编码使用不同频率的正弦（sine）和余弦（cosine）函数。具体为：PE(pos,2i)=sin(pos/10000^{2i/d_model})，PE(pos,2i+1)=cos(pos/10000^{2i/d_model})。",
+      "actual_evidence": [
+        "In this work, we use sine and cosine functions of different frequencies:PE (pos,2i) =sin(pos/100002i/dmodel)PE (pos,2i+1) =cos(pos/100002i/dmodel)"
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "notes": "第 1 名 p5:c5 只介绍位置编码的动机，没有两种函数名称；第 3 名 p6:c2 包含名称和公式。回传引用与片段原文按空白归一化匹配。PDF 提取会丢失公式上下标排版，人工核对时同时参考原论文第 6 页。本次问法与 Day 12 不同，不能将命中变化归因于检索算法改进。"
+    },
+    {
+      "case_id": "q4",
+      "question": "论文中，模型训练实际消耗了多少千瓦时（kWh）的电能",
+      "status": "validation_error",
+      "retrieved_chunk_ids": null,
+      "actual_answer": null,
+      "actual_evidence": null,
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": null,
+      "citation_supported": null,
+      "error": "回答结构不符合要求：资料不足时，evidence 必须为空列表",
+      "notes": "无答案题，检索命中项不适用。页面在校验成功后才保存和展示本轮回答及候选，本次只取得错误提示；候选标识和被拒绝的原始回答未记录。该错误说明非空不足原因和非空依据同时出现，但不能据此补写具体回答。记录为输出校验失败，不算正常拒答，不使用旧查询结果填补。"
+    }
+  ]
+}

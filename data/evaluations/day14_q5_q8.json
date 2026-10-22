@@ -1,0 +1,471 @@
+{
+  "schema_version": 1,
+  "run_id": "day14_q5_q8",
+  "started_at_utc": "2026-10-20T13:53:56.946175+00:00",
+  "finished_at_utc": "2026-10-20T13:55:10.191959+00:00",
+  "source_commit": "5b9ebabfa57b0e15ec4215815ed4dc1a404682cf",
+  "dataset": "data/evaluation_questions.json",
+  "dataset_sha256": "4151fb4d46e0f4ac2bddb7f8ba6aa5c9e4d0938d14a004550545a61db45b3b99",
+  "execution_method": "Streamlit AppTest drives the real app.py; real CPU embeddings, saved FAISS index, and live DeepSeek API. Instrumentation only observes calls and results; no response or retrieval mocks.",
+  "history_policy": "A new AppTest session for each question; assert empty history before submission.",
+  "attempt_policy": "One submission per question; existing max_retries=0; preserve failures without rerunning.",
+  "config": {
+    "index_dir": "data/indexes/day11_s800_o100",
+    "embedding_config": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "normalize_embeddings": true,
+      "passage_prefix": "passage: ",
+      "query_prefix": "query: "
+    },
+    "device": "cpu",
+    "chunk_size": 800,
+    "chunk_overlap": 100,
+    "top_k": 3,
+    "chat_model": "deepseek-flash",
+    "max_tokens": 1024,
+    "timeout_seconds": 60,
+    "max_retries": 0,
+    "thinking": "disabled",
+    "response_format": "json_object"
+  },
+  "protected_file_hashes_before": {
+    "app.py": "c2f003c8971120ed6652c425f359d03b35f07f9d3cee2a4b1ddd47b14d276d19",
+    "llm.py": "0521f4096ac15edb4fbca7e57ba436d8ebd3205da4b86035c540df693395d6e7",
+    "answer_parser.py": "ab0a884c3f4d10d5ebb1c51d58e9b9b81ee59aaf8c1dd3b52210af8a3e0eac66",
+    "retriever.py": "076b7374fe309d36061e6889433fe7496e7f09b8e512278d622fd0e762c1cd34",
+    "rag_context.py": "3d6b52647b28bdf3259e0a2c63328b2a0b85a4d52d52df93f4749a430db9c3e1",
+    "index_store.py": "18a6bb2eb443220a74a5f70e1e75835fe85898d010adde426eb81d4f0d7555ea",
+    "data/evaluation_questions.json": "4151fb4d46e0f4ac2bddb7f8ba6aa5c9e4d0938d14a004550545a61db45b3b99",
+    "data/sample_questions.json": "f7f818d8b734c2d8e7b180385824c3af4e9dc4f10767c48c8cec194d11c9178c",
+    "data/evaluations/day14_baseline.json": "277c40eea755a24a2c589aa8ecff6f7c8d48ffa08ec9e4811837bdaa95b8a271",
+    "data/indexes/day11_s800_o100/index.faiss": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "data/indexes/day11_s800_o100/metadata.json": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546"
+  },
+  "field_notes": {
+    "status": "ok means app produced a validated response; correctness and citation support are reviewed separately.",
+    "raw_model_response": "Content observed when llm.py calls parse_answer, retained separately from a validated result. It is not proof that the response passed validation.",
+    "actual_answer": "Answer from a validated result displayed by app.py, or null if no valid answer.",
+    "top1_hit": "Gold evidence contained in the first retrieved chunk after whitespace normalization, with matching PDF page.",
+    "top3_hit": "Gold evidence contained in at least one of the three retrieved chunks after whitespace normalization, with matching PDF page.",
+    "citation_supported": "Assistant review that quotations originate in retrieved context and support the answer; null when no quotation is available/applicable. Whitespace-normalized matching is recorded separately.",
+    "answer_correct": "Assistant review against the gold answer and source. For an answerable paper question, abstention is false even if appropriate for an incomplete retrieved context.",
+    "retrieval_results": "Captured during real retrieval even if later output validation fails.",
+    "request_messages": "Only system/user content is recorded; API credential is never included.",
+    "case_passed": "For these four answerable cases: validated answer, correct requested facts, and supporting source quotation."
+  },
+  "results": [
+    {
+      "case_id": "q5",
+      "question": "论文采用了多少个并行注意力头？",
+      "started_at_utc": "2026-10-20T13:53:57.021353+00:00",
+      "finished_at_utc": "2026-10-20T13:55:04.547844+00:00",
+      "status": "ok",
+      "retrieval_call_count": 1,
+      "model_call_count": 1,
+      "retrieval_results": [
+        {
+          "rank": 1,
+          "score": 0.8330914974212646,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c5",
+            "text": "[19] Zhouhan Lin, Minwei Feng, Cicero Nogueira dos Santos, Mo Yu, Bing Xiang, Bowen\nZhou, and Yoshua Bengio. A structured self-attentive sentence embedding. arXiv preprint\narXiv:1703.03130, 2017.\n[20] Samy Bengio Łukasz Kaiser. Can active memory replace attention? In Advances in Neural\nInformation Processing Systems, (NIPS), 2016.\n10"
+          }
+        },
+        {
+          "rank": 2,
+          "score": 0.8326901197433472,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 11,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+            "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+          }
+        },
+        {
+          "rank": 3,
+          "score": 0.8321923613548279,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 1,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+            "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+          }
+        }
+      ],
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c5",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2"
+      ],
+      "request_messages": [
+        {
+          "role": "system",
+          "content": "你是一位论文阅读助手，请用中文回答。论文事实只能依据本次用户消息中 <reference> 内的资料。聊天历史仅用于理解追问，不作为事实依据。只输出一个 JSON 对象，不要输出代码块或额外文字。必须包含 answer、evidence、insufficient_reason 三个字段。answer 是字符串，存放回答正文。evidence 是字符串数组，每条依据必须逐字摘录参考资料原文。insufficient_reason 是字符串，存放资料不足的原因。资料足够时，evidence 提供支持回答的原文，insufficient_reason 为空字符串。资料为空或不足时，不要猜测；answer 明确说明无法依据资料回答，evidence 使用空数组，insufficient_reason 说明原因。JSON 格式示例：{\"answer\": \"资料不足，无法回答。\", \"evidence\": [], \"insufficient_reason\": \"没有提供参考资料。\"}"
+        },
+        {
+          "role": "user",
+          "content": "<reference>\n[片段 1]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c5\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：10\n原文：\n[19] Zhouhan Lin, Minwei Feng, Cicero Nogueira dos Santos, Mo Yu, Bing Xiang, Bowen\nZhou, and Yoshua Bengio. A structured self-attentive sentence embedding. arXiv preprint\narXiv:1703.03130, 2017.\n[20] Samy Bengio Łukasz Kaiser. Can active memory replace attention? In Advances in Neural\nInformation Processing Systems, (NIPS), 2016.\n10\n\n[片段 2]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：11\n原文：\narXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11\n\n[片段 3]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：1\n原文：\nmechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction\n</reference>\n\n问题：论文采用了多少个并行注意力头？"
+        }
+      ],
+      "raw_model_response": "{\"answer\": \"资料不足，无法回答。提供的参考资料未提及论文采用的并行注意力头数量。\", \"evidence\": [], \"insufficient_reason\": \"提供的三个片段仅涉及参考文献条目和摘要/引言部分，均未包含关于注意力头数量的信息。\"}",
+      "validated_result": {
+        "answer": "资料不足，无法回答。提供的参考资料未提及论文采用的并行注意力头数量。",
+        "evidence": [],
+        "insufficient_reason": "提供的三个片段仅涉及参考文献条目和摘要/引言部分，均未包含关于注意力头数量的信息。"
+      },
+      "actual_answer": "资料不足，无法回答。提供的参考资料未提及论文采用的并行注意力头数量。",
+      "actual_evidence": [],
+      "insufficient_reason": "提供的三个片段仅涉及参考文献条目和摘要/引言部分，均未包含关于注意力头数量的信息。",
+      "top1_hit": false,
+      "top3_hit": false,
+      "quote_matches_retrieved_text": [],
+      "answer_correct": false,
+      "citation_supported": null,
+      "error": null,
+      "history_before_submit_count": 0,
+      "retrieval_seconds": 0.2186,
+      "model_seconds": 1.4884,
+      "history_after_submit_count": 2,
+      "displayed_chat_count": 2,
+      "displayed_source_expander_count": 1,
+      "displayed_answer_markdown": "**结论**\n\n资料不足，无法回答。提供的参考资料未提及论文采用的并行注意力头数量。\n\n**原文依据**\n\n无。\n\n**资料不足说明**\n\n提供的三个片段仅涉及参考文献条目和摘要/引言部分，均未包含关于注意力头数量的信息。",
+      "total_seconds": 67.5258,
+      "case_passed": false,
+      "review_notes": "The paper and saved index contain the answer (8 heads), but none of the three retrieved candidates supplies it. The model appropriately abstained based on its supplied context; the paper question remains unanswered. This is a retrieval miss. No quotation was returned, so citation support is not applicable.",
+      "failure_category": "retrieval_miss",
+      "gold_evidence_available_in_index": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p5:c1"
+      ],
+      "abstention_appropriate_for_supplied_context": true
+    },
+    {
+      "case_id": "q6",
+      "question": "论文训练时使用了哪种优化器？",
+      "started_at_utc": "2026-10-20T13:55:04.549350+00:00",
+      "finished_at_utc": "2026-10-20T13:55:06.494596+00:00",
+      "status": "ok",
+      "retrieval_call_count": 1,
+      "model_call_count": 1,
+      "retrieval_results": [
+        {
+          "rank": 1,
+          "score": 0.8288829326629639,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+          }
+        },
+        {
+          "rank": 2,
+          "score": 0.8236418962478638,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          }
+        },
+        {
+          "rank": 3,
+          "score": 0.8209584951400757,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c1",
+            "text": "References\n[1] Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E Hinton. Layer normalization. arXiv preprint\narXiv:1607.06450, 2016.\n[2] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly\nlearning to align and translate. CoRR, abs/1409.0473, 2014.\n[3] Denny Britz, Anna Goldie, Minh-Thang Luong, and Quoc V . Le. Massive exploration of neural\nmachine translation architectures. CoRR, abs/1703.03906, 2017.\n[4] Jianpeng Cheng, Li Dong, and Mirella Lapata. Long short-term memory-networks for machine\nreading. arXiv preprint arXiv:1601.06733, 2016.\n[5] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Fethi Bougares, Holger Schwenk,\nand Yoshua Bengio. Learning phrase representations using rnn encoder-decoder for statistical"
+          }
+        }
+      ],
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c1"
+      ],
+      "request_messages": [
+        {
+          "role": "system",
+          "content": "你是一位论文阅读助手，请用中文回答。论文事实只能依据本次用户消息中 <reference> 内的资料。聊天历史仅用于理解追问，不作为事实依据。只输出一个 JSON 对象，不要输出代码块或额外文字。必须包含 answer、evidence、insufficient_reason 三个字段。answer 是字符串，存放回答正文。evidence 是字符串数组，每条依据必须逐字摘录参考资料原文。insufficient_reason 是字符串，存放资料不足的原因。资料足够时，evidence 提供支持回答的原文，insufficient_reason 为空字符串。资料为空或不足时，不要猜测；answer 明确说明无法依据资料回答，evidence 使用空数组，insufficient_reason 说明原因。JSON 格式示例：{\"answer\": \"资料不足，无法回答。\", \"evidence\": [], \"insufficient_reason\": \"没有提供参考资料。\"}"
+        },
+        {
+          "role": "user",
+          "content": "<reference>\n[片段 1]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：10\n原文：\narXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference\n\n[片段 2]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：7\n原文：\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\n\n[片段 3]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c1\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：10\n原文：\nReferences\n[1] Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E Hinton. Layer normalization. arXiv preprint\narXiv:1607.06450, 2016.\n[2] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly\nlearning to align and translate. CoRR, abs/1409.0473, 2014.\n[3] Denny Britz, Anna Goldie, Minh-Thang Luong, and Quoc V . Le. Massive exploration of neural\nmachine translation architectures. CoRR, abs/1703.03906, 2017.\n[4] Jianpeng Cheng, Li Dong, and Mirella Lapata. Long short-term memory-networks for machine\nreading. arXiv preprint arXiv:1601.06733, 2016.\n[5] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Fethi Bougares, Holger Schwenk,\nand Yoshua Bengio. Learning phrase representations using rnn encoder-decoder for statistical\n</reference>\n\n问题：论文训练时使用了哪种优化器？"
+        }
+      ],
+      "raw_model_response": "{\"answer\": \"论文使用了 Adam 优化器，参数设置为 β1 = 0.9、β2 = 0.98、ε = 10⁻⁹，并在训练过程中按公式调整学习率。\", \"evidence\": [\"We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning rate over the course of training, according to the formula:\"], \"insufficient_reason\": \"\"}",
+      "validated_result": {
+        "answer": "论文使用了 Adam 优化器，参数设置为 β1 = 0.9、β2 = 0.98、ε = 10⁻⁹，并在训练过程中按公式调整学习率。",
+        "evidence": [
+          "We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning rate over the course of training, according to the formula:"
+        ],
+        "insufficient_reason": ""
+      },
+      "actual_answer": "论文使用了 Adam 优化器，参数设置为 β1 = 0.9、β2 = 0.98、ε = 10⁻⁹，并在训练过程中按公式调整学习率。",
+      "actual_evidence": [
+        "We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning rate over the course of training, according to the formula:"
+      ],
+      "insufficient_reason": "",
+      "top1_hit": false,
+      "top3_hit": true,
+      "quote_matches_retrieved_text": [
+        true
+      ],
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "history_before_submit_count": 0,
+      "retrieval_seconds": 0.08,
+      "model_seconds": 0.8497,
+      "history_after_submit_count": 2,
+      "displayed_chat_count": 2,
+      "displayed_source_expander_count": 1,
+      "displayed_answer_markdown": "**结论**\n\n论文使用了 Adam 优化器，参数设置为 β1 = 0.9、β2 = 0.98、ε = 10⁻⁹，并在训练过程中按公式调整学习率。\n\n**原文依据**\n\n> We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning rate over the course of training, according to the formula:",
+      "total_seconds": 1.9443,
+      "case_passed": true,
+      "review_notes": "The second candidate p7:c4 states Adam, beta1=0.9, beta2=0.98, epsilon=10^-9, and a varying learning rate. The answer and its additional parameter details are supported by the quoted passage.",
+      "failure_category": null
+    },
+    {
+      "case_id": "q7",
+      "question": "学习率预热阶段包含多少个训练步？",
+      "started_at_utc": "2026-10-20T13:55:06.497617+00:00",
+      "finished_at_utc": "2026-10-20T13:55:08.380294+00:00",
+      "status": "ok",
+      "retrieval_call_count": 1,
+      "model_call_count": 1,
+      "retrieval_results": [
+        {
+          "rank": 1,
+          "score": 0.8299545049667358,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          }
+        },
+        {
+          "rank": 2,
+          "score": 0.8229180574417114,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c5",
+            "text": "This corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\nand decreasing it thereafter proportionally to the inverse square root of the step number. We used\nwarmup_steps = 4000.\n5.4 Regularization\nWe employ three types of regularization during training:\nResidual Dropout We apply dropout [27] to the output of each sub-layer, before it is added to the\nsub-layer input and normalized. In addition, we apply dropout to the sums of the embeddings and the\npositional encodings in both the encoder and decoder stacks. For the base model, we use a rate of\nPdrop = 0.1.\n7"
+          }
+        },
+        {
+          "rank": 3,
+          "score": 0.8168408870697021,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+          }
+        }
+      ],
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c5",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3"
+      ],
+      "request_messages": [
+        {
+          "role": "system",
+          "content": "你是一位论文阅读助手，请用中文回答。论文事实只能依据本次用户消息中 <reference> 内的资料。聊天历史仅用于理解追问，不作为事实依据。只输出一个 JSON 对象，不要输出代码块或额外文字。必须包含 answer、evidence、insufficient_reason 三个字段。answer 是字符串，存放回答正文。evidence 是字符串数组，每条依据必须逐字摘录参考资料原文。insufficient_reason 是字符串，存放资料不足的原因。资料足够时，evidence 提供支持回答的原文，insufficient_reason 为空字符串。资料为空或不足时，不要猜测；answer 明确说明无法依据资料回答，evidence 使用空数组，insufficient_reason 说明原因。JSON 格式示例：{\"answer\": \"资料不足，无法回答。\", \"evidence\": [], \"insufficient_reason\": \"没有提供参考资料。\"}"
+        },
+        {
+          "role": "user",
+          "content": "<reference>\n[片段 1]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：7\n原文：\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\n\n[片段 2]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c5\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：7\n原文：\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\nand decreasing it thereafter proportionally to the inverse square root of the step number. We used\nwarmup_steps = 4000.\n5.4 Regularization\nWe employ three types of regularization during training:\nResidual Dropout We apply dropout [27] to the output of each sub-layer, before it is added to the\nsub-layer input and normalized. In addition, we apply dropout to the sums of the embeddings and the\npositional encodings in both the encoder and decoder stacks. For the base model, we use a rate of\nPdrop = 0.1.\n7\n\n[片段 3]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：10\n原文：\narXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference\n</reference>\n\n问题：学习率预热阶段包含多少个训练步？"
+        }
+      ],
+      "raw_model_response": "{\"answer\": \"学习率预热阶段包含 4000 个训练步。\", \"evidence\": [\"We used\\nwarmup_steps = 4000.\"], \"insufficient_reason\": \"\"}",
+      "validated_result": {
+        "answer": "学习率预热阶段包含 4000 个训练步。",
+        "evidence": [
+          "We used\nwarmup_steps = 4000."
+        ],
+        "insufficient_reason": ""
+      },
+      "actual_answer": "学习率预热阶段包含 4000 个训练步。",
+      "actual_evidence": [
+        "We used\nwarmup_steps = 4000."
+      ],
+      "insufficient_reason": "",
+      "top1_hit": false,
+      "top3_hit": true,
+      "quote_matches_retrieved_text": [
+        true
+      ],
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "history_before_submit_count": 0,
+      "retrieval_seconds": 0.0815,
+      "model_seconds": 1.0139,
+      "history_after_submit_count": 2,
+      "displayed_chat_count": 2,
+      "displayed_source_expander_count": 1,
+      "displayed_answer_markdown": "**结论**\n\n学习率预热阶段包含 4000 个训练步。\n\n**原文依据**\n\n> We used\nwarmup_steps = 4000.",
+      "total_seconds": 1.8809,
+      "case_passed": true,
+      "review_notes": "The second candidate p7:c5 contains the explicit 4000-step value. The first candidate only introduces warmup_steps without giving its value. The quotation is an exact match including its line break.",
+      "failure_category": null
+    },
+    {
+      "case_id": "q8",
+      "question": "base 模型总共训练了多少步，训练了多长时间？",
+      "started_at_utc": "2026-10-20T13:55:08.383818+00:00",
+      "finished_at_utc": "2026-10-20T13:55:10.186464+00:00",
+      "status": "ok",
+      "retrieval_call_count": 1,
+      "model_call_count": 1,
+      "retrieval_results": [
+        {
+          "rank": 1,
+          "score": 0.863304853439331,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          }
+        },
+        {
+          "rank": 2,
+          "score": 0.8355194330215454,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 11,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+            "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+          }
+        },
+        {
+          "rank": 3,
+          "score": 0.8333610892295837,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+          }
+        }
+      ],
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3"
+      ],
+      "request_messages": [
+        {
+          "role": "system",
+          "content": "你是一位论文阅读助手，请用中文回答。论文事实只能依据本次用户消息中 <reference> 内的资料。聊天历史仅用于理解追问，不作为事实依据。只输出一个 JSON 对象，不要输出代码块或额外文字。必须包含 answer、evidence、insufficient_reason 三个字段。answer 是字符串，存放回答正文。evidence 是字符串数组，每条依据必须逐字摘录参考资料原文。insufficient_reason 是字符串，存放资料不足的原因。资料足够时，evidence 提供支持回答的原文，insufficient_reason 为空字符串。资料为空或不足时，不要猜测；answer 明确说明无法依据资料回答，evidence 使用空数组，insufficient_reason 说明原因。JSON 格式示例：{\"answer\": \"资料不足，无法回答。\", \"evidence\": [], \"insufficient_reason\": \"没有提供参考资料。\"}"
+        },
+        {
+          "role": "user",
+          "content": "<reference>\n[片段 1]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：7\n原文：\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\n\n[片段 2]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：11\n原文：\narXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11\n\n[片段 3]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：10\n原文：\narXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference\n</reference>\n\n问题：base 模型总共训练了多少步，训练了多长时间？"
+        }
+      ],
+      "raw_model_response": "{\"answer\": \"base 模型总共训练了 100,000 步，训练时间为 12 小时。\", \"evidence\": [\"We trained the base models for a total of 100,000 steps or 12 hours.\"], \"insufficient_reason\": \"\"}",
+      "validated_result": {
+        "answer": "base 模型总共训练了 100,000 步，训练时间为 12 小时。",
+        "evidence": [
+          "We trained the base models for a total of 100,000 steps or 12 hours."
+        ],
+        "insufficient_reason": ""
+      },
+      "actual_answer": "base 模型总共训练了 100,000 步，训练时间为 12 小时。",
+      "actual_evidence": [
+        "We trained the base models for a total of 100,000 steps or 12 hours."
+      ],
+      "insufficient_reason": "",
+      "top1_hit": true,
+      "top3_hit": true,
+      "quote_matches_retrieved_text": [
+        true
+      ],
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "history_before_submit_count": 0,
+      "retrieval_seconds": 0.0756,
+      "model_seconds": 0.8218,
+      "history_after_submit_count": 2,
+      "displayed_chat_count": 2,
+      "displayed_source_expander_count": 1,
+      "displayed_answer_markdown": "**结论**\n\nbase 模型总共训练了 100,000 步，训练时间为 12 小时。\n\n**原文依据**\n\n> We trained the base models for a total of 100,000 steps or 12 hours.",
+      "total_seconds": 1.7981,
+      "case_passed": true,
+      "review_notes": "The first candidate p7:c4 supplies both 100,000 training steps and 12 hours. The answer covers both requested facts; the quotation matches after whitespace normalization.",
+      "failure_category": null
+    }
+  ],
+  "protected_files_unchanged": true,
+  "reviewed_at_utc": "2026-10-20T13:56:59.387424+00:00",
+  "review_method": "Assistant inspected actual candidates, answers and quotations; no extra API grading calls or retries.",
+  "summary": {
+    "case_count": 4,
+    "live_model_calls": 4,
+    "normal_response_count": 4,
+    "top1_hit_count": 1,
+    "top3_hit_count": 3,
+    "answer_evaluated_count": 4,
+    "answer_correct_count": 3,
+    "citation_evaluated_count": 3,
+    "citation_supported_count": 3,
+    "case_passed_count": 3
+  }
+}

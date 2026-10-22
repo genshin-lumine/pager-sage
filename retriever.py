@@ -31,8 +31,6 @@ def retrieve_dense(question, model, index, metadata, top_k=3):
         position = int(positions[0][rank])
         score = float(scores[0][rank])
         chunk = chunks[position]
-
-        # TODO 1：创建一个结果字典，加入 results 列表
         # 字典包含 rank、score、chunk 三个字段
         result_records = {
             "rank": rank + 1,

@@ -1,0 +1,581 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-21T04:38:09.569205+00:00",
+  "dataset": "data/evaluation_questions.json",
+  "dataset_sha256": "294b424918df86c120acc3ebf50a8eb18669ac0a5e1630e60121df02554e22df",
+  "dataset_snapshot": {
+    "document": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+    "source_url": "https://papers.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf",
+    "cases": [
+      {
+        "id": "q1",
+        "question": "论文中的编码器由多少个相同的层堆叠而成？",
+        "answerable": true,
+        "expected_answer": "6 层。",
+        "evidence": [
+          "The encoder is composed of a stack of N = 6 identical layers."
+        ],
+        "pdf_page": 2,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q2",
+        "question": "训练使用多少块 GPU，型号是什么？",
+        "answerable": true,
+        "expected_answer": "8 块 NVIDIA P100 GPU。",
+        "evidence": [
+          "We trained our models on one machine with 8 NVIDIA P100 GPUs."
+        ],
+        "pdf_page": 7,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q3",
+        "question": "位置编码使用哪两种函数？",
+        "answerable": true,
+        "expected_answer": "正弦和余弦函数。",
+        "evidence": [
+          "In this work, we use sine and cosine functions of different frequencies:"
+        ],
+        "pdf_page": 6,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q4",
+        "question": "论文中，模型训练实际消耗了多少千瓦时（kWh）的电能",
+        "answerable": false,
+        "expected_answer": "无法依据论文确定。",
+        "evidence": [],
+        "pdf_page": null,
+        "insufficient_reason": "论文报告了硬件、训练时间和 FLOPs，但没有报告实际耗电量，也缺少用于确定耗电量的实际平均功率等数据。相关检查位置是第 7～8 页。"
+      },
+      {
+        "id": "q5",
+        "question": "论文采用了多少个并行注意力头？",
+        "answerable": true,
+        "expected_answer": "8 个并行注意力头。",
+        "evidence": [
+          "In this work we employ h = 8 parallel attention layers, or heads."
+        ],
+        "pdf_page": 5,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q6",
+        "question": "论文训练时使用了哪种优化器？",
+        "answerable": true,
+        "expected_answer": "Adam 优化器。",
+        "evidence": [
+          "We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9."
+        ],
+        "pdf_page": 7,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q7",
+        "question": "学习率预热阶段包含多少个训练步？",
+        "answerable": true,
+        "expected_answer": "4000 个训练步。",
+        "evidence": [
+          "We used warmup_steps = 4000."
+        ],
+        "pdf_page": 7,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q8",
+        "question": "base 模型总共训练了多少步，训练了多长时间？",
+        "answerable": true,
+        "expected_answer": "100,000 步，训练时长为 12 小时。",
+        "evidence": [
+          "We trained the base models for a total of 100,000 steps or 12 hours."
+        ],
+        "pdf_page": 7,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q9",
+        "question": "编码器由多少个相同的层堆叠而成？训练时使用了多少块 GPU，型号是什么？",
+        "answerable": true,
+        "expected_answer": "编码器由 6 个相同的层堆叠而成；训练时使用了 8 块 NVIDIA P100 GPU。",
+        "evidence": [
+          "The encoder is composed of a stack of N = 6 identical layers.",
+          "We trained our models on one machine with 8 NVIDIA P100 GPUs."
+        ],
+        "pdf_page": null,
+        "evidence_pages": [
+          2,
+          7
+        ],
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q10",
+        "question": "论文训练模型所用机器的 CPU 型号是什么？",
+        "answerable": false,
+        "expected_answer": "无法依据论文确定训练机器的 CPU 型号。",
+        "evidence": [],
+        "pdf_page": null,
+        "insufficient_reason": "论文第 7 页的硬件说明报告了 8 块 NVIDIA P100 GPU 和训练计划，但没有报告训练机器的 CPU 型号，不能根据 GPU 型号推测 CPU 型号。"
+      },
+      {
+        "id": "q11",
+        "question": "big 模型总共训练了多少步，训练了多长时间？",
+        "answerable": true,
+        "expected_answer": "300,000 步，训练时长为 3.5 天。",
+        "evidence": [
+          "The big models were trained for 300,000 steps (3.5 days)."
+        ],
+        "pdf_page": 7,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q12",
+        "question": "论文在逐位置前馈网络小节中，输入、输出和内部层的维度分别是多少？",
+        "answerable": true,
+        "expected_answer": "输入和输出维度均为 512，内部层维度为 2048。",
+        "evidence": [
+          "The dimensionality of input and output is dmodel = 512 , and the inner-layer has dimensionality df f = 2048."
+        ],
+        "pdf_page": 5,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q13",
+        "question": "解码时，束搜索的束宽和长度惩罚参数分别是多少？",
+        "answerable": true,
+        "expected_answer": "束宽为 4，长度惩罚参数 α 为 0.6。",
+        "evidence": [
+          "We used beam search with a beam size of 4 and length penaltyα = 0.6 [31]."
+        ],
+        "pdf_page": 8,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q14",
+        "question": "训练时标签平滑的参数值是多少？",
+        "answerable": true,
+        "expected_answer": "标签平滑参数为 0.1。",
+        "evidence": [
+          "During training, we employed label smoothing of value ϵls = 0.1 [30]."
+        ],
+        "pdf_page": 8,
+        "insufficient_reason": ""
+      },
+      {
+        "id": "q15",
+        "question": "论文使用了多少个并行注意力头，训练时采用了什么优化器？",
+        "answerable": true,
+        "expected_answer": "使用 8 个并行注意力头，训练采用 Adam 优化器。",
+        "evidence": [
+          "In this work we employ h = 8 parallel attention layers, or heads.",
+          "We used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9."
+        ],
+        "pdf_page": null,
+        "insufficient_reason": "",
+        "evidence_pages": [
+          5,
+          7
+        ]
+      },
+      {
+        "id": "q16",
+        "question": "位置编码采用哪两种函数，学习率预热阶段包含多少个训练步？",
+        "answerable": true,
+        "expected_answer": "位置编码采用正弦和余弦函数，学习率预热阶段包含 4000 个训练步。",
+        "evidence": [
+          "In this work, we use sine and cosine functions of different frequencies:",
+          "We used warmup_steps = 4000."
+        ],
+        "pdf_page": null,
+        "insufficient_reason": "",
+        "evidence_pages": [
+          6,
+          7
+        ]
+      },
+      {
+        "id": "q17",
+        "question": "base 模型在 WMT 2014 英语到德语 newstest2014 测试上的 BLEU 分数是多少，总共训练了多少步？",
+        "answerable": true,
+        "expected_answer": "BLEU 分数为 27.3，总共训练了 100,000 步。",
+        "evidence": [
+          "Table 2: The Transformer achieves better BLEU scores than previous state-of-the-art models on the English-to-German and English-to-French newstest2014 tests at a fraction of the training cost.",
+          "Transformer (base model) 27.3 38.1 3.3 · 1018",
+          "We trained the base models for a total of 100,000 steps or 12 hours."
+        ],
+        "pdf_page": null,
+        "insufficient_reason": "",
+        "evidence_pages": [
+          8,
+          8,
+          7
+        ]
+      },
+      {
+        "id": "q18",
+        "question": "论文报告的训练机器内存（RAM）容量是多少 GB？",
+        "answerable": false,
+        "expected_answer": "无法依据论文确定训练机器的 RAM 容量。",
+        "evidence": [],
+        "pdf_page": null,
+        "insufficient_reason": "论文报告了 GPU 数量、型号与训练计划，没有报告训练机器的 RAM 容量；不能用模型参数量、GPU 数量或型号推断 RAM 容量。"
+      },
+      {
+        "id": "q19",
+        "question": "论文训练环境使用的 CUDA 具体版本号是多少？",
+        "answerable": false,
+        "expected_answer": "无法依据论文确定 CUDA 版本号。",
+        "evidence": [],
+        "pdf_page": null,
+        "insufficient_reason": "论文没有报告训练环境的 CUDA 版本，不能根据 GPU 型号、论文年份或其他外部知识推断。"
+      },
+      {
+        "id": "q20",
+        "question": "论文实验使用的随机种子（random seed）具体数值是多少？",
+        "answerable": false,
+        "expected_answer": "无法依据论文确定实验使用的随机种子数值。",
+        "evidence": [],
+        "pdf_page": null,
+        "insufficient_reason": "论文没有报告实验使用的随机种子数值；文中关于作者排列随机和随机变量的说明不提供实验随机种子。"
+      }
+    ]
+  },
+  "reports": [
+    {
+      "path": "data/evaluations/day14_baseline.json",
+      "sha256": "277c40eea755a24a2c589aa8ecff6f7c8d48ffa08ec9e4811837bdaa95b8a271"
+    },
+    {
+      "path": "data/evaluations/day14_q5_q8.json",
+      "sha256": "dc7794988c97cfe5ad459e29ae6a6355c4e0347a7651edae0c24915fe8555cde"
+    },
+    {
+      "path": "data/evaluations/day14_q9.json",
+      "sha256": "53c49456cb0f95722ea3cd6facd377f97c8b79f5a9059fe52d2abea954792ab7"
+    },
+    {
+      "path": "data/evaluations/day14_q10.json",
+      "sha256": "a9e935cbb4b2378020d0ee13f0e767ee373d52a0d90c071c4625ebafa45e5f8d"
+    },
+    {
+      "path": "data/evaluations/day14_q11_q20.json",
+      "sha256": "91c70acaf704d2cec278c0132f020c28415123aa86f642a820fefaa91330b160"
+    }
+  ],
+  "sample_scope": "One fixed 11-page paper, 20 fixed development questions, one retained observed result per case. Mixed learner-reported and instrumented live runs. This is a learning/development baseline, not an independent held-out generalization estimate.",
+  "retrieval_definition": "Full support for every required fact, allowing semantically equivalent evidence. Multi-part questions count only if all parts are supported. Unanswerable cases are excluded from retrieval denominators.",
+  "citation_definition": "Among valid displayed answers with nonempty evidence, whether the quotes come from retrieved text and support the answer; empty or unavailable citations are not counted as successes.",
+  "review_method": "Assistant semantic inspection with local PDF and saved candidates; no additional model grading calls.",
+  "counts": {
+    "total": 20,
+    "normal_return": 16,
+    "answer_correct": 13,
+    "answer_incorrect": 3,
+    "answer_unavailable": 4,
+    "validation_errors": 4,
+    "answerable": 15,
+    "unanswerable": 5,
+    "single_topic_questions": 11,
+    "multiple_evidence_questions": 4
+  },
+  "metrics": {
+    "normal_return_all_attempts": {
+      "numerator": 16,
+      "denominator": 20,
+      "ratio": 0.8
+    },
+    "correct_answer_all_attempts": {
+      "numerator": 13,
+      "denominator": 20,
+      "ratio": 0.65
+    },
+    "correct_answer_evaluated_only": {
+      "numerator": 13,
+      "denominator": 16,
+      "ratio": 0.8125
+    },
+    "top1_full_support_answerable_only": {
+      "numerator": 4,
+      "denominator": 15,
+      "ratio": 0.26666666666666666
+    },
+    "top3_full_support_answerable_only": {
+      "numerator": 9,
+      "denominator": 15,
+      "ratio": 0.6
+    },
+    "citation_supported_quoted_valid_answers_only": {
+      "numerator": 9,
+      "denominator": 9,
+      "ratio": 1.0
+    },
+    "correct_abstention_unanswerable_only": {
+      "numerator": 4,
+      "denominator": 5,
+      "ratio": 0.8
+    }
+  },
+  "failure_groups": {
+    "normal_but_did_not_answer_answerable_question": [
+      "q5",
+      "q12",
+      "q13"
+    ],
+    "output_validation_error": [
+      "q4",
+      "q15",
+      "q16",
+      "q17"
+    ],
+    "partial_retrieval_also_triggered_validation": [
+      "q15",
+      "q16",
+      "q17"
+    ]
+  },
+  "case_summaries": [
+    {
+      "case_id": "q1",
+      "question": "论文中的编码器由多少个相同的层堆叠而成？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_baseline.json",
+      "status": "ok",
+      "top1_hit": true,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "第 1 名 p2:c7 包含直接依据；判断依据来自本次回传结果。"
+    },
+    {
+      "case_id": "q2",
+      "question": "训练使用多少块 GPU，型号是什么？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_baseline.json",
+      "status": "ok",
+      "top1_hit": true,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "第 1 名 p7:c4 同时覆盖 GPU 数量和型号。"
+    },
+    {
+      "case_id": "q3",
+      "question": "位置编码使用哪两种函数？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_baseline.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "第 1 名 p5:c5 只介绍位置编码的动机，没有两种函数名称；第 3 名 p6:c2 包含名称和公式。回传引用与片段原文按空白归一化匹配。PDF 提取会丢失公式上下标排版，人工核对时同时参考原论文第 6 页。本次问法与 Day 12 不同，不能将命中变化归因于检索算法改进。"
+    },
+    {
+      "case_id": "q4",
+      "question": "论文中，模型训练实际消耗了多少千瓦时（kWh）的电能",
+      "question_type": "unanswerable",
+      "report": "data/evaluations/day14_baseline.json",
+      "status": "validation_error",
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": null,
+      "citation_supported": null,
+      "review_notes": "无答案题，检索命中项不适用。页面在校验成功后才保存和展示本轮回答及候选，本次只取得错误提示；候选标识和被拒绝的原始回答未记录。该错误说明非空不足原因和非空依据同时出现，但不能据此补写具体回答。记录为输出校验失败，不算正常拒答，不使用旧查询结果填补。"
+    },
+    {
+      "case_id": "q5",
+      "question": "论文采用了多少个并行注意力头？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q5_q8.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": false,
+      "answer_correct": false,
+      "citation_supported": null,
+      "review_notes": "The paper and saved index contain the answer (8 heads), but none of the three retrieved candidates supplies it. The model appropriately abstained based on its supplied context; the paper question remains unanswered. This is a retrieval miss. No quotation was returned, so citation support is not applicable."
+    },
+    {
+      "case_id": "q6",
+      "question": "论文训练时使用了哪种优化器？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q5_q8.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "The second candidate p7:c4 states Adam, beta1=0.9, beta2=0.98, epsilon=10^-9, and a varying learning rate. The answer and its additional parameter details are supported by the quoted passage."
+    },
+    {
+      "case_id": "q7",
+      "question": "学习率预热阶段包含多少个训练步？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q5_q8.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "The second candidate p7:c5 contains the explicit 4000-step value. The first candidate only introduces warmup_steps without giving its value. The quotation is an exact match including its line break."
+    },
+    {
+      "case_id": "q8",
+      "question": "base 模型总共训练了多少步，训练了多长时间？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q5_q8.json",
+      "status": "ok",
+      "top1_hit": true,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "The first candidate p7:c4 supplies both 100,000 training steps and 12 hours. The answer covers both requested facts; the quotation matches after whitespace normalization."
+    },
+    {
+      "case_id": "q9",
+      "question": "编码器由多少个相同的层堆叠而成？训练时使用了多少块 GPU，型号是什么？",
+      "question_type": "multiple_evidence",
+      "report": "data/evaluations/day14_q9.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "第一名 p10:c3 是参考文献，未支持本题要求。第二、三名分别支持硬件与层数，Top-3 合并完整覆盖。硬件原文是第 2 页介绍 Transformer 的段落末尾，第 7 页标准引用不是唯一有效依据；不能因未召回第 7 页而判失败。回答中的 P100 GPU 与论文中 NVIDIA P100 GPU 对应同一型号，题目未额外询问厂商，因此回答完整正确。本次两条引用都来自第 2 页不同片段，属于跨片段问答，不能将本次结果作为必须跨页检索的验证。预选标准答案和原始运行记录保持原样。"
+    },
+    {
+      "case_id": "q10",
+      "question": "论文训练模型所用机器的 CPU 型号是什么？",
+      "question_type": "unanswerable",
+      "report": "data/evaluations/day14_q10.json",
+      "status": "ok",
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": true,
+      "citation_supported": null,
+      "review_notes": "核对候选：p11:c4 为参考文献，p1:c2 为摘要中的架构与翻译实验描述，p9:c1 为架构变体实验表；均未给出 CPU 型号。前期已核对论文相关硬件说明和全文提取文本，CPU 型号没有提供。页面正常说明不足并显示无依据，判为正常且正确的资料不足回答；与 q4 输出校验失败、q5 因漏检未答出论文已有答案分别记录。"
+    },
+    {
+      "case_id": "q11",
+      "question": "big 模型总共训练了多少步，训练了多长时间？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": true,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "第一候选覆盖 300,000 步与 3.5 天；额外回答的 8 块 P100 GPU 也得到本次候选支持。两条引用分别在第 7、8 页对应片段中找到。"
+    },
+    {
+      "case_id": "q12",
+      "question": "论文在逐位置前馈网络小节中，输入、输出和内部层的维度分别是多少？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": false,
+      "answer_correct": false,
+      "citation_supported": null,
+      "review_notes": "前两名为参考文献，第三名 Table 3 含 base 行 d_model=512、d_ff=2048 的数值线索，但缺少将它们对应到所问前馈网络输入/输出与内部层的定义。按完整依据标准不计完整命中；没有答出论文第 5 页已明确给出的答案，正确性为 false。不是仅因引用未匹配预选句子而判失败。"
+    },
+    {
+      "case_id": "q13",
+      "question": "解码时，束搜索的束宽和长度惩罚参数分别是多少？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": false,
+      "answer_correct": false,
+      "citation_supported": null,
+      "review_notes": "三个候选都是参考文献，没有束宽 4 和长度惩罚 0.6 的依据；论文第 8 页有答案，模型按当前资料说明不足合理，但整体没有完成题目。"
+    },
+    {
+      "case_id": "q14",
+      "question": "训练时标签平滑的参数值是多少？",
+      "question_type": "single_topic",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "review_notes": "第二候选明确给出标签平滑参数 0.1，回答和原文引用均正确。"
+    },
+    {
+      "case_id": "q15",
+      "question": "论文使用了多少个并行注意力头，训练时采用了什么优化器？",
+      "question_type": "multiple_evidence",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "validation_error",
+      "top1_hit": false,
+      "top3_hit": false,
+      "answer_correct": null,
+      "citation_supported": null,
+      "review_notes": "仅第三候选提供 Adam 优化器，缺少注意力头数量；8 块 GPU 不能作为 8 个注意力头的依据。原始返回给出了优化器部分答案，同时附引用和非空不足说明，触发现有校验。页面未产生有效回答，正确性及引用支持不评估。"
+    },
+    {
+      "case_id": "q16",
+      "question": "位置编码采用哪两种函数，学习率预热阶段包含多少个训练步？",
+      "question_type": "multiple_evidence",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "validation_error",
+      "top1_hit": false,
+      "top3_hit": false,
+      "answer_correct": null,
+      "citation_supported": null,
+      "review_notes": "第一候选有 4000 个预热步，但候选没有正弦和余弦两种位置编码函数。原始返回部分回答并附引用和不足说明，被校验拦截。"
+    },
+    {
+      "case_id": "q17",
+      "question": "base 模型在 WMT 2014 英语到德语 newstest2014 测试上的 BLEU 分数是多少，总共训练了多少步？",
+      "question_type": "multiple_evidence",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "validation_error",
+      "top1_hit": false,
+      "top3_hit": false,
+      "answer_correct": null,
+      "citation_supported": null,
+      "review_notes": "第二候选 Table 2 可支持 base 模型 EN-DE newstest2014 的 27.3 BLEU，但未召回 100,000 个训练步的依据。原始返回部分回答后附引用与不足说明，被校验拦截；没有用 dev 集分数或 big 模型分数替代。"
+    },
+    {
+      "case_id": "q18",
+      "question": "论文报告的训练机器内存（RAM）容量是多少 GB？",
+      "question_type": "unanswerable",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": true,
+      "citation_supported": null,
+      "review_notes": "论文没有报告 RAM 容量，本次候选也没有该信息；正常说明不足，依据为空。"
+    },
+    {
+      "case_id": "q19",
+      "question": "论文训练环境使用的 CUDA 具体版本号是多少？",
+      "question_type": "unanswerable",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": true,
+      "citation_supported": null,
+      "review_notes": "论文未提供 CUDA 版本，本次正确说明资料不足，没有从 GPU 型号推测版本。"
+    },
+    {
+      "case_id": "q20",
+      "question": "论文实验使用的随机种子（random seed）具体数值是多少？",
+      "question_type": "unanswerable",
+      "report": "data/evaluations/day14_q11_q20.json",
+      "status": "ok",
+      "top1_hit": null,
+      "top3_hit": null,
+      "answer_correct": true,
+      "citation_supported": null,
+      "review_notes": "论文未提供实验随机种子数值，模型正常说明不足，引用为空。"
+    }
+  ],
+  "preflight_note": "The q11-q20 harness initially failed a request assertion because PowerShell replaced Unicode punctuation. Those diagnostic runs issued zero model calls and are preserved under preflight_diagnostics. After fixing the harness, exactly ten real model calls were made, one per remaining case; no paid retries.",
+  "completion": "Day 14 baseline complete; retained failures are improvement targets for later lessons, not omitted from the counts."
+}

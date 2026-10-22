@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "run_id": "day14_q9",
+  "recorded_date": "2026-10-21",
+  "source_commit": "5b9ebabfa57b0e15ec4215815ed4dc1a404682cf",
+  "source_commit_note": "记录整理时的仓库 HEAD；页面实际运行的源码快照未自动采集。整理时 retriever.py 有删除练习注释的工作区改动，未改变检索逻辑。",
+  "dataset": "data/evaluation_questions.json",
+  "dataset_sha256": "9c2f320791d2ccd3510f1c04093b59378965b95760205da947e464c4ff351983",
+  "collection_note": "学习者按 q9 测试步骤回传三个候选标识、两项命中判断、页面回答和两条引用。问题原句沿用 q9；未自动采集请求消息、清空状态、运行时间、分数或原始 API 响应。recorded_date 是整理日期。助手没有重跑检索或调用模型。",
+  "config_reference": {
+    "index_dir": "data/indexes/day11_s800_o100",
+    "metadata_sha256": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546",
+    "index_sha256": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "top_k": 3,
+    "note": "依据当前保存的索引和工作台配置，用于核对回传内容；不作为自动采集的运行配置快照。"
+  },
+  "field_notes": {
+    "status": "ok 表示学习者回传了正常页面回答；正确性和引用支持另行核对。",
+    "retrieved_chunk_ids": "按学习者回传顺序保存；未回传相似度分数。",
+    "actual_answer": "逐字保存学习者回传的页面回答，不补写 NVIDIA 等原回答没有的内容。",
+    "actual_evidence": "按学习者回传顺序保存页面引用；不是原始 API 字段快照。",
+    "top1_hit": "第一条候选是否支持问题要求的全部信息。",
+    "top3_hit": "前三条候选合起来是否支持编码器层数、GPU 数量和型号；可接受语义等价的其他直接依据，不要求逐字匹配预选标准引用。",
+    "answer_correct": "对照问题要求人工判断语义正确和完整，不要求逐字等于 expected_answer。",
+    "citation_supported": "人工核对每条引用确实出现在本次候选和对应 PDF 页，并且两条引用共同支持完整回答。",
+    "citation_checks": "通过本地保存的片段与 PDF 核对得出的引用映射；不是模型自动返回的结构化来源。",
+    "error": "回传内容中无页面错误，记为 null。"
+  },
+  "results": [
+    {
+      "case_id": "q9",
+      "question": "编码器由多少个相同的层堆叠而成？训练时使用了多少块 GPU，型号是什么？",
+      "status": "ok",
+      "retrieved_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c7"
+      ],
+      "actual_answer": "编码器由 N=6 个相同的层堆叠而成。训练时使用了 8 块 P100 GPU。",
+      "actual_evidence": [
+        "Encoder: The encoder is composed of a stack of N = 6 identical layers.",
+        "translation quality after being trained for as little as twelve hours on eight P100 GPUs."
+      ],
+      "top1_hit": false,
+      "top3_hit": true,
+      "answer_correct": true,
+      "citation_supported": true,
+      "error": null,
+      "learner_reported_hits": {
+        "encoder_layers": true,
+        "gpu_count_and_model": true
+      },
+      "component_checks": [
+        {
+          "component": "encoder_layers",
+          "expected_value": "6 层",
+          "top1_hit": false,
+          "top3_hit": true,
+          "supporting_chunk_ids": [
+            "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c7"
+          ],
+          "supporting_ranks": [
+            3
+          ]
+        },
+        {
+          "component": "gpu_count_and_model",
+          "expected_value": "8 块 P100 GPU",
+          "top1_hit": false,
+          "top3_hit": true,
+          "supporting_chunk_ids": [
+            "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3"
+          ],
+          "supporting_ranks": [
+            2
+          ]
+        }
+      ],
+      "citation_checks": [
+        {
+          "evidence_index": 0,
+          "quote": "Encoder: The encoder is composed of a stack of N = 6 identical layers.",
+          "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c7",
+          "rank": 3,
+          "pdf_page": 2,
+          "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "matches_chunk_text": true,
+          "matches_pdf_text": true,
+          "supports": "编码器由 6 个相同的层堆叠"
+        },
+        {
+          "evidence_index": 1,
+          "quote": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.",
+          "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+          "rank": 2,
+          "pdf_page": 2,
+          "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "matches_chunk_text": true,
+          "matches_pdf_text": true,
+          "supports": "训练使用 8 块 P100 GPU"
+        }
+      ],
+      "actual_evidence_pdf_pages": [
+        2,
+        2
+      ],
+      "evidence_layout": "multi_chunk_same_page",
+      "notes": "第一名 p10:c3 是参考文献，未支持本题要求。第二、三名分别支持硬件与层数，Top-3 合并完整覆盖。硬件原文是第 2 页介绍 Transformer 的段落末尾，第 7 页标准引用不是唯一有效依据；不能因未召回第 7 页而判失败。回答中的 P100 GPU 与论文中 NVIDIA P100 GPU 对应同一型号，题目未额外询问厂商，因此回答完整正确。本次两条引用都来自第 2 页不同片段，属于跨片段问答，不能将本次结果作为必须跨页检索的验证。预选标准答案和原始运行记录保持原样。"
+    }
+  ],
+  "summary": {
+    "case_count": 1,
+    "normal_response_count": 1,
+    "top1_full_hit_count": 0,
+    "top3_full_hit_count": 1,
+    "answer_correct_count": 1,
+    "citation_supported_count": 1
+  }
+}

@@ -1,0 +1,82 @@
+%PDF-1.3
+%‚„œ”
+1 0 obj
+<<
+/Producer (pypdf)
+/Title (Paper Sage \055 Retrieval Scope Test)
+/Author (Paper Sage learning project)
+/Subject (Synthetic learning fixture\054 not a research paper)
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Count 1
+/Kids [ 4 0 R ]
+>>
+endobj
+3 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/Resources <<
+/Font <<
+/F1 <<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica
+/Encoding /WinAnsiEncoding
+>>
+/F2 <<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+/Encoding /WinAnsiEncoding
+>>
+>>
+>>
+/MediaBox [ 0.0 0.0 612 792 ]
+/Parent 2 0 R
+/Contents 5 0 R
+>>
+endobj
+5 0 obj
+<<
+/Length 693
+>>
+stream
+q
+0.13 0.18 0.26 rg
+BT /F2 22 Tf 1 0 0 1 54 738 Tm (Paper Sage) Tj ET
+BT /F2 18 Tf 1 0 0 1 54 704 Tm (Retrieval scope test) Tj ET
+BT /F2 10 Tf 1 0 0 1 54 669 Tm (SYNTHETIC TEST DOCUMENT - NOT A RESEARCH PAPER) Tj ET
+BT /F1 11 Tf 1 0 0 1 54 623 Tm (This file is a learning fixture for the Paper Sage project.) Tj ET
+BT /F2 11 Tf 1 0 0 1 54 593 Tm (The verification code of this test document is SCOPE-B-742.) Tj ET
+BT /F1 11 Tf 1 0 0 1 54 563 Tm (The code is invented solely for testing document selection.) Tj ET
+BT /F1 11 Tf 1 0 0 1 54 533 Tm (It is not a result or claim from Attention Is All You Need.) Tj ET
+BT /F1 9 Tf 1 0 0 1 54 70 Tm (Fixture: day18_scope_note.pdf | Version: 1) Tj ET
+Q
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000201 00000 n 
+0000000260 00000 n 
+0000000309 00000 n 
+0000000608 00000 n 
+trailer
+<<
+/Size 6
+/Root 3 0 R
+/Info 1 0 R
+>>
+startxref
+1352
+%%EOF

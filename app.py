@@ -2,15 +2,24 @@ import streamlit as st
 from llm import ask_deepseek, IncompleteAnswerError
 from json import JSONDecodeError
 from sentence_transformers import SentenceTransformer
-from index_store import load_index
 from retriever import retrieve_dense
 from rag_context import build_reference_text
 from pathlib import Path
+from pypdf.errors import PyPdfError
+from pdf_loader import load_pdf_pages
+from retrieval_scope import get_selected_documents, load_scope_index
+from document_importer import (
+    get_file_hash,
+    find_existing_document,
+    save_uploaded_pdf,
+    build_document_index,
+)
 from project_store import (
     load_project,
     get_index_dir,
     list_projects,
     create_project,
+    save_project,
 )
 from openai import (
     APIError,
@@ -40,16 +49,15 @@ if create_submitted:
 
         st.sidebar.success(f"已创建：{new_project['name']}")
 
-@st.cache_resource(show_spinner="正在加载论文索引和向量模型……")
-def load_retrieval_resources(output_dir):
-    print("正在初始化检索资源")
+@st.cache_resource(show_spinner="正在加载向量模型……")
+def load_embedding_model(model_name):
+    return SentenceTransformer(model_name, device="cpu")
 
-    index, metadata = load_index(output_dir)
 
-    model = SentenceTransformer(
-        metadata["embedding_config"]["model_name"],
-        device="cpu",
-    )
+@st.cache_resource(show_spinner="正在加载所选论文的索引……")
+def load_retrieval_resources(project, selected_document_ids):
+    index, metadata = load_scope_index(project, selected_document_ids)
+    model = load_embedding_model(metadata["embedding_config"]["model_name"])
 
     return model, index, metadata
 
@@ -116,6 +124,75 @@ try:
         st.session_state.messages = []
         st.session_state.active_project_id = project["project_id"]
 
+    uploaded_file = st.sidebar.file_uploader(
+        "上传 PDF 论文",
+        type=["pdf"],
+        accept_multiple_files=False,
+        key=f"pdf_upload_{project['project_id']}",
+    )
+
+    if uploaded_file is not None:
+        # 调用 uploaded_file 的 getvalue() 方法
+        file_bytes = uploaded_file.getvalue()
+        file_hash = get_file_hash(file_bytes)
+        try:
+            existing_document = find_existing_document(project, file_hash)
+        except (OSError, ValueError) as error:
+            st.sidebar.error(f"导入失败（检查重复文件）：{error}")
+            st.stop()
+
+        if existing_document is not None:
+            st.sidebar.info("这份论文已存在于当前项目中。")
+        else:
+            if st.sidebar.button(
+                "导入论文",
+                key=f"parse_pdf_{project['project_id']}",
+            ):
+                import_stage = "保存 PDF"
+                try:
+                    document_id = f"doc_{file_hash}"
+                    pdf_path = save_uploaded_pdf(
+                        project["project_id"],
+                        document_id,
+                        uploaded_file.name,
+                        file_bytes,
+                    )
+
+                    import_stage = "解析 PDF"
+                    pages = load_pdf_pages(pdf_path.as_posix(), document_id)
+
+                    import_stage = "构建索引"
+                    index_version = "v1"
+                    new_index_dir = get_index_dir(
+                        project["project_id"], document_id, index_version
+                    )
+                    with st.spinner("正在分块并建立索引……"):
+                        index_info = build_document_index(
+                            pages, project["project_id"], new_index_dir
+                        )
+
+                    import_stage = "登记文档"
+                    new_document = {
+                        "document_id": document_id,
+                        "source": pdf_path.as_posix(),
+                        "index_version": index_version,
+                        "file_hash": file_hash,
+                        "page_count": len(pages),
+                        "chunk_count": index_info["chunk_count"],
+                    }
+                    # 保存成功后再更新页面使用的项目，失败时保留原文档列表。
+                    updated_project = project.copy()
+                    updated_project["documents"] = project["documents"] + [new_document]
+                    save_project(updated_project)
+                    project = updated_project
+                except (OSError, ValueError, RuntimeError, PyPdfError) as error:
+                    st.sidebar.error(f"导入失败（{import_stage}）：{error}")
+                else:
+                    st.sidebar.success(
+                        f"已导入 {pdf_path.name}："
+                        f"{len(pages)} 页，{index_info['chunk_count']} 个片段。"
+                    )
+
     st.sidebar.caption(
         f"本项目文档数量：{len(project['documents'])}"
     )
@@ -130,26 +207,71 @@ try:
         file_name = Path(document_record["source"]).name
         st.sidebar.write(file_name)
 
-    document = project["documents"][0]
+    document_names = {}
+    for document_record in project["documents"]:
+        document_names[document_record["document_id"]] = Path(
+            document_record["source"]
+        ).name
 
-    output_dir = get_index_dir(
-        # 依次传入项目标识、文档标识、索引版本
-        # 从上面的 project 和 document 字典中读取
-        project["project_id"],
-        document["document_id"],
-        document["index_version"]
+    def format_document_name(document_id):
+        return document_names[document_id]
+
+    scope_mode = st.sidebar.radio(
+        "检索范围",
+        options=["全部文档", "指定文档"],
+        key=f"scope_mode_{project['project_id']}",
     )
 
+    if scope_mode == "全部文档":
+        selected_document_ids = list(document_names.keys())
+    else:
+        selected_document_ids = st.sidebar.multiselect(
+            "选择参与问答的论文",
+            options=list(document_names.keys()),
+            format_func=format_document_name,
+            key=f"scope_documents_{project['project_id']}",
+        )
+
+    selected_documents = get_selected_documents(
+        project,
+        selected_document_ids,  # 传入上面得到的文档标识列表
+    )
+
+    st.sidebar.caption(f"已选文档数量：{len(selected_documents)}")
+
+    # 对实际参与检索的文档排序，选择顺序不同仍视为同一范围。
+    scope_documents = tuple(sorted(
+        (document["document_id"], document["index_version"], document["source"])
+        for document in selected_documents
+    ))
+    current_scope = (project["project_id"], scope_documents)
+
+    # 在空选择停止执行之前清空历史，避免恢复选择时带回旧上下文。
+    if st.session_state.get("active_scope") != current_scope:
+        st.session_state.messages = []
+        st.session_state.active_scope = current_scope
+
+    if not selected_documents:
+        st.info("请至少选择一篇论文参与问答。")
+        st.stop()
+
+    # 缓存参数包含项目记录（含索引版本）和排序后的所选文档标识。
     embedding_model, index, metadata = load_retrieval_resources(
-        str(output_dir)
+        project,
+        tuple(sorted(selected_document_ids)),
     )
 except (OSError, ValueError, RuntimeError) as error:
     st.error(f"加载检索资源失败：{error}")
     st.stop()
 
 st.caption(
-    f"当前论文：Attention Is All You Need"
+    f"当前项目：{project['name']}"
+    f" · 检索文档：{len(selected_documents)} / {len(project['documents'])}"
     f" · 可检索片段：{index.ntotal}"
+)
+st.caption(
+    "参与问答的论文："
+    + "、".join(Path(document["source"]).name for document in selected_documents)
 )
 
 # 第一次打开会话时，创建聊天记录列表

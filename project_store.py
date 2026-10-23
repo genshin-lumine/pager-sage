@@ -1,4 +1,5 @@
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from uuid import uuid4
 import json
 
@@ -11,12 +12,19 @@ def save_project(project):
     project_dir = Path("data") / "projects" / project["project_id"]
     project_dir.mkdir(parents=True, exist_ok=True)
 
-    with (project_dir / "project.json").open(
-        "w", encoding="utf-8"
-    ) as file:
-        # 使用 json.dump，把 project 写入 file
-        # 设置 ensure_ascii=False、indent=2
-        json.dump(project, file, ensure_ascii=False, indent=2)
+    temp_path = None
+    try:
+        # 先写同目录临时文件，全部写完并关闭后再替换正式记录。
+        with NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=project_dir,
+            prefix=".project-", suffix=".tmp", delete=False,
+        ) as file:
+            temp_path = Path(file.name)
+            json.dump(project, file, ensure_ascii=False, indent=2)
+        temp_path.replace(project_dir / "project.json")
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
 
 def load_project(project_id):
     project_path = Path("data") / "projects" / project_id / "project.json"

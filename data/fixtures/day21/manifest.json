@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "purpose": "synthetic_project_scope_test",
+  "question": "这份测试文档的校验码是什么？",
+  "documents": [
+    {
+      "fixture_id": "project_a",
+      "path": "data/fixtures/day21/project_a/scope_note.pdf",
+      "expected_code": "PROJECT-A-217",
+      "sha256": "fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+      "page_count": 1,
+      "chunk_count": 1,
+      "characters": 367
+    },
+    {
+      "fixture_id": "project_b",
+      "path": "data/fixtures/day21/project_b/scope_note.pdf",
+      "expected_code": "PROJECT-B-963",
+      "sha256": "77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+      "page_count": 1,
+      "chunk_count": 1,
+      "characters": 367
+    }
+  ]
+}

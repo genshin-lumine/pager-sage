@@ -8,6 +8,17 @@ from pathlib import Path
 from pypdf.errors import PyPdfError
 from pdf_loader import load_pdf_pages
 from retrieval_scope import get_selected_documents, load_scope_index
+from chat_session import (
+    create_chat_session,
+    ensure_chat_session,
+    build_history_messages,
+)
+from document_deleter import (
+    delete_document,
+    retry_document_cleanup,
+    begin_document_import,
+    finish_document_import,
+)
 from document_importer import (
     get_file_hash,
     find_existing_document,
@@ -19,7 +30,6 @@ from project_store import (
     get_index_dir,
     list_projects,
     create_project,
-    save_project,
 )
 from openai import (
     APIError,
@@ -97,6 +107,7 @@ try:
     projects = list_projects()
 
     if not projects:
+        st.session_state["chat_session"] = None
         st.info("目前还没有项目。")
         st.stop()
 
@@ -114,15 +125,94 @@ try:
         key="selected_project_id",
     )
 
+    # 先解除旧项目的会话归属，读取失败或切入空项目时也不保留旧会话。
+    chat_session = st.session_state.get("chat_session")
+    if (
+        chat_session is not None
+        and chat_session["scope_key"][0] != selected_project_id
+    ):
+        st.session_state["chat_session"] = None
+
     project = load_project(
         # 传入下拉框返回的项目标识
         selected_project_id
     )
 
-    # 切换项目时，清空当前聊天。
-    if st.session_state.get("active_project_id") != project["project_id"]:
-        st.session_state.messages = []
-        st.session_state.active_project_id = project["project_id"]
+    # 管理入口在范围控件之前，删除后才能先修正多选值，再创建控件。
+    with st.sidebar.expander("文档管理"):
+        notice = st.session_state.pop("document_action_notice", None)
+        if notice is not None and notice["project_id"] == selected_project_id:
+            if notice["error"]:
+                st.warning(notice["message"])
+            else:
+                st.success(notice["message"])
+        management_names = {
+            doc["document_id"]: Path(doc["source"]).name
+            for doc in project["documents"]
+        }
+        if management_names:
+            delete_key = f"delete_document_{selected_project_id}"
+            if st.session_state.get(delete_key) not in management_names:
+                st.session_state[delete_key] = next(iter(management_names))
+            delete_document_id = st.selectbox(
+                "选择要删除的论文",
+                options=list(management_names),
+                format_func=lambda doc_id: management_names[doc_id],
+                key=delete_key,
+            )
+            st.caption("删除会移除项目记录、上传副本与全部索引版本，并清空当前会话。公共原始 PDF 会保留。")
+            if st.button("删除所选文档", key=f"delete_submit_{selected_project_id}"):
+                try:
+                    updated_project, cleanup_error = delete_document(
+                        selected_project_id, delete_document_id
+                    )
+                except (OSError, ValueError, RuntimeError) as error:
+                    st.error(f"删除失败，文档记录保留：{error}")
+                else:
+                    project = updated_project
+                    # 只清除范围索引缓存，模型对象继续复用。
+                    load_retrieval_resources.clear()
+                    st.session_state["chat_session"] = None
+                    scope_key = f"scope_documents_{selected_project_id}"
+                    if scope_key in st.session_state:
+                        st.session_state[scope_key] = [
+                            doc_id for doc_id in st.session_state[scope_key]
+                            if doc_id != delete_document_id
+                        ]
+                    st.session_state["document_action_notice"] = {
+                        "project_id": selected_project_id,
+                        "error": bool(cleanup_error),
+                        "message": (
+                            f"文档已退出项目，清理流程尚未完成：{cleanup_error}"
+                            if cleanup_error else "文档已删除，当前会话已清空。"
+                        ),
+                    }
+                    st.rerun()
+
+        # 空项目也必须能重试，不能把入口放到空项目的 st.stop() 后面。
+        for pending_document in list(project.get("pending_cleanup", [])):
+            pending_id = pending_document["document_id"]
+            st.warning(f"待清理文件：{Path(pending_document['source']).name}")
+            if st.button(
+                "重试清理", key=f"cleanup_{selected_project_id}_{pending_id}"
+            ):
+                try:
+                    project, cleanup_error = retry_document_cleanup(
+                        selected_project_id, pending_id
+                    )
+                except (OSError, ValueError, RuntimeError) as error:
+                    st.error(f"清理失败：{error}")
+                else:
+                    if cleanup_error:
+                        st.error(f"清理未完成，可稍后重试：{cleanup_error}")
+                    else:
+                        load_retrieval_resources.clear()
+                        st.session_state["document_action_notice"] = {
+                            "project_id": selected_project_id,
+                            "error": False,
+                            "message": "残留文件已清理。",
+                        }
+                        st.rerun()
 
     uploaded_file = st.sidebar.file_uploader(
         "上传 PDF 论文",
@@ -143,14 +233,32 @@ try:
 
         if existing_document is not None:
             st.sidebar.info("这份论文已存在于当前项目中。")
+        elif any(
+            doc["document_id"] == f"doc_{file_hash}"
+            for doc in project.get("pending_cleanup", [])
+        ):
+            st.sidebar.warning("这份论文仍有待清理文件，请在文档管理中完成清理后重新导入。")
         else:
             if st.sidebar.button(
                 "导入论文",
                 key=f"parse_pdf_{project['project_id']}",
             ):
-                import_stage = "保存 PDF"
+                import_stage = "登记导入待办"
+                import_started = False
                 try:
                     document_id = f"doc_{file_hash}"
+                    index_version = "v1"
+                    planned_path = (
+                        Path("data") / "papers" / project["project_id"]
+                        / document_id / Path(uploaded_file.name).name
+                    )
+                    project = begin_document_import(project["project_id"], {
+                        "document_id": document_id,
+                        "source": planned_path.as_posix(),
+                        "index_version": index_version,
+                    })
+                    import_started = True
+                    import_stage = "保存 PDF"
                     pdf_path = save_uploaded_pdf(
                         project["project_id"],
                         document_id,
@@ -162,7 +270,6 @@ try:
                     pages = load_pdf_pages(pdf_path.as_posix(), document_id)
 
                     import_stage = "构建索引"
-                    index_version = "v1"
                     new_index_dir = get_index_dir(
                         project["project_id"], document_id, index_version
                     )
@@ -180,14 +287,21 @@ try:
                         "page_count": len(pages),
                         "chunk_count": index_info["chunk_count"],
                     }
-                    # 保存成功后再更新页面使用的项目，失败时保留原文档列表。
-                    updated_project = project.copy()
-                    updated_project["documents"] = project["documents"] + [new_document]
-                    save_project(updated_project)
-                    project = updated_project
+                    # 成功登记文档时，一起移除这次导入的清理待办。
+                    project = finish_document_import(project["project_id"], new_document)
                 except (OSError, ValueError, RuntimeError, PyPdfError) as error:
                     st.sidebar.error(f"导入失败（{import_stage}）：{error}")
+                    if import_started:
+                        try:
+                            project, cleanup_error = retry_document_cleanup(
+                                project["project_id"], document_id
+                            )
+                        except (OSError, ValueError, RuntimeError) as cleanup_failure:
+                            cleanup_error = str(cleanup_failure)
+                        if cleanup_error:
+                            st.sidebar.warning(f"残留文件待清理：{cleanup_error}。重新运行页面后可在文档管理中重试。")
                 else:
+                    load_retrieval_resources.clear()
                     st.sidebar.success(
                         f"已导入 {pdf_path.name}："
                         f"{len(pages)} 页，{index_info['chunk_count']} 个片段。"
@@ -198,6 +312,10 @@ try:
     )
 
     if not project["documents"]:
+        st.session_state["chat_session"] = ensure_chat_session(
+            st.session_state.get("chat_session"),
+            (project["project_id"], ()),
+        )
         st.info("当前项目还没有论文。")
         st.stop()
 
@@ -246,10 +364,11 @@ try:
     ))
     current_scope = (project["project_id"], scope_documents)
 
-    # 在空选择停止执行之前清空历史，避免恢复选择时带回旧上下文。
-    if st.session_state.get("active_scope") != current_scope:
-        st.session_state.messages = []
-        st.session_state.active_scope = current_scope
+    # 范围变化时新建会话；空选择也先更新会话，再停止执行。
+    chat_session = ensure_chat_session(
+        st.session_state.get("chat_session"), current_scope
+    )
+    st.session_state["chat_session"] = chat_session
 
     if not selected_documents:
         st.info("请至少选择一篇论文参与问答。")
@@ -274,22 +393,27 @@ st.caption(
     + "、".join(Path(document["source"]).name for document in selected_documents)
 )
 
-# 第一次打开会话时，创建聊天记录列表
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# 清除回话记录
+# 清空会话会生成新编号，检索范围与已加载资源继续保留。
 if st.button("清空会话"):
-    st.session_state.messages = []
+    chat_session = create_chat_session(current_scope)
+    st.session_state["chat_session"] = chat_session
+
+# 展示聊天、准备模型历史前，检查当前会话的范围归属。
+try:
+    history_messages = build_history_messages(chat_session, current_scope)
+except ValueError as error:
+    st.error(f"会话检查失败：{error}")
+    st.stop()
 
 # 每次页面重新运行时，重新显示已有记录
-for message in st.session_state.messages:
+for message in chat_session["messages"]:
     render_message(message)
 
 
 question = st.text_input(
     "你想了解论文的什么内容？",
     placeholder="例如：这篇论文的主要贡献是什么？",
+    key=f"question_{chat_session['session_id']}",
 )
 
 
@@ -330,15 +454,6 @@ if st.button("提交问题"):
             "content": question.strip(),
         }
 
-        history_messages = []
-
-        for message in st.session_state.messages:
-            history_messages.append(
-                {
-                    "role": message["role"],
-                    "content": message["content"],
-                }
-            )
         # 页面负责组装本次请求的完整消息
         messages = [
             {
@@ -393,7 +508,7 @@ if st.button("提交问题"):
             }
 
             # 页面负责保存成功完成的一轮对话
-            st.session_state.messages.extend(
+            chat_session["messages"].extend(
                 [display_user_message, assistant_message]
             )
 

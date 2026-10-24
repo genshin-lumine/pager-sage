@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "learning_day": 21,
+  "date": "2026-10-24",
+  "purpose": "project_management_acceptance",
+  "question": "这份测试文档的校验码是什么？",
+  "manual_observations": {
+    "source": "user_chat_reply",
+    "answers": [
+      {
+        "project_name": "Day21 A",
+        "answer": "这份测试文档的校验码是 PROJECT-A-217。",
+        "evidence": [
+          "The verification code of this test document is PROJECT-A-217."
+        ],
+        "reported_candidate_chunk_ids": null,
+        "answer_matches_fixture": true
+      },
+      {
+        "project_name": "Day21 B",
+        "answer": "这份测试文档的校验码是 PROJECT-B-963。",
+        "evidence": [
+          "The verification code of this test document is PROJECT-B-963."
+        ],
+        "reported_candidate_chunk_ids": null,
+        "answer_matches_fixture": true
+      }
+    ],
+    "history_cleared_on_switch": true,
+    "history_report_verbatim": "全清空了",
+    "raw_api_response_captured": false
+  },
+  "disk_observations": [
+    {
+      "project_name": "Day21 A",
+      "project_id": "project_c034f4cf84d4423c8324d8680c663653",
+      "document_id": "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+      "source": "data/papers/project_c034f4cf84d4423c8324d8680c663653/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+      "file_hash": "fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+      "vector_count": 1,
+      "dimension": 384,
+      "stored_chunk_id": "project_c034f4cf84d4423c8324d8680c663653:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+      "pdf_page": 1,
+      "evidence_in_stored_text": true,
+      "observation_kind": "read_only_disk_inspection_not_user_candidate_report"
+    },
+    {
+      "project_name": "Day21 B",
+      "project_id": "project_62b1386263ae413fab44271f7ab9334b",
+      "document_id": "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+      "source": "data/papers/project_62b1386263ae413fab44271f7ab9334b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+      "file_hash": "77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+      "vector_count": 1,
+      "dimension": 384,
+      "stored_chunk_id": "project_62b1386263ae413fab44271f7ab9334b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+      "pdf_page": 1,
+      "evidence_in_stored_text": true,
+      "observation_kind": "read_only_disk_inspection_not_user_candidate_report"
+    }
+  ],
+  "automated_checks": {
+    "status": "passed",
+    "case_count": 4,
+    "command": "./.venv/Scripts/python.exe -m unittest discover -s tests -p test_project_scope.py -v",
+    "fixtures": "temporary_workspaces_seeded_from_day21_pdfs",
+    "index_kind": "real_FAISS_IndexFlatIP_with_controlled_unit_vectors",
+    "query_kind": "controlled_vector_favoring_document_B",
+    "answer_kind": "simulated_from_current_reference_text",
+    "cases": [
+      {
+        "case": "deletion_isolation",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963"
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963"
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217"
+          },
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963"
+          }
+        ],
+        "simulated_answer_count": 4,
+        "controlled_query_count": 4
+      },
+      {
+        "case": "document_selection",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217"
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963"
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963"
+          }
+        ],
+        "simulated_answer_count": 3,
+        "controlled_query_count": 3
+      },
+      {
+        "case": "empty_selection",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217"
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217"
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2
+      },
+      {
+        "case": "project_switch",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217"
+          },
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963"
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2
+      }
+    ],
+    "simulated_answer_count": 11,
+    "controlled_query_count": 11,
+    "real_model_inference_count": 0,
+    "real_deepseek_calls_by_assistant": 0,
+    "existing_data_file_count": 31,
+    "existing_data_unchanged": true,
+    "temporary_workspaces_cleaned": true
+  },
+  "limits": [
+    "The two manual answers were supplied by the user, not captured API payloads.",
+    "The user did not provide candidate chunk identifiers; stored identifiers are recorded separately.",
+    "Controlled vectors test scope enforcement, not semantic recall or answer-model quality.",
+    "The workflow is tested serially in one process; concurrent writers are outside this check."
+  ]
+}

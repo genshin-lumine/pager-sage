@@ -1,0 +1,4001 @@
+{
+  "schema_version": 1,
+  "day": 26,
+  "created_at": "2026-10-25T20:54:38+08:00",
+  "status": "complete",
+  "completed_at": "2026-10-25T20:59:01+08:00",
+  "purpose": "Per-stage retrieval snapshots, timing boundaries and complete candidate rank paths",
+  "learner_exercises": {
+    "evidence_type": "learner_reported_saved_candidate_replay",
+    "question": "NVIDIA P100",
+    "source_report": "data/evaluations/day22_retrieval_comparison.json",
+    "source_sha256": "5d5ab7125a85bb8c7e46fce74df69003ea3fa380915ab11e8cfb90d72ec008b6",
+    "new_retrieval_executed": false,
+    "merge": {
+      "input_count": 6,
+      "output_count": 4,
+      "snapshot_count": 4,
+      "elapsed_seconds": 1.1e-05
+    },
+    "candidate_paths": [
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "dense_rank": 1,
+        "bm25_rank": 2,
+        "rrf_rank": 1
+      },
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+        "dense_rank": 2,
+        "bm25_rank": 3,
+        "rrf_rank": 2
+      },
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+        "dense_rank": 3,
+        "bm25_rank": null,
+        "rrf_rank": 4
+      },
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "dense_rank": null,
+        "bm25_rank": 1,
+        "rrf_rank": 3
+      }
+    ],
+    "status": "passed"
+  },
+  "implementation": {
+    "stages": [
+      "dense",
+      "bm25",
+      "merge",
+      "rrf",
+      "rerank",
+      "select"
+    ],
+    "config": {
+      "recall_top_k": 3,
+      "rrf_top_k": 6,
+      "final_top_k": 3,
+      "rank_constant": 60
+    },
+    "one_rerank_prediction_per_successful_query": true,
+    "full_rerank_output_is_saved_before_final_selection": true,
+    "storage": "successful assistant message in current Streamlit session; no automatic disk persistence",
+    "timing_boundary": "Per-stage operation only, excluding extra trace snapshot copies, resource loading, rendering and answer generation. Dense includes query encoding; BM25 includes corpus tokenization and construction.",
+    "separate_timings": [
+      "rerank resource access including cache lookup and load on cache miss",
+      "answer call including validation"
+    ],
+    "failure_policy": "No new successful trace or partial chat is saved on retrieval, loading, rerank or answer failure.",
+    "citation_limit": "Selection means sent as reference, not verified support for a claim."
+  },
+  "automated_checks": {
+    "status": "passed_after_test_reader_fix",
+    "distinct_cases_validated": 24,
+    "runs": [
+      {
+        "phase": "initial",
+        "tests_run": 24,
+        "passed": 11,
+        "failed": 13,
+        "elapsed_seconds": 66.327,
+        "passed_test_ids": [
+          "test_retrieval_trace.RetrievalTraceTests.test_id_paths_distinguish_missing_route_rrf_limit_and_final_limit",
+          "test_retrieval_trace.RetrievalTraceTests.test_optional_dual_trace_keeps_interface_and_rejects_foreign_snapshots",
+          "test_retrieval_trace.RetrievalTraceTests.test_timing_snapshot_and_failure_do_not_reexecute_operation",
+          "test_dual_retriever.DualRetrieverTests.test_duplicate_route_or_conflicting_source_is_rejected",
+          "test_dual_retriever.DualRetrieverTests.test_each_route_must_return_original_scope_records",
+          "test_dual_retriever.DualRetrieverTests.test_empty_route_and_same_text_at_different_positions",
+          "test_dual_retriever.DualRetrieverTests.test_invalid_scope_metadata_is_rejected_before_retrieval",
+          "test_dual_retriever.DualRetrieverTests.test_saved_candidates_preserve_both_routes_without_mutation",
+          "test_retrieval_trace.RetrievalTracePageTests.test_answer_failure_does_not_save_partial_trace",
+          "test_retrieval_trace.RetrievalTracePageTests.test_missing_rerank_cache_skips_answer_and_history_save",
+          "test_retrieval_trace.RetrievalTracePageTests.test_no_candidates_skip_rerank_loading_and_answer"
+        ],
+        "failed_test_ids": [
+          "test_retrieval_trace.RetrievalTracePageTests.test_bm25_only_candidate_is_visible_and_used_as_reference",
+          "test_retrieval_trace.RetrievalTracePageTests.test_deletion_isolation",
+          "test_retrieval_trace.RetrievalTracePageTests.test_document_selection",
+          "test_retrieval_trace.RetrievalTracePageTests.test_empty_bm25_rerun_and_clear",
+          "test_retrieval_trace.RetrievalTracePageTests.test_empty_selection",
+          "test_retrieval_trace.RetrievalTracePageTests.test_fused_sources_survive_identity_rerank_and_reference_limit",
+          "test_retrieval_trace.RetrievalTracePageTests.test_legacy_dense_history_keeps_label_and_new_answer_uses_rerank",
+          "test_retrieval_trace.RetrievalTracePageTests.test_legacy_rerank_has_no_fabricated_trace_and_new_query_gets_trace",
+          "test_retrieval_trace.RetrievalTracePageTests.test_legacy_rrf_history_keeps_label_and_new_answer_uses_rerank",
+          "test_retrieval_trace.RetrievalTracePageTests.test_out_of_scope_result_blocks_model_and_preserves_history",
+          "test_retrieval_trace.RetrievalTracePageTests.test_project_switch",
+          "test_retrieval_trace.RetrievalTracePageTests.test_rerank_can_promote_fourth_rrf_candidate_into_reference",
+          "test_retrieval_trace.RetrievalTracePageTests.test_rerank_failures_preserve_history_and_skip_answer_model"
+        ],
+        "failure": "AppTest dataframe.value conversion to pandas raised AssertionError for pandas.arrays.ArrowStringArray in repeated tests; no app exception. Changed test reader to decode the actual Arrow payload directly; application and dependencies unchanged."
+      },
+      {
+        "phase": "page_recheck_after_reader_fix",
+        "tests_run": 16,
+        "passed": 16,
+        "failed": 0,
+        "elapsed_seconds": 73.876,
+        "passed_test_ids": [
+          "test_retrieval_trace.RetrievalTracePageTests.test_answer_failure_does_not_save_partial_trace",
+          "test_retrieval_trace.RetrievalTracePageTests.test_bm25_only_candidate_is_visible_and_used_as_reference",
+          "test_retrieval_trace.RetrievalTracePageTests.test_deletion_isolation",
+          "test_retrieval_trace.RetrievalTracePageTests.test_document_selection",
+          "test_retrieval_trace.RetrievalTracePageTests.test_empty_bm25_rerun_and_clear",
+          "test_retrieval_trace.RetrievalTracePageTests.test_empty_selection",
+          "test_retrieval_trace.RetrievalTracePageTests.test_fused_sources_survive_identity_rerank_and_reference_limit",
+          "test_retrieval_trace.RetrievalTracePageTests.test_legacy_dense_history_keeps_label_and_new_answer_uses_rerank",
+          "test_retrieval_trace.RetrievalTracePageTests.test_legacy_rerank_has_no_fabricated_trace_and_new_query_gets_trace",
+          "test_retrieval_trace.RetrievalTracePageTests.test_legacy_rrf_history_keeps_label_and_new_answer_uses_rerank",
+          "test_retrieval_trace.RetrievalTracePageTests.test_missing_rerank_cache_skips_answer_and_history_save",
+          "test_retrieval_trace.RetrievalTracePageTests.test_no_candidates_skip_rerank_loading_and_answer",
+          "test_retrieval_trace.RetrievalTracePageTests.test_out_of_scope_result_blocks_model_and_preserves_history",
+          "test_retrieval_trace.RetrievalTracePageTests.test_project_switch",
+          "test_retrieval_trace.RetrievalTracePageTests.test_rerank_can_promote_fourth_rrf_candidate_into_reference",
+          "test_retrieval_trace.RetrievalTracePageTests.test_rerank_failures_preserve_history_and_skip_answer_model"
+        ]
+      }
+    ],
+    "test_models": "controlled query vectors, controlled rerank scores and simulated answers; real FAISS, BM25 and Streamlit AppTest",
+    "real_embedding_calls": 0,
+    "real_rerank_calls": 0,
+    "real_deepseek_calls": 0,
+    "existing_data_file_count": 36,
+    "existing_data_unchanged": true,
+    "temporary_workspace_cleanup": "verified by fixture teardown",
+    "page_cases": [
+      {
+        "case": "answer_failure_preserves_existing_trace",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.000325599976349622,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.001057000015862286,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.209997572004795e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 5.6200020480901e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0003689999575726688,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.700012944638729e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0038779000169597566,
+                "answer": 0.0004477000329643488
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "bm25_only_candidate_used_after_rerank",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "217",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ]
+            },
+            "unique_candidate_count": 2,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "217",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+                  ],
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00028899998869746923,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.000519299996085465,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 1.4399993233382702e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 9.859999408945441e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 0.00017199997091665864,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 8.00006091594696e-07,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": null,
+                  "bm25_score": null,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.01639344262295082,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                },
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": null,
+                  "dense_score": null,
+                  "bm25_rank": 1,
+                  "bm25_score": 0.0,
+                  "rrf_rank": 2,
+                  "rrf_score": 0.01639344262295082,
+                  "rerank_rank": 2,
+                  "rerank_score": -2.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0040645000408403575,
+                "answer": 9.330001194030046e-05
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1,
+        "controlled_dense_top_k": 1
+      },
+      {
+        "case": "deletion_isolation",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_b",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00017889996524900198,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0004149000160396099,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.3300043065100908e-05,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 6.0399994254112244e-05,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002614000113680959,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.00001522898674e-06,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342093,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0026017000200226903,
+                "answer": 0.00010449998080730438
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0001718999701552093,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0004219000111334026,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.2299977242946625e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 5.849997978657484e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00030749995494261384,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.500019036233425e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342093,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.001583400007802993,
+                "answer": 0.00012060004519298673
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00015929999062791467,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0004233000217936933,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.3299984857439995e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 6.0699996538460255e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00021520000882446766,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.700012944638729e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0014007000136189163,
+                "answer": 0.00010040000779554248
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_b",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00014100002590566874,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00030880002304911613,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.2999982573091984e-05,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 6.240000948309898e-05,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00023140001576393843,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.500011421740055e-06,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342093,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0014454000047408044,
+                "answer": 0.00010130001464858651
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 4,
+        "controlled_query_count": 4,
+        "controlled_rerank_call_count": 4,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "document_selection",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00016910000704228878,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00038729998050257564,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 7.599999662488699e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 3.300001844763756e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00023420003708451986,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.600012183189392e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0029280000017024577,
+                "answer": 0.0001004999503493309
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00013619998935610056,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0003776999656111002,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 6.699992809444666e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.759997732937336e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002464999561198056,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.100015990436077e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342093,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0014496000367216766,
+                "answer": 8.430000161752105e-05
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                },
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 2,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": -0.9019926761993315
+                },
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 2,
+                  "score": -0.9019926761993315
+                }
+              ]
+            },
+            "unique_candidate_count": 2,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+                  ],
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 0.00029830000130459666,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 0.0006140000186860561,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 4,
+                  "output_count": 2,
+                  "elapsed_seconds": 2.300000051036477e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 0.00012420001439750195,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 0.00033569999504834414,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 2,
+                  "output_count": 2,
+                  "elapsed_seconds": 2.300017513334751e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.9019926761993315,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                },
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 2,
+                  "dense_score": 0.0,
+                  "bm25_rank": 2,
+                  "bm25_score": -0.9019926761993315,
+                  "rrf_rank": 2,
+                  "rrf_score": 0.03225806451612903,
+                  "rerank_rank": 2,
+                  "rerank_score": -2.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.002007200033403933,
+                "answer": 0.00011749996338039637
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 3,
+        "controlled_query_count": 3,
+        "controlled_rerank_call_count": 3,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "empty_bm25_rerun_and_clear",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "这份测试文档的校验码是什么？",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": []
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "这份测试文档的校验码是什么？",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00016679998952895403,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 0,
+                  "elapsed_seconds": 4.490005085244775e-05,
+                  "result_chunk_ids": []
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.0499963536858559e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 5.470000905916095e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00024399999529123306,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.00001522898674e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": null,
+                  "bm25_score": null,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.01639344262295082,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.00318539998261258,
+                "answer": 9.169999975711107e-05
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "empty_selection",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0001650999765843153,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00045469996985048056,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.750001683831215e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.6900030206888914e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002501000417396426,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.700012944638729e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.003756800026167184,
+                "answer": 0.00016070000128820539
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0001610000035725534,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0004491000436246395,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.309998333454132e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 5.900004180148244e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00010850001126527786,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 9.00006853044033e-07,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0015782999689690769,
+                "answer": 0.00011580000864341855
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "fused_sources_survive_identity_rerank",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "saved_paper"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf"
+            ],
+            "simulated_answer_code": "8 NVIDIA P100 GPUs",
+            "question": "NVIDIA P100",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 4.914726992397145
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 4.471605682454131
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              ]
+            },
+            "unique_candidate_count": 4,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p10:c3"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "NVIDIA P100",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "saved_paper",
+                    "v1",
+                    "data/papers/scope_project_a/saved_paper/paper.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 51,
+                  "output_count": 3,
+                  "elapsed_seconds": 0.00020519999088719487,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 51,
+                  "output_count": 3,
+                  "elapsed_seconds": 0.007303800026420504,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 6,
+                  "output_count": 4,
+                  "elapsed_seconds": 2.3300002794712782e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 4,
+                  "output_count": 4,
+                  "elapsed_seconds": 0.00018039997667074203,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 4,
+                  "output_count": 4,
+                  "elapsed_seconds": 0.0004200999974273145,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 4,
+                  "output_count": 3,
+                  "elapsed_seconds": 2.300017513334751e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 7,
+                  "dense_rank": 1,
+                  "dense_score": 0.8999999761581421,
+                  "bm25_rank": 2,
+                  "bm25_score": 4.471605682454131,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03252247488101534,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 2,
+                  "dense_rank": 2,
+                  "dense_score": 0.800000011920929,
+                  "bm25_rank": 3,
+                  "bm25_score": 1.9784674249652705,
+                  "rrf_rank": 2,
+                  "rrf_score": 0.03200204813108039,
+                  "rerank_rank": 2,
+                  "rerank_score": -2.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 10,
+                  "dense_rank": 3,
+                  "dense_score": 0.699999988079071,
+                  "bm25_rank": null,
+                  "bm25_score": null,
+                  "rrf_rank": 4,
+                  "rrf_score": 0.015873015873015872,
+                  "rerank_rank": 4,
+                  "rerank_score": -4.0,
+                  "final_selected": false,
+                  "selection_status": "excluded_by_final_top_k"
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 7,
+                  "dense_rank": null,
+                  "dense_score": null,
+                  "bm25_rank": 1,
+                  "bm25_score": 4.914726992397145,
+                  "rrf_rank": 3,
+                  "rrf_score": 0.01639344262295082,
+                  "rerank_rank": 3,
+                  "rerank_score": -3.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0032481999951414764,
+                "answer": 0.00016549997963011265
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "legacy_dense_history_and_new_rerank_answer",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00017180002760142088,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00039770000148564577,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.4899997040629387e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 7.730000652372837e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002948999754153192,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.800021320581436e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0034609000431373715,
+                "answer": 0.00010389997623860836
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1,
+        "legacy_history_was_injected_for_compatibility_check": true
+      },
+      {
+        "case": "legacy_rerank_trace_not_fabricated",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00020300003234297037,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00044819997856393456,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.379998866468668e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 6.019999273121357e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00025050004478543997,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.6999547369778156e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.003789900045376271,
+                "answer": 4.299997817724943e-05
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "legacy_rrf_history_and_new_rerank_answer",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00018079997971653938,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0003999999607913196,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.2300035450607538e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 5.8399979025125504e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002391999587416649,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.600012183189392e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0030245999805629253,
+                "answer": 9.410001803189516e-05
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1,
+        "legacy_history_was_injected_for_compatibility_check": true
+      },
+      {
+        "case": "missing_rerank_cache",
+        "status": "passed",
+        "queries": [],
+        "simulated_answer_count": 0,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 0,
+        "rerank_model_instances": 0
+      },
+      {
+        "case": "empty_retrieval_skips_rerank",
+        "status": "passed",
+        "queries": [],
+        "simulated_answer_count": 0,
+        "controlled_query_count": 0,
+        "controlled_rerank_call_count": 0,
+        "rerank_model_instances": 0
+      },
+      {
+        "case": "out_of_scope_result_rejected",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00020619999850168824,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00025729998014867306,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 7.299997378140688e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.889998722821474e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002552000223658979,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.7999554984271526e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0034171000006608665,
+                "answer": 7.930002175271511e-05
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1,
+        "rejected_attempts": 1
+      },
+      {
+        "case": "project_switch",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00010810000821948051,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00017319998005405068,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 5.399982910603285e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 2.370000584051013e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0002455000067129731,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.9000144675374031e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0026344999787397683,
+                "answer": 0.00010990002192556858
+              }
+            }
+          },
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_b",
+                [
+                  [
+                    "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+                    "v1",
+                    "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00021949998335912824,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0005127000040374696,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.6600009985268116e-05,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 7.270002970471978e-05,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00016170000890269876,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 7.00005330145359e-07,
+                  "result_chunk_ids": [
+                    "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 1.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342093,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0025833999970927835,
+                "answer": 0.00012620002962648869
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "controlled_rerank_promotes_fourth_candidate",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "saved_paper"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p10:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p2:c3"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf"
+            ],
+            "simulated_answer_code": "8 NVIDIA P100 GPUs",
+            "question": "NVIDIA P100",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 4.914726992397145
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 4.471605682454131
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              ]
+            },
+            "unique_candidate_count": 4,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p10:c3"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p10:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p2:c3"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "NVIDIA P100",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "saved_paper",
+                    "v1",
+                    "data/papers/scope_project_a/saved_paper/paper.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 51,
+                  "output_count": 3,
+                  "elapsed_seconds": 0.00017329998081550002,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 51,
+                  "output_count": 3,
+                  "elapsed_seconds": 0.010571599996183068,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 6,
+                  "output_count": 4,
+                  "elapsed_seconds": 2.1899992134422064e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 4,
+                  "output_count": 4,
+                  "elapsed_seconds": 0.00016389996744692326,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p7:c4",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p10:c3"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 4,
+                  "output_count": 4,
+                  "elapsed_seconds": 0.00038159999530762434,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p10:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c4"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 4,
+                  "output_count": 3,
+                  "elapsed_seconds": 1.6999547369778156e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:saved_paper:s800:o100:p10:c3",
+                    "scope_project_a:saved_paper:s800:o100:p7:c3",
+                    "scope_project_a:saved_paper:s800:o100:p2:c3"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 7,
+                  "dense_rank": 1,
+                  "dense_score": 0.8999999761581421,
+                  "bm25_rank": 2,
+                  "bm25_score": 4.471605682454131,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03252247488101534,
+                  "rerank_rank": 4,
+                  "rerank_score": 1.0,
+                  "final_selected": false,
+                  "selection_status": "excluded_by_final_top_k"
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 2,
+                  "dense_rank": 2,
+                  "dense_score": 0.800000011920929,
+                  "bm25_rank": 3,
+                  "bm25_score": 1.9784674249652705,
+                  "rrf_rank": 2,
+                  "rrf_score": 0.03200204813108039,
+                  "rerank_rank": 3,
+                  "rerank_score": 2.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 10,
+                  "dense_rank": 3,
+                  "dense_score": 0.699999988079071,
+                  "bm25_rank": null,
+                  "bm25_score": null,
+                  "rrf_rank": 4,
+                  "rrf_score": 0.015873015873015872,
+                  "rerank_rank": 1,
+                  "rerank_score": 4.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "pdf_page": 7,
+                  "dense_rank": null,
+                  "dense_score": null,
+                  "bm25_rank": 1,
+                  "bm25_score": 4.914726992397145,
+                  "rrf_rank": 3,
+                  "rrf_score": 0.01639344262295082,
+                  "rerank_rank": 2,
+                  "rerank_score": 3.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.0027563999756239355,
+                "answer": 0.0001808000379242003
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1,
+        "final_original_rrf_ranks": [
+          4,
+          3,
+          2
+        ]
+      },
+      {
+        "case": "rerank_failure_and_invalid_score_preserve_history",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "trace": {
+              "schema_version": 1,
+              "question": "verification code",
+              "scope_key": [
+                "scope_project_a",
+                [
+                  [
+                    "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+                    "v1",
+                    "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+                  ]
+                ]
+              ],
+              "stages": [
+                {
+                  "stage": "dense",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00013349996879696846,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "bm25",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.00030610000248998404,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "merge",
+                  "input_count": 2,
+                  "output_count": 1,
+                  "elapsed_seconds": 1.4499993994832039e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rrf",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 3.850000211969018e-05,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "rerank",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 0.0003336999798193574,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                },
+                {
+                  "stage": "select",
+                  "input_count": 1,
+                  "output_count": 1,
+                  "elapsed_seconds": 3.00002284348011e-06,
+                  "result_chunk_ids": [
+                    "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+                  ]
+                }
+              ],
+              "candidate_paths": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "pdf_page": 1,
+                  "dense_rank": 1,
+                  "dense_score": 0.0,
+                  "bm25_rank": 1,
+                  "bm25_score": -0.6670146038342094,
+                  "rrf_rank": 1,
+                  "rrf_score": 0.03278688524590164,
+                  "rerank_rank": 1,
+                  "rerank_score": -1.0,
+                  "final_selected": true,
+                  "selection_status": "selected"
+                }
+              ],
+              "other_elapsed_seconds": {
+                "rerank_resource": 0.003030399966519326,
+                "answer": 6.719998782500625e-05
+              }
+            }
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 3,
+        "controlled_rerank_call_count": 3,
+        "rerank_model_instances": 1,
+        "rejected_attempts": 2
+      }
+    ],
+    "example_controlled_full_trace": {
+      "schema_version": 1,
+      "question": "NVIDIA P100",
+      "scope_key": [
+        "scope_project_a",
+        [
+          [
+            "saved_paper",
+            "v1",
+            "data/papers/scope_project_a/saved_paper/paper.pdf"
+          ]
+        ]
+      ],
+      "stages": [
+        {
+          "stage": "dense",
+          "input_count": 51,
+          "output_count": 3,
+          "elapsed_seconds": 0.00020519999088719487,
+          "results": [
+            {
+              "rank": 1,
+              "score": 0.8999999761581421,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+              }
+            },
+            {
+              "rank": 2,
+              "score": 0.800000011920929,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 2,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+              }
+            },
+            {
+              "rank": 3,
+              "score": 0.699999988079071,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 10,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+              }
+            }
+          ]
+        },
+        {
+          "stage": "bm25",
+          "input_count": 51,
+          "output_count": 3,
+          "elapsed_seconds": 0.007303800026420504,
+          "results": [
+            {
+              "rank": 1,
+              "score": 4.914726992397145,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+              }
+            },
+            {
+              "rank": 2,
+              "score": 4.471605682454131,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+              }
+            },
+            {
+              "rank": 3,
+              "score": 1.9784674249652705,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 2,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+              }
+            }
+          ]
+        },
+        {
+          "stage": "merge",
+          "input_count": 6,
+          "output_count": 4,
+          "elapsed_seconds": 2.3300002794712782e-05,
+          "results": [
+            {
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                "bm25": {
+                  "rank": 2,
+                  "score": 4.471605682454131
+                }
+              }
+            },
+            {
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 2,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                "bm25": {
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              }
+            },
+            {
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 10,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              }
+            },
+            {
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+              },
+              "retrievals": {
+                "bm25": {
+                  "rank": 1,
+                  "score": 4.914726992397145
+                }
+              }
+            }
+          ]
+        },
+        {
+          "stage": "rrf",
+          "input_count": 4,
+          "output_count": 4,
+          "elapsed_seconds": 0.00018039997667074203,
+          "results": [
+            {
+              "score": 0.03252247488101534,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                "bm25": {
+                  "rank": 2,
+                  "score": 4.471605682454131
+                }
+              },
+              "rank": 1
+            },
+            {
+              "score": 0.03200204813108039,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 2,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                "bm25": {
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              },
+              "rank": 2
+            },
+            {
+              "score": 0.01639344262295082,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+              },
+              "retrievals": {
+                "bm25": {
+                  "rank": 1,
+                  "score": 4.914726992397145
+                }
+              },
+              "rank": 3
+            },
+            {
+              "score": 0.015873015873015872,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 10,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              },
+              "rank": 4
+            }
+          ]
+        },
+        {
+          "stage": "rerank",
+          "input_count": 4,
+          "output_count": 4,
+          "elapsed_seconds": 0.0004200999974273145,
+          "results": [
+            {
+              "score": -1.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                "bm25": {
+                  "rank": 2,
+                  "score": 4.471605682454131
+                }
+              },
+              "rank": 1,
+              "rrf_rank": 1,
+              "rrf_score": 0.03252247488101534,
+              "rerank_score": -1.0
+            },
+            {
+              "score": -2.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 2,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                "bm25": {
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              },
+              "rank": 2,
+              "rrf_rank": 2,
+              "rrf_score": 0.03200204813108039,
+              "rerank_score": -2.0
+            },
+            {
+              "score": -3.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+              },
+              "retrievals": {
+                "bm25": {
+                  "rank": 1,
+                  "score": 4.914726992397145
+                }
+              },
+              "rank": 3,
+              "rrf_rank": 3,
+              "rrf_score": 0.01639344262295082,
+              "rerank_score": -3.0
+            },
+            {
+              "score": -4.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 10,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              },
+              "rank": 4,
+              "rrf_rank": 4,
+              "rrf_score": 0.015873015873015872,
+              "rerank_score": -4.0
+            }
+          ]
+        },
+        {
+          "stage": "select",
+          "input_count": 4,
+          "output_count": 3,
+          "elapsed_seconds": 2.300017513334751e-06,
+          "results": [
+            {
+              "score": -1.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                "bm25": {
+                  "rank": 2,
+                  "score": 4.471605682454131
+                }
+              },
+              "rank": 1,
+              "rrf_rank": 1,
+              "rrf_score": 0.03252247488101534,
+              "rerank_score": -1.0
+            },
+            {
+              "score": -2.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 2,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+              },
+              "retrievals": {
+                "dense": {
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                "bm25": {
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              },
+              "rank": 2,
+              "rrf_rank": 2,
+              "rrf_score": 0.03200204813108039,
+              "rerank_score": -2.0
+            },
+            {
+              "score": -3.0,
+              "chunk": {
+                "project_id": "scope_project_a",
+                "document_id": "saved_paper",
+                "chunk_size": 800,
+                "chunk_overlap": 100,
+                "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                "pdf_page": 7,
+                "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+              },
+              "retrievals": {
+                "bm25": {
+                  "rank": 1,
+                  "score": 4.914726992397145
+                }
+              },
+              "rank": 3,
+              "rrf_rank": 3,
+              "rrf_score": 0.01639344262295082,
+              "rerank_score": -3.0
+            }
+          ]
+        }
+      ],
+      "candidate_paths": [
+        {
+          "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+          "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+          "pdf_page": 7,
+          "dense_rank": 1,
+          "dense_score": 0.8999999761581421,
+          "bm25_rank": 2,
+          "bm25_score": 4.471605682454131,
+          "rrf_rank": 1,
+          "rrf_score": 0.03252247488101534,
+          "rerank_rank": 1,
+          "rerank_score": -1.0,
+          "final_selected": true,
+          "selection_status": "selected"
+        },
+        {
+          "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+          "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+          "pdf_page": 2,
+          "dense_rank": 2,
+          "dense_score": 0.800000011920929,
+          "bm25_rank": 3,
+          "bm25_score": 1.9784674249652705,
+          "rrf_rank": 2,
+          "rrf_score": 0.03200204813108039,
+          "rerank_rank": 2,
+          "rerank_score": -2.0,
+          "final_selected": true,
+          "selection_status": "selected"
+        },
+        {
+          "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+          "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+          "pdf_page": 10,
+          "dense_rank": 3,
+          "dense_score": 0.699999988079071,
+          "bm25_rank": null,
+          "bm25_score": null,
+          "rrf_rank": 4,
+          "rrf_score": 0.015873015873015872,
+          "rerank_rank": 4,
+          "rerank_score": -4.0,
+          "final_selected": false,
+          "selection_status": "excluded_by_final_top_k"
+        },
+        {
+          "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+          "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+          "pdf_page": 7,
+          "dense_rank": null,
+          "dense_score": null,
+          "bm25_rank": 1,
+          "bm25_score": 4.914726992397145,
+          "rrf_rank": 3,
+          "rrf_score": 0.01639344262295082,
+          "rerank_rank": 3,
+          "rerank_score": -3.0,
+          "final_selected": true,
+          "selection_status": "selected"
+        }
+      ],
+      "other_elapsed_seconds": {
+        "rerank_resource": 0.0032481999951414764,
+        "answer": 0.00016549997963011265
+      }
+    },
+    "validated_code_sha256": {
+      "app.py": "d68b1cc3494fd2d16e8a7f306aed2e9c9dfae625d8ccb5db809c277c41b7e089",
+      "dual_retriever.py": "044f8a16e69fe1e81459ee6d5c8b9d954fdcd0db467cd76a518fbf1af4cdec47",
+      "retrieval_trace.py": "00c25cd7840037cccdc46bb0ca065817825137654dcd0e8657c7d835fec5e64e",
+      "rank_fusion.py": "7df95524792c1e2b79e0b767af5568f400fd80792c073b0ddb208789df96bd55",
+      "reranker.py": "3ba27fdadff61d3f4765dd1dde9ddcde58c66f0a7813dad20e7915b2abf4000a",
+      "tests/test_retrieval_trace.py": "48e6f15a2f80558c3d96914c80015c1cb12ba0192ac30c286b3e55a59da43067",
+      "tests/test_dual_retriever.py": "3baae586e53a9800e55b1de20b65a2d73e7eeec9b8c1ab0d9c4302ddecc8f845",
+      "tests/test_rank_fusion.py": "432bfeb36522e6c5b20a88be5b6a9b6b5fc52b527e23276d6a9e50cfa6bbdaf4",
+      "tests/test_reranker.py": "f5d179894b7c4c6de44378ca1c2d5e408051609b079a204562f25b2fe1119063",
+      "tests/test_project_scope.py": "710b7a3a9689b548b547b5cbca6b4f470421d2d587517eee0fd883ca66ce2faf"
+    }
+  },
+  "manual_page_verification": {
+    "status": "passed",
+    "evidence_type": "learner_reported_page_output",
+    "procedure": "Restart Streamlit, select Demo project and the original paper, ask NVIDIA P100 once; inspect all six stage counts and all four candidate paths including the rejected candidate.",
+    "expected_stage_counts": {
+      "dense": [
+        51,
+        3
+      ],
+      "bm25": [
+        51,
+        3
+      ],
+      "merge": [
+        6,
+        4
+      ],
+      "rrf": [
+        4,
+        4
+      ],
+      "rerank": [
+        4,
+        4
+      ],
+      "select": [
+        4,
+        3
+      ]
+    },
+    "reported_stage_counts": {
+      "dense": [51, 3],
+      "bm25": [51, 3],
+      "merge": [6, 4],
+      "rrf": [4, 4],
+      "rerank": [4, 4],
+      "select": [4, 3]
+    },
+    "reported_stage_elapsed_seconds": {
+      "dense": 0.158026,
+      "bm25": 0.006838,
+      "merge": 0.000015,
+      "rrf": 0.000117,
+      "rerank": 1.226635,
+      "select": 0.000002
+    },
+    "reported_candidate_paths": [
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "pdf_page": 7,
+        "dense_rank": 1,
+        "bm25_rank": 2,
+        "rrf_rank": 1,
+        "rerank_rank": 1,
+        "final_selected": true,
+        "selection_status": "selected",
+        "reported_selection_label": "已入选参考资料",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf"
+      },
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+        "pdf_page": 2,
+        "dense_rank": 2,
+        "bm25_rank": 3,
+        "rrf_rank": 2,
+        "rerank_rank": 3,
+        "final_selected": true,
+        "selection_status": "selected",
+        "reported_selection_label": "已入选参考资料",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf"
+      },
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+        "pdf_page": 10,
+        "dense_rank": 3,
+        "bm25_rank": null,
+        "rrf_rank": 4,
+        "rerank_rank": 4,
+        "final_selected": false,
+        "selection_status": "excluded_by_final_top_k",
+        "reported_selection_label": "未进入精排前 K 条",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf"
+      },
+      {
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "pdf_page": 7,
+        "dense_rank": null,
+        "bm25_rank": 1,
+        "rrf_rank": 3,
+        "rerank_rank": 2,
+        "final_selected": true,
+        "selection_status": "selected",
+        "reported_selection_label": "已入选参考资料",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf"
+      }
+    ],
+    "concept_check": {
+      "learner_answer": "不一定，只是代表语义方面有关联",
+      "assessment": "核心判断正确：入选不保证支持回答。补充说明：入选表示经过当前排序和截取后被送入参考资料，不能仅凭入选认定语义相关或事实支持；还需核对原文与具体结论。"
+    },
+    "unreported_fields": [
+      "raw_trace_json", "candidate_scores", "rerank_resource_elapsed_seconds",
+      "answer_elapsed_seconds", "answer_body", "answer_evidence", "raw_api_response"
+    ]
+  },
+  "limitations": [
+    "Controlled-model checks validate wiring and isolation, not model answer quality.",
+    "Replay timing is a single observed merge call, not an end-to-end benchmark.",
+    "The learner supplied six stage counts and timings and four candidate paths; unreported fields were not inferred from earlier runs.",
+    "The supplied timings describe this single page run, not a stable benchmark or end-to-end duration.",
+    "The new trace panel is verified; answer correctness and citation support were not evaluated from this report."
+  ]
+}

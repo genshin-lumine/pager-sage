@@ -1,0 +1,1190 @@
+{
+  "schema_version": 1,
+  "learning_day": 25,
+  "purpose": "rerank_integration_and_reference_selection_acceptance",
+  "created_at": "2026-10-25T20:08:00.627220+08:00",
+  "status": "complete",
+  "completed_at": "2026-10-25T20:13:10+08:00",
+  "model_config": {
+    "model_name": "BAAI/bge-reranker-base",
+    "model_revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+    "device": "cpu",
+    "max_length": 512,
+    "batch_size": 3,
+    "score_type": "logit"
+  },
+  "pipeline_config": {
+    "recall_top_k": 3,
+    "rrf_top_k": 6,
+    "final_top_k": 3,
+    "rank_constant": 60
+  },
+  "learner_toy_observation": {
+    "source": "user_reported_console_output",
+    "input_pair_count": 3,
+    "score_type": "numpy.ndarray",
+    "shape": [
+      3
+    ],
+    "scoring_elapsed_seconds": 0.252,
+    "scores_by_chunk_id": {
+      "practice:a": -1.5961,
+      "practice:b": -10.1963,
+      "practice:c": -10.1873
+    },
+    "reported_top_two": [
+      "practice:a",
+      "practice:c"
+    ],
+    "highest_scoring_chunk_identified_correctly": true
+  },
+  "learner_saved_candidate_rerank": {
+    "source": "user_reported_console_output",
+    "source_report": "data/evaluations/day22_retrieval_comparison.json",
+    "source_sha256": "5d5ab7125a85bb8c7e46fce74df69003ea3fa380915ab11e8cfb90d72ec008b6",
+    "question": "NVIDIA P100",
+    "new_retrieval_executed": false,
+    "configured_input_count": 4,
+    "rerank_elapsed_seconds": null,
+    "elapsed_status": "not_reported",
+    "results": [
+      {
+        "rank": 1,
+        "rrf_rank": 1,
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "pdf_page": 7,
+        "rrf_score": 0.032522,
+        "rerank_score": 0.1071
+      },
+      {
+        "rank": 2,
+        "rrf_rank": 3,
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "pdf_page": 7,
+        "rrf_score": 0.016393,
+        "rerank_score": -0.697
+      },
+      {
+        "rank": 3,
+        "rrf_rank": 2,
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "pdf_page": 2,
+        "rrf_score": 0.032002,
+        "rerank_score": -3.4262
+      }
+    ],
+    "learner_identified_swap": true
+  },
+  "automated_checks": {
+    "command": "./.venv/Scripts/python.exe -X utf8 -m unittest discover -s tests -p test_reranker.py -v",
+    "status": "passed",
+    "test_count": 21,
+    "elapsed_seconds": 48.456,
+    "unit_test_count": 7,
+    "page_case_count": 14,
+    "tests": [
+      "test_reranker.RerankPageTests.test_bm25_only_candidate_is_visible_and_used_as_reference",
+      "test_reranker.RerankPageTests.test_deletion_isolation",
+      "test_reranker.RerankPageTests.test_document_selection",
+      "test_reranker.RerankPageTests.test_empty_bm25_rerun_and_clear",
+      "test_reranker.RerankPageTests.test_empty_selection",
+      "test_reranker.RerankPageTests.test_fused_sources_survive_identity_rerank_and_reference_limit",
+      "test_reranker.RerankPageTests.test_legacy_dense_history_keeps_label_and_new_answer_uses_rerank",
+      "test_reranker.RerankPageTests.test_legacy_rrf_history_keeps_label_and_new_answer_uses_rerank",
+      "test_reranker.RerankPageTests.test_missing_rerank_cache_skips_answer_and_history_save",
+      "test_reranker.RerankPageTests.test_no_candidates_skip_rerank_loading_and_answer",
+      "test_reranker.RerankPageTests.test_out_of_scope_result_blocks_model_and_preserves_history",
+      "test_reranker.RerankPageTests.test_project_switch",
+      "test_reranker.RerankPageTests.test_rerank_can_promote_fourth_rrf_candidate_into_reference",
+      "test_reranker.RerankPageTests.test_rerank_failures_preserve_history_and_skip_answer_model",
+      "test_reranker.RerankerTests.test_empty_candidates_skip_model",
+      "test_reranker.RerankerTests.test_invalid_inputs_are_rejected_before_model_call",
+      "test_reranker.RerankerTests.test_local_cache_settings_are_optional_and_paths_are_validated",
+      "test_reranker.RerankerTests.test_malformed_or_nonfinite_scores_are_rejected_without_mutation",
+      "test_reranker.RerankerTests.test_prediction_failure_propagates_without_mutating_candidates",
+      "test_reranker.RerankerTests.test_scores_reorder_full_records_before_limit_and_preserve_originals",
+      "test_reranker.RerankerTests.test_ties_keep_rrf_order_and_limit_can_exceed_candidate_count"
+    ],
+    "page_observations": [
+      {
+        "case": "bm25_only_candidate_used_after_rerank",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "217",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ]
+            },
+            "unique_candidate_count": 2,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1,
+        "controlled_dense_top_k": 1
+      },
+      {
+        "case": "deletion_isolation",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 4,
+        "controlled_query_count": 4,
+        "controlled_rerank_call_count": 4,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "document_selection",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                },
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 2,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note_b.pdf",
+                  "rank": 1,
+                  "score": -0.9019926761993315
+                },
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 2,
+                  "score": -0.9019926761993315
+                }
+              ]
+            },
+            "unique_candidate_count": 2,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 3,
+        "controlled_query_count": 3,
+        "controlled_rerank_call_count": 3,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "empty_bm25_rerun_and_clear",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "这份测试文档的校验码是什么？",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": []
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "empty_selection",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "fused_sources_survive_identity_rerank",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "saved_paper"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf"
+            ],
+            "simulated_answer_code": "8 NVIDIA P100 GPUs",
+            "question": "NVIDIA P100",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 4.914726992397145
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 4.471605682454131
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              ]
+            },
+            "unique_candidate_count": 4,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p10:c3"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "legacy_dense_history_and_new_rerank_answer",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1,
+        "legacy_history_was_injected_for_compatibility_check": true
+      },
+      {
+        "case": "legacy_rrf_history_and_new_rerank_answer",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1,
+        "legacy_history_was_injected_for_compatibility_check": true
+      },
+      {
+        "case": "missing_rerank_cache",
+        "status": "passed",
+        "queries": [],
+        "simulated_answer_count": 0,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 0,
+        "rerank_model_instances": 0
+      },
+      {
+        "case": "empty_retrieval_skips_rerank",
+        "status": "passed",
+        "queries": [],
+        "simulated_answer_count": 0,
+        "controlled_query_count": 0,
+        "controlled_rerank_call_count": 0,
+        "rerank_model_instances": 0
+      },
+      {
+        "case": "out_of_scope_result_rejected",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1,
+        "rejected_attempts": 1
+      },
+      {
+        "case": "project_switch",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          },
+          {
+            "project_id": "scope_project_b",
+            "selected_document_ids": [
+              "doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-B-963",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": 1.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342093
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_b:doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 2,
+        "controlled_query_count": 2,
+        "controlled_rerank_call_count": 2,
+        "rerank_model_instances": 1
+      },
+      {
+        "case": "controlled_rerank_promotes_fourth_candidate",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "saved_paper"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p10:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p2:c3"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf"
+            ],
+            "simulated_answer_code": "8 NVIDIA P100 GPUs",
+            "question": "NVIDIA P100",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 4.914726992397145
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 4.471605682454131
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              ]
+            },
+            "unique_candidate_count": 4,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p10:c3"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p10:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3",
+              "scope_project_a:saved_paper:s800:o100:p2:c3"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1,
+        "controlled_rerank_call_count": 1,
+        "rerank_model_instances": 1,
+        "final_original_rrf_ranks": [
+          4,
+          3,
+          2
+        ]
+      },
+      {
+        "case": "rerank_failure_and_invalid_score_preserve_history",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf"
+            ],
+            "simulated_answer_code": "PROJECT-A-217",
+            "question": "verification code",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": 0.0
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1",
+                  "source": "data/papers/scope_project_a/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf",
+                  "rank": 1,
+                  "score": -0.6670146038342094
+                }
+              ]
+            },
+            "unique_candidate_count": 1,
+            "reference_method": "rerank",
+            "rrf_input_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ],
+            "reference_chunk_ids": [
+              "scope_project_a:doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6:s800:o100:p1:c1"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 3,
+        "controlled_rerank_call_count": 3,
+        "rerank_model_instances": 1,
+        "rejected_attempts": 2
+      }
+    ],
+    "controlled_query_count": 25,
+    "controlled_rerank_call_count": 23,
+    "simulated_answer_count": 21,
+    "real_embedding_inference_count": 0,
+    "real_rerank_inference_count": 0,
+    "deepseek_call_count": 0,
+    "existing_data_files_unchanged": 35,
+    "temporary_workspaces_cleaned": true
+  },
+  "validated_code_sha256": {
+    "app.py": "8fa71d91121ea72c2bf3adf264d4474ef6fd00338759b19ced4ff2fc09ce944a",
+    "reranker.py": "3ba27fdadff61d3f4765dd1dde9ddcde58c66f0a7813dad20e7915b2abf4000a",
+    "tests/test_project_scope.py": "710b7a3a9689b548b547b5cbca6b4f470421d2d587517eee0fd883ca66ce2faf",
+    "tests/test_dual_retriever.py": "3baae586e53a9800e55b1de20b65a2d73e7eeec9b8c1ab0d9c4302ddecc8f845",
+    "tests/test_rank_fusion.py": "a4999f35e612865377456b934643335d6dd5f50643092704af019f28443e79fa",
+    "tests/test_reranker.py": "81364a04211a568170f436eb6f2da856a2eeacfe3038720b52c83ec2643cc622"
+  },
+  "user_page_confirmation": {
+    "status": "passed",
+    "source": "user_reported_page_text",
+    "confirmed_at": "2026-10-25T20:13:10+08:00",
+    "reported_summary": "参与精排：4 条 · 最终参考：3 条 · 精排耗时：1.212 秒（不含模型加载）",
+    "reported_rerank_input_count": 4,
+    "reported_reference_count": 3,
+    "reported_rerank_elapsed_seconds": 1.212,
+    "timing_excludes_model_loading": true,
+    "reported_results": [
+      {
+        "rank": 1,
+        "rrf_rank": 1,
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "pdf_page": 7,
+        "rrf_score": 0.032522,
+        "rerank_score": 0.1071
+      },
+      {
+        "rank": 2,
+        "rrf_rank": 3,
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "pdf_page": 7,
+        "rrf_score": 0.016393,
+        "rerank_score": -0.697
+      },
+      {
+        "rank": 3,
+        "rrf_rank": 2,
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "pdf_page": 2,
+        "rrf_score": 0.032002,
+        "rerank_score": -3.4262
+      }
+    ],
+    "matches_user_reported_replay_order_and_displayed_scores": true,
+    "project_id": "demo_project",
+    "question": "NVIDIA P100",
+    "expected_reference_method": "rerank",
+    "expected_dense_count": 3,
+    "expected_bm25_count": 3,
+    "expected_unique_count": 4,
+    "expected_rerank_input_count": 4,
+    "expected_reference_count": 3,
+    "expected_chunk_ids": [
+      "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+      "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+      "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3"
+    ],
+    "expected_original_rrf_ranks": [
+      1,
+      3,
+      2
+    ]
+  },
+  "limitations": [
+    "User scores are reported rounded console and page values; no raw full-precision score arrays, answer text or API responses were provided.",
+    "The four-candidate exercise uses frozen Day 22 retrieval results and is not a new retrieval-quality evaluation.",
+    "The toy timing is one short-input observation, excludes model loading, and is not an end-to-end performance benchmark.",
+    "Automated page cases use controlled embeddings, controlled rerank scores and simulated answers; no real model or paid API calls were made by the assistant.",
+    "One promotion case deliberately scores the fourth RRF candidate highest to verify selection wiring; its ranking is not a quality finding.",
+    "Legacy Dense and RRF histories are injected for compatibility checks.",
+    "Historical Day 21 to Day 24 reports remain unchanged; shared tests now validate the current rerank pipeline.",
+    "The user confirmed page counts, final chunk IDs, sources, pages, old and new ranks, scores and elapsed time; answer correctness and improvement over the full evaluation set were not evaluated.",
+    "The 1.212-second page measurement excludes model loading and is one observation, not a stable latency benchmark. The earlier four-candidate script timing was not reported and remains null.",
+    "Pairs longer than the configured 512-token limit can be truncated; max length is not a character count.",
+    "English/digit-only BM25 tokenization, automatic citation validation and persistent chat limitations remain."
+  ]
+}

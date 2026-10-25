@@ -1,0 +1,4 @@
+# 复制为 config.local.toml，按本机实际位置填写。
+# 空字符串表示使用 Hugging Face 默认缓存设置。
+[rerank]
+cache_folder = ""

@@ -1,0 +1,439 @@
+{
+  "schema_version": 1,
+  "learning_day": 24,
+  "purpose": "rrf_fusion_and_reference_selection_acceptance",
+  "created_at": "2026-10-25T19:28:13.868068+08:00",
+  "status": "complete",
+  "completed_at": "2026-10-25T19:39:50+08:00",
+  "learner_observation": {
+    "source": "user_reply_from_practice_rrf",
+    "formula": "total += 1.0 / (rank_constant + rank)",
+    "reported_scores": [
+      {
+        "rank_constant": 1,
+        "A": 0.5,
+        "B": 0.833333,
+        "C": 0.333333,
+        "order": [
+          "B",
+          "A",
+          "C"
+        ]
+      },
+      {
+        "rank_constant": 2,
+        "A": 0.333333,
+        "B": 0.583333,
+        "C": 0.25,
+        "order": [
+          "B",
+          "A",
+          "C"
+        ]
+      }
+    ]
+  },
+  "fusion_config": {
+    "rank_constant": 60,
+    "recall_top_k": 3,
+    "final_top_k": 3,
+    "tie_breaker": "chunk_id_ascending"
+  },
+  "saved_candidate_replay": {
+    "source_report": "data/evaluations/day22_retrieval_comparison.json",
+    "source_sha256": "5d5ab7125a85bb8c7e46fce74df69003ea3fa380915ab11e8cfb90d72ec008b6",
+    "is_new_retrieval": false,
+    "results": [
+      {
+        "case_id": "day22_keyword",
+        "question": "NVIDIA P100",
+        "dense_count": 3,
+        "bm25_count": 3,
+        "candidate_count": 4,
+        "fused_results": [
+          {
+            "score": 0.03252247488101534,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 7,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+              "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 1,
+                "score": 0.8396191000938416
+              },
+              "bm25": {
+                "rank": 2,
+                "score": 4.471605682454131
+              }
+            },
+            "rank": 1
+          },
+          {
+            "score": 0.03200204813108039,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 2,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+              "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 2,
+                "score": 0.8151252269744873
+              },
+              "bm25": {
+                "rank": 3,
+                "score": 1.9784674249652705
+              }
+            },
+            "rank": 2
+          },
+          {
+            "score": 0.01639344262295082,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 7,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+              "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+            },
+            "retrievals": {
+              "bm25": {
+                "rank": 1,
+                "score": 4.914726992397145
+              }
+            },
+            "rank": 3
+          }
+        ]
+      },
+      {
+        "case_id": "day22_chinese",
+        "question": "编码器由多少个相同的层堆叠而成？",
+        "dense_count": 3,
+        "bm25_count": 0,
+        "candidate_count": 3,
+        "fused_results": [
+          {
+            "score": 0.01639344262295082,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 2,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c7",
+              "text": "respectively.\n3.1 Encoder and Decoder Stacks\nEncoder: The encoder is composed of a stack of N = 6 identical layers. Each layer has two\nsub-layers. The ﬁrst is a multi-head self-attention mechanism, and the second is a simple, position-\n2"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 1,
+                "score": 0.8108973503112793
+              }
+            },
+            "rank": 1
+          },
+          {
+            "score": 0.016129032258064516,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 10,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+              "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 2,
+                "score": 0.7877618670463562
+              }
+            },
+            "rank": 2
+          },
+          {
+            "score": 0.015873015873015872,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 5,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p5:c2",
+              "text": "and the memory keys and values come from the output of the encoder. This allows every\nposition in the decoder to attend over all positions in the input sequence. This mimics the\ntypical encoder-decoder attention mechanisms in sequence-to-sequence models such as\n[31, 2, 8].\n• The encoder contains self-attention layers. In a self-attention layer all of the keys, values\nand queries come from the same place, in this case, the output of the previous layer in the\nencoder. Each position in the encoder can attend to all positions in the previous layer of the\nencoder.\n• Similarly, self-attention layers in the decoder allow each position in the decoder to attend to\nall positions in the decoder up to and including that position. We need to prevent leftward"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 3,
+                "score": 0.7836627960205078
+              }
+            },
+            "rank": 3
+          }
+        ]
+      },
+      {
+        "case_id": "day22_energy",
+        "question": "How much electrical energy in kWh was consumed during training?",
+        "dense_count": 3,
+        "bm25_count": 3,
+        "candidate_count": 6,
+        "fused_results": [
+          {
+            "score": 0.01639344262295082,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 7,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c5",
+              "text": "This corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\nand decreasing it thereafter proportionally to the inverse square root of the step number. We used\nwarmup_steps = 4000.\n5.4 Regularization\nWe employ three types of regularization during training:\nResidual Dropout We apply dropout [27] to the output of each sub-layer, before it is added to the\nsub-layer input and normalized. In addition, we apply dropout to the sums of the embeddings and the\npositional encodings in both the encoder and decoder stacks. For the base model, we use a rate of\nPdrop = 0.1.\n7"
+            },
+            "retrievals": {
+              "bm25": {
+                "rank": 1,
+                "score": 4.994027475194977
+              }
+            },
+            "rank": 1
+          },
+          {
+            "score": 0.01639344262295082,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 8,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+              "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 1,
+                "score": 0.8239991664886475
+              }
+            },
+            "rank": 2
+          },
+          {
+            "score": 0.016129032258064516,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 7,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+              "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+            },
+            "retrievals": {
+              "dense": {
+                "rank": 2,
+                "score": 0.8196781873703003
+              }
+            },
+            "rank": 3
+          }
+        ]
+      }
+    ]
+  },
+  "automated_checks": {
+    "full_suite_command": "./.venv/Scripts/python.exe -X utf8 -m unittest discover -s tests -p test_rank_fusion.py -v",
+    "status": "all_current_cases_verified_across_two_runs",
+    "verified_test_count": 17,
+    "unit_test_count": 8,
+    "page_case_count": 9,
+    "tests": [
+      "test_rank_fusion.RRFPageTests.test_bm25_only_candidate_is_visible_and_used_as_reference",
+      "test_rank_fusion.RRFPageTests.test_deletion_isolation",
+      "test_rank_fusion.RRFPageTests.test_document_selection",
+      "test_rank_fusion.RRFPageTests.test_empty_bm25_rerun_and_clear",
+      "test_rank_fusion.RRFPageTests.test_empty_selection",
+      "test_rank_fusion.RRFPageTests.test_legacy_dense_history_keeps_label_and_new_answer_uses_rrf",
+      "test_rank_fusion.RRFPageTests.test_only_fused_top_three_enter_reference",
+      "test_rank_fusion.RRFPageTests.test_out_of_scope_result_blocks_model_and_preserves_history",
+      "test_rank_fusion.RRFPageTests.test_project_switch",
+      "test_rank_fusion.RankFusionTests.test_duplicate_or_unranked_candidates_are_rejected",
+      "test_rank_fusion.RankFusionTests.test_hand_calculations_for_two_constants",
+      "test_rank_fusion.RankFusionTests.test_invalid_constants_limits_and_ranks_are_rejected",
+      "test_rank_fusion.RankFusionTests.test_one_route_and_empty_candidates",
+      "test_rank_fusion.RankFusionTests.test_original_scores_do_not_change_fusion",
+      "test_rank_fusion.RankFusionTests.test_output_changes_do_not_mutate_original_candidates",
+      "test_rank_fusion.RankFusionTests.test_saved_candidates_promote_bm25_only_hardware_chunk",
+      "test_rank_fusion.RankFusionTests.test_ties_are_deterministic_and_top_k_is_applied_after_sort"
+    ],
+    "validation_runs": [
+      {
+        "kind": "initial_full_suite",
+        "test_count": 17,
+        "passed": 16,
+        "failed": 1,
+        "elapsed_seconds": 31.034,
+        "failed_test": "test_rank_fusion.RRFPageTests.test_only_fused_top_three_enter_reference",
+        "failure_reason": "Test fixture rebuilt BM25 on four chunks instead of the full 51-chunk corpus, changing BM25 ranks."
+      },
+      {
+        "kind": "focused_rerun_after_fixture_fix",
+        "test_count": 1,
+        "passed": 1,
+        "failed": 0,
+        "elapsed_seconds": 1.319,
+        "test": "test_rank_fusion.RRFPageTests.test_only_fused_top_three_enter_reference",
+        "fix": "Parse and split the complete paper in the temporary workspace; keep all 51 chunks for BM25 statistics.",
+        "production_code_changed_after_initial_run": false
+      }
+    ],
+    "focused_case_observations": [
+      {
+        "case": "only_fused_top_three_enter_reference",
+        "status": "passed",
+        "queries": [
+          {
+            "project_id": "scope_project_a",
+            "selected_document_ids": [
+              "saved_paper"
+            ],
+            "candidate_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3"
+            ],
+            "candidate_sources": [
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf",
+              "data/papers/scope_project_a/saved_paper/paper.pdf"
+            ],
+            "simulated_answer_code": "8 NVIDIA P100 GPUs",
+            "question": "NVIDIA P100",
+            "channels": {
+              "dense": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 0.8999999761581421
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 0.800000011920929
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p10:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 0.699999988079071
+                }
+              ],
+              "bm25": [
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 1,
+                  "score": 4.914726992397145
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p7:c4",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 2,
+                  "score": 4.471605682454131
+                },
+                {
+                  "chunk_id": "scope_project_a:saved_paper:s800:o100:p2:c3",
+                  "source": "data/papers/scope_project_a/saved_paper/paper.pdf",
+                  "rank": 3,
+                  "score": 1.9784674249652705
+                }
+              ]
+            },
+            "unique_candidate_count": 4,
+            "reference_method": "rrf",
+            "reference_chunk_ids": [
+              "scope_project_a:saved_paper:s800:o100:p7:c4",
+              "scope_project_a:saved_paper:s800:o100:p2:c3",
+              "scope_project_a:saved_paper:s800:o100:p7:c3"
+            ]
+          }
+        ],
+        "simulated_answer_count": 1,
+        "controlled_query_count": 1
+      }
+    ],
+    "focused_controlled_query_count": 1,
+    "focused_simulated_answer_count": 1,
+    "real_embedding_inference_count": 0,
+    "deepseek_call_count": 0,
+    "existing_data_files_unchanged": 34,
+    "temporary_workspaces_cleaned": true
+  },
+  "validated_code_sha256": {
+    "rank_fusion.py": "7df95524792c1e2b79e0b767af5568f400fd80792c073b0ddb208789df96bd55",
+    "app.py": "f6be96d4de230f680e3590b93fea04ded9499cf85a9c0e89896bf265d3ed3423",
+    "tests/test_rank_fusion.py": "66efda7c156aa41d76261609cc708e3899f3f344c31765caa88fd39e7215c296",
+    "tests/test_dual_retriever.py": "99576ccc056a0d5e2482c43c2e5921240ad5dad46e54bff23e84351c8ef2c7c2"
+  },
+  "user_page_confirmation": {
+    "status": "passed",
+    "source": "user_reported_page_text",
+    "confirmed_at": "2026-10-25T19:39:50+08:00",
+    "reported_reference_caption": "本轮回答使用 RRF 融合后的 3 个片段作为参考资料。",
+    "reported_ranking_caption": "排名常数：60 · 下方按融合排名展示选中的片段，各路原始排名与分数仍保留。",
+    "reported_reference_method": "rrf",
+    "reported_reference_count": 3,
+    "reported_rank_constant": 60,
+    "reported_rrf_scores_in_display_order": [
+      0.032522,
+      0.032002,
+      0.016393
+    ],
+    "scores_match_saved_replay_at_six_decimal_places": true,
+    "project_id": "demo_project",
+    "question": "NVIDIA P100",
+    "expected_dense_count": 3,
+    "expected_bm25_count": 3,
+    "expected_unique_count": 4,
+    "expected_reference_count": 3,
+    "expected_reference_method": "rrf",
+    "expected_reference_chunk_ids": [
+      "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+      "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+      "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3"
+    ]
+  },
+  "limitations": [
+    "Candidate replays use frozen Day 22 results and do not measure current semantic retrieval quality.",
+    "Page tests use controlled query vectors and simulated answers; they do not measure real answer quality.",
+    "One inherited case caps Dense at one result to isolate BM25-only evidence.",
+    "The focused full-paper case uses real PDF parsing and BM25 with controlled Dense vectors.",
+    "Legacy Dense message metadata is injected to check compatibility; it is not a newly executed Dense-only answer.",
+    "Only focused-rerun page observations were captured; the initial 16 passing cases are evidenced by unittest output.",
+    "The user confirmed the actual page captions, rank constant and three displayed RRF scores; chunk IDs, channel counts, answer text and the raw API response were not included in this reply. Expected IDs remain expectations, not newly observed IDs.",
+    "The tokenizer remains English-and-digits only; rank_constant=60 has not been tuned.",
+    "No Rerank stage or automatic citation-support validation is implemented."
+  ]
+}

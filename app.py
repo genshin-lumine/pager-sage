@@ -2,9 +2,16 @@ import streamlit as st
 from llm import ask_deepseek, IncompleteAnswerError
 from json import JSONDecodeError
 from sentence_transformers import SentenceTransformer
-from retriever import retrieve_dense
+from dual_retriever import retrieve_dual, merge_candidates
+from rank_fusion import fuse_rrf
+from retrieval_trace import run_stage, build_candidate_paths
+from reranker import (
+    get_rerank_cache_folder, load_reranker, rerank_candidates,
+    RERANK_MODEL_NAME, RERANK_MODEL_REVISION,
+)
 from rag_context import build_reference_text
 from pathlib import Path
+from time import perf_counter
 from pypdf.errors import PyPdfError
 from pdf_loader import load_pdf_pages
 from retrieval_scope import get_selected_documents, load_scope_index
@@ -41,6 +48,12 @@ from openai import (
 
 st.set_page_config(page_title="Paper Sage", page_icon="📚")
 
+# Day 28：开发对照与固定新题复验后，采用质量优先的 B 配置。
+RECALL_TOP_K = 6
+RRF_TOP_K = 6
+FINAL_TOP_K = 3
+RRF_RANK_CONSTANT = 60
+
 with st.sidebar.form("create_project_form", clear_on_submit=True):
     new_project_name = st.text_input("新项目名称")
     create_submitted = st.form_submit_button("创建项目")
@@ -71,35 +84,142 @@ def load_retrieval_resources(project, selected_document_ids):
 
     return model, index, metadata
 
+
+@st.cache_resource(show_spinner="正在加载精排模型……")
+def load_rerank_resources(cache_folder):
+    # 页面仅复用已准备好的缓存，缺少模型时提示准备，避免交互时大文件下载。
+    return load_reranker(cache_folder=cache_folder, local_files_only=True)
+
+
+def render_candidate(chunk, label, retrievals, fusion_score=None, rerank_score=None):
+    st.markdown(f"**{label} · PDF 第 {chunk['pdf_page']} 页**")
+    st.caption(f"来源：{chunk['source']}")
+    st.caption(f"片段标识：{chunk['chunk_id']}")
+    if fusion_score is not None:
+        st.caption(f"RRF 分数：{fusion_score:.6f}")
+    if rerank_score is not None:
+        st.caption(f"精排分数：{rerank_score:.4f}")
+    for method, retrieval in retrievals.items():
+        st.caption(
+            f"{method.upper()} · 排名：{retrieval['rank']}"
+            f" · 分数：{retrieval['score']:.4f}"
+        )
+    st.code(chunk["text"], language=None, wrap_lines=True)
+
+
 def render_message(message):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
         results = message.get("retrieval_results", [])
+        channels = message.get("retrieval_channels")
 
-        if results:
+        if channels is not None:
+            candidates = message["retrieval_candidates"]
             with st.expander("查看本轮检索片段"):
                 st.caption(
-                    "以下是本轮检索到的候选片段，"
-                    "具体回答依据请看上方的原文引用。"
+                    f"Dense：{len(channels['dense'])} 条"
+                    f" · BM25：{len(channels['bm25'])} 条"
+                    f" · 去重后：{len(candidates)} 个片段"
                 )
+                if not channels["bm25"]:
+                    st.info("BM25 未找到可用的词项匹配。当前分词仅处理英文字母和数字。")
+                if message.get("reference_method") == "rerank":
+                    st.caption(f"本轮回答使用 Rerank 精排后的 {len(results)} 个片段作为参考资料。")
+                    st.caption(
+                        f"参与精排：{len(message['rrf_results'])} 条"
+                        f" · 最终参考：{len(results)} 条"
+                        f" · 精排耗时：{message['rerank_elapsed_seconds']:.3f} 秒（不含模型加载）"
+                    )
+                    for result in results:
+                        render_candidate(
+                            result["chunk"],
+                            f"精排排名 {result['rank']}（原 RRF 排名 {result['rrf_rank']}）",
+                            result["retrievals"], fusion_score=result["rrf_score"],
+                            rerank_score=result["rerank_score"],
+                        )
+                elif message.get("reference_method", "dense") == "rrf":
+                    st.caption(f"本轮回答使用 RRF 融合后的 {len(results)} 个片段作为参考资料。")
+                    st.caption(
+                        f"排名常数：{message['fusion_config']['rank_constant']}"
+                        " · 下方按融合排名展示选中的片段，各路原始排名与分数仍保留。"
+                    )
+                    for result in results:
+                        render_candidate(
+                            result["chunk"], f"融合排名 {result['rank']}",
+                            result["retrievals"], fusion_score=result["score"],
+                        )
+                else:
+                    # 旧消息继续展示当时实际使用的参考资料规则。
+                    st.caption("本轮回答使用 Dense 候选作为参考资料，具体依据见上方原文引用。")
+                    st.caption("以下按片段首次出现顺序展示，各路排名和分数分别保留。")
+                    for number, candidate in enumerate(candidates, start=1):
+                        render_candidate(
+                            candidate["chunk"], f"候选 {number}", candidate["retrievals"]
+                        )
 
+        elif results:
+            # 兼容页面更新前已经保存在当前会话中的 Dense 历史。
+            with st.expander("查看本轮检索片段"):
+                st.caption("以下为本轮 Dense 候选片段，具体回答依据见上方原文引用。")
                 for result in results:
-                    chunk = result["chunk"]
-
-                    st.markdown(
-                        f"**片段 {result['rank']} "
-                        f"· PDF 第 {chunk['pdf_page']} 页**"
+                    render_candidate(
+                        result["chunk"], f"片段 {result['rank']}", {"dense": result}
                     )
-                    st.caption(f"来源：{chunk['source']}")
-                    st.caption(f"片段标识：{chunk['chunk_id']}")
-                    st.caption(f"相似度：{result['score']:.4f}")
 
-                    st.code(
-                        chunk["text"],
-                        language=None,
-                        wrap_lines=True,
-                    )
+        trace = message.get("retrieval_trace")
+        if trace is not None:
+            render_retrieval_trace(trace)
+
+
+def render_retrieval_trace(trace):
+    stage_names = {
+        "dense": "Dense 召回", "bm25": "BM25 召回", "merge": "候选去重",
+        "rrf": "RRF 融合", "rerank": "Rerank 精排", "select": "最终截取",
+    }
+    selection_names = {
+        "selected": "已入选参考资料",
+        "excluded_by_rrf": "未进入 RRF 保留范围",
+        "excluded_by_final_top_k": "未进入精排前 K 条",
+    }
+    with st.expander("查看本轮检索流程"):
+        st.markdown("**阶段数量与耗时**")
+        st.dataframe([
+            {
+                "阶段": stage_names[record["stage"]],
+                "输入数量": record["input_count"],
+                "输出数量": record["output_count"],
+                "耗时（秒）": f"{record['elapsed_seconds']:.6f}",
+            }
+            for record in trace["stages"]
+        ], hide_index=True)
+        st.caption(
+            "Dense 和 BM25 的输入是所选范围的全部片段；去重输入是两路返回的记录总数。"
+            "阶段耗时包含该函数的处理，不含模型资源加载、快照复制、页面展示和回答生成。"
+        )
+        timings = trace["other_elapsed_seconds"]
+        st.caption(
+            f"本轮精排资源获取：{timings['rerank_resource']:.6f} 秒（含缓存查找，未命中时含加载）"
+            f" · 回答调用与校验：{timings['answer']:.6f} 秒"
+        )
+        st.markdown("**片段排名路径**")
+        st.dataframe([
+            {
+                "片段标识": row["chunk_id"],
+                "PDF 页码": row["pdf_page"],
+                "Dense 排名": str(row["dense_rank"]) if row["dense_rank"] is not None else "—",
+                "BM25 排名": str(row["bm25_rank"]) if row["bm25_rank"] is not None else "—",
+                "RRF 排名": str(row["rrf_rank"]) if row["rrf_rank"] is not None else "—",
+                "精排排名": str(row["rerank_rank"]) if row["rerank_rank"] is not None else "—",
+                "最终状态": selection_names[row["selection_status"]],
+                "来源": row["source"],
+            }
+            for row in trace["candidate_paths"]
+        ], hide_index=True)
+        st.caption("按去重后的原顺序展示；— 表示该阶段的输出中没有这个片段。")
+        st.info("入选参考资料表示片段已发送给回答模型；是否支持回答，还需核对回答中的原文依据。")
+        st.markdown("**原始阶段记录（含分数与片段原文）**")
+        st.json(trace, expanded=False)
 
 st.title("Paper Sage")
 
@@ -421,25 +541,61 @@ if st.button("提交问题"):
     if not question.strip():
         st.warning("请先输入一个问题")
     else:
+        stage_records = []
         try:
             with st.spinner("正在检索论文片段……"):
-                retrieval_results = retrieve_dense(
+                dual_results = retrieve_dual(
                     question=question,
                     model=embedding_model,
                     index=index,
                     metadata=metadata,
-                    top_k=3,
+                    top_k=RECALL_TOP_K,
+                    stage_records=stage_records,
                 )
-
-                reference_text = build_reference_text(retrieval_results)
+                retrieval_candidates = run_stage(
+                    stage_records, "merge", sum(len(route) for route in dual_results.values()),
+                    lambda: merge_candidates(dual_results),
+                )
+                rrf_results = run_stage(
+                    stage_records, "rrf", len(retrieval_candidates),
+                    lambda: fuse_rrf(
+                        retrieval_candidates, top_k=RRF_TOP_K, rank_constant=RRF_RANK_CONSTANT,
+                    ),
+                )
 
         except (ValueError, RuntimeError) as error:
             st.error(f"论文检索失败：{error}")
             st.stop()
 
-        if not retrieval_results:
+        if not rrf_results:
             st.warning("当前索引没有可用的论文片段。")
             st.stop()
+
+        try:
+            resource_started = perf_counter()
+            rerank_model = load_rerank_resources(get_rerank_cache_folder())
+            rerank_resource_seconds = perf_counter() - resource_started
+        except (OSError, ValueError, RuntimeError) as error:
+            st.error(f"精排资源加载失败，请检查本机缓存配置并确认模型已下载：{error}")
+            st.stop()
+
+        try:
+            with st.spinner("正在精排论文片段……"):
+                # 只打分一次，保存所有精排结果后，再截取真正进入参考资料的候选。
+                rerank_results = run_stage(
+                    stage_records, "rerank", len(rrf_results),
+                    lambda: rerank_candidates(question, rrf_results, rerank_model, top_k=len(rrf_results)),
+                )
+                rerank_elapsed_seconds = stage_records[-1]["elapsed_seconds"]
+                retrieval_results = run_stage(
+                    stage_records, "select", len(rerank_results),
+                    lambda: rerank_results[:FINAL_TOP_K],
+                )
+            reference_text = build_reference_text(retrieval_results)
+        except (OSError, ValueError, RuntimeError) as error:
+            st.error(f"论文精排失败：{error}")
+            st.stop()
+
         user_message = {
             "role": "user",
             "content": (
@@ -481,10 +637,12 @@ if st.button("提交问题"):
         try:
 
             with st.spinner("正在等待 DeepSeek 回答……"):
+                answer_started = perf_counter()
                 result = ask_deepseek(
                     messages,
                     st.secrets["DEEPSEEK_API_KEY"],
                 )
+                answer_elapsed_seconds = perf_counter() - answer_started
 
             answer = f"**结论**\n\n{result['answer']}"
             answer += "\n\n**原文依据**"
@@ -505,6 +663,36 @@ if st.button("提交问题"):
                 "role": "assistant",
                 "content": answer,
                 "retrieval_results": retrieval_results,
+                "retrieval_channels": dual_results,
+                "retrieval_candidates": retrieval_candidates,
+                "reference_method": "rerank",
+                "rrf_results": rrf_results,
+                "rerank_elapsed_seconds": rerank_elapsed_seconds,
+                "retrieval_trace": {
+                    "schema_version": 1,
+                    "question": question.strip(),
+                    "scope_key": chat_session["scope_key"],
+                    "stages": stage_records,
+                    "candidate_paths": build_candidate_paths(stage_records),
+                    "other_elapsed_seconds": {
+                        "rerank_resource": rerank_resource_seconds,
+                        "answer": answer_elapsed_seconds,
+                    },
+                },
+                "rerank_config": {
+                    "model_name": RERANK_MODEL_NAME,
+                    "model_revision": RERANK_MODEL_REVISION,
+                    "device": "cpu",
+                    "max_length": 512,
+                    "batch_size": 3,
+                    "score_type": "logit",
+                },
+                "fusion_config": {
+                    "rank_constant": RRF_RANK_CONSTANT,
+                    "recall_top_k": RECALL_TOP_K,
+                    "rrf_top_k": RRF_TOP_K,
+                    "final_top_k": FINAL_TOP_K,
+                },
             }
 
             # 页面负责保存成功完成的一轮对话

@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "purpose": "day28_recall_tuning_conclusion",
+  "status": "complete",
+  "created_at": "2026-10-25T22:27:36.570126+08:00",
+  "decision": "adopt_B_in_workbench",
+  "selected_group": "B",
+  "user_preference": "retrieval_quality_over_latency",
+  "rationale": "开发题和事先固定的新题均观察到检索改善，结合用户明确的质量优先偏好，将工作台每路召回上限采用 B=6；融合上限保持 6，最终返回 3。",
+  "limitations": [
+    "仅为同一篇论文的小规模开发对照和复验，标签由助手审阅，未独立人工复核；不据此宣称全局最优或跨文档泛化。",
+    "复验质量指标的分母为四道有答案题，耗时平均包含五道题，不能与开发题的三题均值混用。",
+    "v5 没有可用依据且没有调用回答模型；返回候选不能当作正确拒答或错误回答的测量。",
+    "开发题 q5 与复验题 v4 仍未检索到标注依据；未在这组复验题上继续尝试更多参数。",
+    "耗时是单次本地 CPU 运行观测，不含模型加载及 Python 导入；不是稳定性能基准。",
+    "原 Day 27 与 Day 28 实验报告保持原样；工作台默认更新为 6，实验脚本仍保留 A=3 与 B=6 的显式对照。",
+    "本轮页面检查使用临时项目、真实 FAISS/BM25、控制向量和模拟精排/回答；没有新增真实模型或 DeepSeek 调用。"
+  ],
+  "production_config": {
+    "RECALL_TOP_K": 6,
+    "RRF_TOP_K": 6,
+    "FINAL_TOP_K": 3,
+    "RRF_RANK_CONSTANT": 60
+  },
+  "source_reports": {
+    "plan": {
+      "path": "data/evaluations/day28_tuning_plan.json",
+      "sha256": "48dbfadc6c8742c98b55ca3c6fd84c557303c23d9d67c54ddc1815d7fa95b982"
+    },
+    "selection": {
+      "path": "data/evaluations/day28_selection.json",
+      "sha256": "f939a3b42f891e1be90ecd3ca042a015f79c265e138ed33bf50b8742d7a0abd1"
+    },
+    "development": {
+      "path": "data/evaluations/day28_development_comparison.json",
+      "sha256": "937a7728c800b08078c926af640d28f0d047f8f89ba07a9ed20c3a852434a700"
+    },
+    "validation": {
+      "path": "data/evaluations/day28_validation_comparison.json",
+      "sha256": "dce6939d615040466b96111bc3568665d4da42395e2da68e2763f0b00ba3ca18"
+    }
+  },
+  "development_summary": {
+    "A": {
+      "recall_top_k": 3,
+      "methods": {
+        "dense": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "bm25": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 3,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rrf": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rerank": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        }
+      },
+      "mean_pipeline_seconds": 1.0760941666473325
+    },
+    "B": {
+      "recall_top_k": 6,
+      "methods": {
+        "dense": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "bm25": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 3,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rrf": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rerank": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.6666666666666666,
+          "mrr_at_k": 0.6666666666666666,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        }
+      },
+      "mean_pipeline_seconds": 1.9425154000055045
+    }
+  },
+  "validation_summary": {
+    "A": {
+      "recall_top_k": 3,
+      "methods": {
+        "dense": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.25,
+          "mrr_at_k": 0.125,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 1
+        },
+        "bm25": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.25,
+          "mrr_at_k": 0.25,
+          "empty_result_count": 3,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rrf": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.5,
+          "mrr_at_k": 0.16666666666666666,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 1
+        },
+        "rerank": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.5,
+          "mrr_at_k": 0.5,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 1
+        }
+      },
+      "mean_pipeline_seconds": 1.2419395000091753
+    },
+    "B": {
+      "recall_top_k": 6,
+      "methods": {
+        "dense": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.25,
+          "mrr_at_k": 0.125,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 1
+        },
+        "bm25": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.25,
+          "mrr_at_k": 0.25,
+          "empty_result_count": 3,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rrf": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.5,
+          "mrr_at_k": 0.20833333333333331,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 1
+        },
+        "rerank": {
+          "question_count": 4,
+          "mean_recall_at_k": 0.75,
+          "mrr_at_k": 0.75,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 1
+        }
+      },
+      "mean_pipeline_seconds": 1.8404141600127333
+    }
+  },
+  "validation_aggregation": {
+    "metric_question_count_per_group": 4,
+    "timing_question_count_per_group": 5,
+    "unanswerable_question_ids": [
+      "v5"
+    ]
+  },
+  "validation_case_comparison": {
+    "v1": {
+      "answerable": true,
+      "A": {
+        "recall_at_3": 0.0,
+        "rr_at_3": 0.0
+      },
+      "B": {
+        "recall_at_3": 1.0,
+        "rr_at_3": 1.0
+      }
+    },
+    "v2": {
+      "answerable": true,
+      "A": {
+        "recall_at_3": 1.0,
+        "rr_at_3": 1.0
+      },
+      "B": {
+        "recall_at_3": 1.0,
+        "rr_at_3": 1.0
+      }
+    },
+    "v3": {
+      "answerable": true,
+      "A": {
+        "recall_at_3": 1.0,
+        "rr_at_3": 1.0
+      },
+      "B": {
+        "recall_at_3": 1.0,
+        "rr_at_3": 1.0
+      }
+    },
+    "v4": {
+      "answerable": true,
+      "A": {
+        "recall_at_3": 0.0,
+        "rr_at_3": 0.0
+      },
+      "B": {
+        "recall_at_3": 0.0,
+        "rr_at_3": 0.0
+      }
+    },
+    "v5": {
+      "answerable": false,
+      "metric_status": "not_applicable",
+      "generated_answer_evaluated": false
+    }
+  },
+  "unresolved_development_case_ids": [
+    "q5"
+  ],
+  "unresolved_validation_case_ids": [
+    "v4"
+  ],
+  "audit": {
+    "validation_pipeline_records": 10,
+    "validation_method_results": 40,
+    "quality_question_count_per_group": 4,
+    "timing_question_count_per_group": 5,
+    "input_and_code_hashes_verified_before_adoption": true,
+    "frozen_plan_before_development_and_selection_before_validation_verified": true,
+    "existing_data_files_unchanged_after_page_tests": 43
+  },
+  "page_checks": {
+    "selection": "test_retrieval_trace.RetrievalTracePageTests",
+    "unique_scenarios_verified": 16,
+    "attempts": [
+      {
+        "tests_run": 16,
+        "passed": 15,
+        "failed": 1,
+        "errors": 0,
+        "elapsed_seconds": 72.11329130001832,
+        "failure": "Old fixture expected three BM25 candidates; adopted configuration correctly returned six."
+      },
+      {
+        "tests_run": 2,
+        "passed": 2,
+        "failed": 0,
+        "errors": 0,
+        "elapsed_seconds": 6.396870099997614,
+        "selection": [
+          "test_fused_sources_survive_identity_rerank_and_reference_limit",
+          "test_rerank_can_promote_sixth_rrf_candidate_into_reference"
+        ]
+      }
+    ],
+    "real_model_calls": 0,
+    "deepseek_calls": 0,
+    "source_sha256": {
+      "app.py": "3df548102f8c3b9c38d9c86c9b251b9dbcb82fdbd1c6de5e5020f7568940a161",
+      "tests/test_rank_fusion.py": "277405d29f95572dd5785f25923f338ce0f8f173076053a281eaf001f7b75894",
+      "tests/test_reranker.py": "1e71db101ccc443b4d4848eae9212d0440e01d24513224674aac724b25ce53ae",
+      "tests/test_retrieval_trace.py": "3f6169a9ccb3cde902e4a65f90df416d4068be040ae29571c40b5d9f524271c2",
+      "tests/test_project_scope.py": "710b7a3a9689b548b547b5cbca6b4f470421d2d587517eee0fd883ca66ce2faf",
+      "tests/test_dual_retriever.py": "3baae586e53a9800e55b1de20b65a2d73e7eeec9b8c1ab0d9c4302ddecc8f845"
+    }
+  }
+}

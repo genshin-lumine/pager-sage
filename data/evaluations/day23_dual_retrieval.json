@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "learning_day": 23,
+  "purpose": "dual_retrieval_scope_and_page_acceptance",
+  "created_at": "2026-10-25T16:48:31.758222+08:00",
+  "status": "complete",
+  "learner_observation": {
+    "source": "user_reply_from_saved_day22_candidate_replay",
+    "question": "NVIDIA P100",
+    "dense_candidate_count": 3,
+    "bm25_candidate_count": 3,
+    "unique_candidate_count": 4,
+    "per_route_ranks_and_scores_retained": true,
+    "is_new_model_call": false
+  },
+  "saved_candidate_replay": {
+    "source_report": "data/evaluations/day22_retrieval_comparison.json",
+    "source_sha256": "5d5ab7125a85bb8c7e46fce74df69003ea3fa380915ab11e8cfb90d72ec008b6",
+    "source_case_id": "day22_keyword",
+    "observation_kind": "assistant_merge_of_frozen_day22_results_not_new_retrieval",
+    "merged_candidates": [
+      {
+        "chunk": {
+          "project_id": "demo_project",
+          "document_id": "attention_is_all_you_need_neurips2017",
+          "chunk_size": 800,
+          "chunk_overlap": 100,
+          "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "pdf_page": 7,
+          "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+          "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+        },
+        "retrievals": {
+          "dense": {
+            "rank": 1,
+            "score": 0.8396191000938416
+          },
+          "bm25": {
+            "rank": 2,
+            "score": 4.471605682454131
+          }
+        }
+      },
+      {
+        "chunk": {
+          "project_id": "demo_project",
+          "document_id": "attention_is_all_you_need_neurips2017",
+          "chunk_size": 800,
+          "chunk_overlap": 100,
+          "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "pdf_page": 2,
+          "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c3",
+          "text": "translation quality after being trained for as little as twelve hours on eight P100 GPUs.\n2 Background\nThe goal of reducing sequential computation also forms the foundation of the Extended Neural GPU\n[20], ByteNet [15] and ConvS2S [8], all of which use convolutional neural networks as basic building\nblock, computing hidden representations in parallel for all input and output positions. In these models,\nthe number of operations required to relate signals from two arbitrary input or output positions grows\nin the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes\nit more difﬁcult to learn dependencies between distant positions [ 11]. In the Transformer this is"
+        },
+        "retrievals": {
+          "dense": {
+            "rank": 2,
+            "score": 0.8151252269744873
+          },
+          "bm25": {
+            "rank": 3,
+            "score": 1.9784674249652705
+          }
+        }
+      },
+      {
+        "chunk": {
+          "project_id": "demo_project",
+          "document_id": "attention_is_all_you_need_neurips2017",
+          "chunk_size": 800,
+          "chunk_overlap": 100,
+          "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "pdf_page": 10,
+          "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+          "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+        },
+        "retrievals": {
+          "dense": {
+            "rank": 3,
+            "score": 0.8106282949447632
+          }
+        }
+      },
+      {
+        "chunk": {
+          "project_id": "demo_project",
+          "document_id": "attention_is_all_you_need_neurips2017",
+          "chunk_size": 800,
+          "chunk_overlap": 100,
+          "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "pdf_page": 7,
+          "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+          "text": "We trained on the standard WMT 2014 English-German dataset consisting of about 4.5 million\nsentence pairs. Sentences were encoded using byte-pair encoding [ 3], which has a shared source-\ntarget vocabulary of about 37000 tokens. For English-French, we used the signiﬁcantly larger WMT\n2014 English-French dataset consisting of 36M sentences and split tokens into a 32000 word-piece\nvocabulary [31]. Sentence pairs were batched together by approximate sequence length. Each training\nbatch contained a set of sentence pairs containing approximately 25000 source tokens and 25000\ntarget tokens.\n5.2 Hardware and Schedule\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using"
+        },
+        "retrievals": {
+          "bm25": {
+            "rank": 1,
+            "score": 4.914726992397145
+          }
+        }
+      }
+    ]
+  },
+  "automated_checks": {
+    "evidence_source": "successful_unittest_command_output",
+    "command": "./.venv/Scripts/python.exe -X utf8 -m unittest discover -s tests -p test_dual_retriever.py -v",
+    "exit_code": 0,
+    "test_count": 12,
+    "elapsed_seconds": 22.791,
+    "unit_cases": [
+      {
+        "name": "test_saved_candidates_preserve_both_routes_without_mutation",
+        "status": "passed"
+      },
+      {
+        "name": "test_empty_route_and_same_text_at_different_positions",
+        "status": "passed"
+      },
+      {
+        "name": "test_duplicate_route_or_conflicting_source_is_rejected",
+        "status": "passed"
+      },
+      {
+        "name": "test_invalid_scope_metadata_is_rejected_before_retrieval",
+        "status": "passed"
+      },
+      {
+        "name": "test_each_route_must_return_original_scope_records",
+        "status": "passed"
+      }
+    ],
+    "page_cases": [
+      {
+        "name": "test_project_switch",
+        "status": "passed"
+      },
+      {
+        "name": "test_document_selection",
+        "status": "passed"
+      },
+      {
+        "name": "test_empty_selection",
+        "status": "passed"
+      },
+      {
+        "name": "test_deletion_isolation",
+        "status": "passed"
+      },
+      {
+        "name": "test_empty_bm25_rerun_and_clear",
+        "status": "passed"
+      },
+      {
+        "name": "test_bm25_only_candidate_is_visible_but_not_used_as_reference",
+        "status": "passed"
+      },
+      {
+        "name": "test_out_of_scope_result_blocks_model_and_preserves_history",
+        "status": "passed"
+      }
+    ],
+    "real_embedding_inference_count": 0,
+    "deepseek_call_count": 0,
+    "page_model_behavior": "controlled_query_vectors_and_simulated_answers",
+    "bm25_behavior": "real_lexical_scoring_except_injected_invalid_result_case",
+    "bm25_only_case_dense_top_k": 1,
+    "workspace_data_unchanged_verified_by_test_teardown": true,
+    "existing_data_file_count_before_report": 33,
+    "temporary_workspaces_cleaned": true
+  },
+  "validated_code_sha256": {
+    "app.py": "08641196c022e56d54f3984f16acb90823b91bd72c38704cc0569ae978a2e672",
+    "dual_retriever.py": "a6b462a2cb6bace6395b739a44f066c61da229fc69d0922851f57d235bcb5870",
+    "tests/test_dual_retriever.py": "9ad0304a0665ced357af2ad16088611515b74ad872bea6ccd5351d48f67862b7"
+  },
+  "page_contract": {
+    "retrieval_channels": [
+      "dense",
+      "bm25"
+    ],
+    "candidate_key": "chunk_id",
+    "reference_method": "dense",
+    "combined_ranking_implemented": false,
+    "history_stores_per_route_results": true
+  },
+  "user_page_confirmation": {
+    "status": "passed",
+    "source": "user_chat_reply",
+    "confirmed_date": "2026-10-25",
+    "project_id": "demo_project",
+    "question": "NVIDIA P100",
+    "expected_dense_count": 3,
+    "expected_bm25_count": 3,
+    "expected_unique_count": 4,
+    "expected_counts_source": "frozen_day22_report",
+    "observed_dense_count": 3,
+    "observed_bm25_count": 3,
+    "observed_unique_count": 4,
+    "reported_captions": [
+      "Dense：3 条 · BM25：3 条 · 去重后：4 个片段",
+      "本轮回答使用 Dense 候选作为参考资料，具体依据见上方原文引用。",
+      "以下按片段首次出现顺序展示，各路排名和分数分别保留。"
+    ],
+    "reported_candidates": [
+      {
+        "display_number": 1,
+        "pdf_page": 7,
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+        "retrievals": {
+          "dense": {"rank": 1, "displayed_score": 0.8396},
+          "bm25": {"rank": 2, "displayed_score": 4.4716}
+        }
+      }
+    ],
+    "answer_text_provided": false,
+    "raw_api_response_captured": false
+  },
+  "limitations": [
+    "Automated page checks use controlled vectors and simulated answers, not semantic-quality evaluation.",
+    "The BM25-only display case intentionally limits Dense to one candidate.",
+    "This report summarizes test output; per-request traces were not captured by the test command.",
+    "User page confirmation contains candidate counts and one candidate's displayed rankings; no answer text or raw API response was provided.",
+    "Only Dense candidates are currently sent as answer references; RRF is planned for Day 24.",
+    "The English-and-digit tokenizer does not translate Chinese queries."
+  ]
+}

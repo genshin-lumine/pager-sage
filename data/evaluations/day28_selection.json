@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "purpose": "day28_configuration_selection_before_validation",
+  "status": "selected_before_validation",
+  "created_at": "2026-10-25T22:16:21.750750+08:00",
+  "selected_by": "user",
+  "selected_group": "B",
+  "selected_config": {
+    "recall_top_k": 6,
+    "rrf_top_k": 6,
+    "evaluation_k": 3,
+    "rank_constant": 60
+  },
+  "preference": "retrieval_quality_over_latency",
+  "user_statement": "我会选择B，虽然时间增加了，但是同时准确度上升了，就我个人体验而言，我感觉准确度比时间要更重要一些",
+  "rationale": "学习者愿意接受额外耗时，优先提高检索质量；根据开发题的召回与排名改善暂选 B，待固定新问题复验。",
+  "measurement_note": "开发实验观测到的是相关片段召回和排名改善，没有生成模型回答，不能称为回答准确率提高。",
+  "development_summary": {
+    "A": {
+      "recall_top_k": 3,
+      "methods": {
+        "dense": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "bm25": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 3,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rrf": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rerank": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        }
+      },
+      "mean_pipeline_seconds": 1.0760941666473325
+    },
+    "B": {
+      "recall_top_k": 6,
+      "methods": {
+        "dense": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "bm25": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 3,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rrf": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.0,
+          "mrr_at_k": 0.0,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        },
+        "rerank": {
+          "question_count": 3,
+          "mean_recall_at_k": 0.6666666666666666,
+          "mrr_at_k": 0.6666666666666666,
+          "empty_result_count": 0,
+          "unanswerable_questions_with_candidates": 0
+        }
+      },
+      "mean_pipeline_seconds": 1.9425154000055045
+    }
+  },
+  "input_sha256": {
+    "data/evaluation_questions.json": "294b424918df86c120acc3ebf50a8eb18669ac0a5e1630e60121df02554e22df",
+    "data/evaluations/day27_relevance_labels.json": "99e465b4a7d6159bc708b6efdc973bf46d74abd9095cc871e81b554432166485",
+    "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/index.faiss": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/metadata.json": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546",
+    "data/papers/attention_is_all_you_need_neurips2017.pdf": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537",
+    "data/projects/demo_project/project.json": "a8d317c38de5aa65ab1332fb8c6c4505d64b8b5eb0cac6b2e6a043a79cdab70d",
+    "data/evaluations/day27_retrieval_comparison.json": "a57fef07d47a51b73f9fa74a20517337cb22589d8738c4fb0b90564757cd24ab",
+    "data/evaluations/day28_tuning_plan.json": "48dbfadc6c8742c98b55ca3c6fd84c557303c23d9d67c54ddc1815d7fa95b982",
+    "data/evaluations/day28_development_comparison.json": "937a7728c800b08078c926af640d28f0d047f8f89ba07a9ed20c3a852434a700"
+  },
+  "validation_case_ids": [
+    "v1",
+    "v2",
+    "v3",
+    "v4",
+    "v5"
+  ],
+  "validation_runs_at_selection": 0,
+  "production_config_changed": false
+}

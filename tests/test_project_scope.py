@@ -26,6 +26,7 @@ from index_store import save_index
 from pdf_loader import load_pdf_pages
 from project_store import get_index_dir, load_project, save_project
 from retrieval_scope import load_scope_index
+import reranker
 
 
 def assert_results_in_scope(results, project_id, selected_document_ids):
@@ -73,6 +74,10 @@ class ProjectScopeTests(unittest.TestCase):
         self.queries = []
         self.encode_calls = 0
         self.model_instances = 0
+        self.rerank_model_instances = 0
+        self.rerank_calls = []
+        self.rerank_score_fn = None
+        self.rerank_failure = None
         self.project_a, self.project_b = "scope_project_a", "scope_project_b"
         manifest = json.loads(
             (WORKSPACE / "data/fixtures/day21/manifest.json").read_text(encoding="utf-8")
@@ -110,6 +115,20 @@ class ProjectScopeTests(unittest.TestCase):
             self.assertIsNotNone(match)
             return {"answer": match.group(1), "evidence": [match.group(0)], "insufficient_reason": ""}
 
+        def controlled_rerank(pairs, **kwargs):
+            self.rerank_calls.append(deepcopy(pairs))
+            if self.rerank_failure is not None:
+                raise self.rerank_failure
+            if self.rerank_score_fn is not None:
+                return self.rerank_score_fn(pairs)
+            # 范围测试默认保持 RRF 顺序；专门的精排场景覆盖改序。
+            return -np.arange(1, len(pairs) + 1, dtype="float32")
+
+        def controlled_rerank_loader(cache_folder=None, local_files_only=False):
+            self.assertTrue(local_files_only)
+            self.rerank_model_instances += 1
+            return types.SimpleNamespace(predict=controlled_rerank)
+
         fake_embedding = types.ModuleType("sentence_transformers")
         fake_embedding.SentenceTransformer = ControlModel
         fake_llm = types.ModuleType("llm")
@@ -119,6 +138,7 @@ class ProjectScopeTests(unittest.TestCase):
             "sentence_transformers": fake_embedding, "llm": fake_llm,
         }))
         self.patches.enter_context(patch.object(st, "secrets", {"DEEPSEEK_API_KEY": "test-only-key"}))
+        self.patches.enter_context(patch.object(reranker, "load_reranker", side_effect=controlled_rerank_loader))
         st.cache_resource.clear()
 
     def cleanup_workspace(self):
@@ -212,6 +232,8 @@ class ProjectScopeTests(unittest.TestCase):
         self.observations.append({
             "case": name, "status": "passed", "queries": deepcopy(self.queries),
             "simulated_answer_count": len(self.requests), "controlled_query_count": self.encode_calls,
+            "controlled_rerank_call_count": len(self.rerank_calls),
+            "rerank_model_instances": self.rerank_model_instances,
         })
 
     def test_project_switch(self):
@@ -250,12 +272,12 @@ class ProjectScopeTests(unittest.TestCase):
     def test_empty_selection(self):
         at = self.app(self.project_a, [self.aid])
         self.ask(at, self.fixture_a["expected_code"])
-        before = (len(self.requests), self.encode_calls)
+        before = (len(self.requests), self.encode_calls, len(self.rerank_calls))
         self.select(at, [])
         self.assert_empty_chat(at)
         self.assertFalse(any(widget.label == "提交问题" for widget in at.button))
         self.assertFalse(any(str(widget.key).startswith("question_") for widget in at.text_input))
-        self.assertEqual((len(self.requests), self.encode_calls), before)
+        self.assertEqual((len(self.requests), self.encode_calls, len(self.rerank_calls)), before)
         with self.assertRaises(ValueError):
             load_scope_index(load_project(self.project_a), [])
         self.select(at, [self.aid])
@@ -290,6 +312,7 @@ class ProjectScopeTests(unittest.TestCase):
         self.assert_empty_chat(at)
         self.ask(at, self.fixture_b["expected_code"])
         self.assertEqual(self.model_instances, 1, "删除只清除索引缓存，模型缓存继续复用")
+        self.assertEqual(self.rerank_model_instances, 1, "删除后继续复用精排模型")
         self.record_case("deletion_isolation")
 
 

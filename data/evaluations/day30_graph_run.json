@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "purpose": "day30_sequential_graph_run",
+  "status": "completed_single_case",
+  "recorded_date": "2026-10-26",
+  "provenance": {
+    "source": "user_returned_console_output",
+    "run_timestamp": null,
+    "raw_api_response_saved": false,
+    "note": "学习者按 --real 运行后回传；助手本轮未重新调用模型。"
+  },
+  "configured_scope": {
+    "project_id": "demo_project",
+    "selected_document_ids": ["attention_is_all_you_need_neurips2017"],
+    "recall_top_k": 6,
+    "rrf_top_k": 6,
+    "final_top_k": 3,
+    "rank_constant": 60
+  },
+  "question_from_runner": "训练模型使用了什么硬件？",
+  "stages": [
+    {"node": "start", "message_count": 2, "reference_character_count": 0},
+    {"node": "request_tool", "message_count": 3, "reference_character_count": 0},
+    {"node": "execute_tool", "message_count": 4, "reference_character_count": 2728},
+    {"node": "generate_answer", "message_count": 5, "reference_character_count": 2728}
+  ],
+  "final_message_types": ["system", "human", "ai", "tool", "ai"],
+  "original_question_preserved": true,
+  "final_result": {
+    "answer": "论文在训练中使用的硬件是一台配备 8 块 NVIDIA P100 GPU 的机器。基础模型的每步训练约耗时 0.4 秒，共训练 100,000 步（约 12 小时）；大模型每步耗时 1.0 秒，共训练 300,000 步（约 3.5 天）。",
+    "evidence": [
+      "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using the hyperparameters described throughout the paper, each training step took about 0.4 seconds. We trained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the bottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps(3.5 days).",
+      "The Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in translation quality after being trained for as little as twelve hours on eight P100 GPUs.",
+      "our model establishes a new single-model state-of-the-art BLEU score of 41.0 after training for 3.5 days on eight GPUs"
+    ],
+    "insufficient_reason": ""
+  },
+  "review": {
+    "answer_structure": "passed",
+    "fact_source_chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+    "fact_review": "硬件型号与数量、两种规模模型的每步耗时、训练步数和总时长均由第 7 页原文支持。",
+    "match_basis": "已保存索引中的原文；本次回传没有包含完整工具资料，不代表已验证引用属于本轮候选。",
+    "evidence_checks": [
+      {"evidence_number": 1, "source_chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4", "exact_substring": false, "whitespace_normalized_substring": false, "all_whitespace_removed_substring": true},
+      {"evidence_number": 2, "source_chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2", "exact_substring": false, "whitespace_normalized_substring": true, "all_whitespace_removed_substring": true},
+      {"evidence_number": 3, "source_chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2", "exact_substring": false, "whitespace_normalized_substring": true, "all_whitespace_removed_substring": true}
+    ],
+    "citation_note": "引用包含换行合并，第一条还去掉 steps 与括号之间的空白。结构校验不等于逐字引用或本轮来源校验。"
+  },
+  "limitations": [
+    "只有一道问题的一次成功图运行，不代表自动路由、拒答、重试或更多问题均已验证。",
+    "按当前代码，该成功路径包含两次模型 invoke 和一次工具 invoke；本次回传没有单独的请求计数、调用标识、finish_reason 或 token 用量。",
+    "未保存完整工具资料、实际候选集合或耗时，不从上一次运行补填。",
+    "独立图尚未替换 Streamlit 页面流程。"
+  ]
+}

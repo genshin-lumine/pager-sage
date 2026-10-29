@@ -2,5 +2,10 @@
 __pycache__/
 .streamlit/secrets.toml
 config.local.toml
-practice_*
+*.egg-info/
+build/
+dist/
 data/indexes/
+data/checkpoints/
+data/sessions/
+data/logs/

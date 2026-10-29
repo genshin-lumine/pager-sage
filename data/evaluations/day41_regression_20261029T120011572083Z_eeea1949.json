@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "purpose": "day41_regression_report",
+  "created_at": "2026-10-29T12:00:11.572083+00:00",
+  "python_version": "3.12.6",
+  "mode": "offline_controlled_tests",
+  "group": "core",
+  "plan_sha256": "0e447aea5db6bed8eaaebb406b4bc0afb571e3f0775773381d2f781a072db8c3",
+  "selected_count": 3,
+  "passed_count": 3,
+  "accepted": true,
+  "runner_errors": [],
+  "runner_skips": [],
+  "results": [
+    {
+      "case_id": "empty_selection",
+      "name": "未选择论文",
+      "expected": "清空旧会话和输入，隐藏提交入口，不增加检索或模型调用。",
+      "test_id": "test_project_scope.ProjectScopeTests.test_empty_selection",
+      "status": "passed",
+      "issues": [],
+      "elapsed_seconds": 1.8843590000033146
+    },
+    {
+      "case_id": "insufficient_answer",
+      "name": "资料不足仍是合法结果",
+      "expected": "最多两次检索后停止，只保存一轮完整问答，结论列表为空并保留不足说明。",
+      "test_id": "test_qa_retry_page.QARetryPageTests.test_two_insufficient_attempts_are_saved_as_one_complete_turn",
+      "status": "passed",
+      "issues": [],
+      "elapsed_seconds": 0.8780710999999428
+    },
+    {
+      "case_id": "model_request_failure",
+      "name": "模型请求失败不写入半轮问答",
+      "expected": "显示错误，原聊天保持不变，失败的本轮不作为完整问答保存。",
+      "test_id": "test_agent_workflow.AgentWorkflowPageTests.test_router_and_tool_request_failures_keep_previous_session",
+      "status": "passed",
+      "issues": [],
+      "elapsed_seconds": 1.3330848000041442
+    }
+  ]
+}

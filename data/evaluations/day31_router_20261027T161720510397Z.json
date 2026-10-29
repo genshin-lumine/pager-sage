@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "purpose": "day31_model_intent_routing",
+  "recorded_at": "2026-10-27T16:17:20.510397+00:00",
+  "mode": "real_model_with_teaching_handlers",
+  "model": "deepseek-flash",
+  "history_used": false,
+  "document_context": "synthetic_names_and_ids_only",
+  "summary": {
+    "case_count": 4,
+    "ok_count": 4,
+    "classification_correct_count": 4,
+    "path_correct_count": 4
+  },
+  "results": [
+    {
+      "case_id": "A",
+      "question": "请概括这篇论文的研究问题、方法和主要结论。",
+      "documents": [
+        {
+          "document_id": "paper_a",
+          "name": "论文 A"
+        }
+      ],
+      "expected_intent": "summary",
+      "status": "ok",
+      "route": {
+        "intent": "summary",
+        "reason": "用户明确要求概括唯一所选论文《论文 A》的研究问题、方法和主要结论，对象明确，属于整体内容概括。",
+        "clarification_question": ""
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "summary_handler"
+      ],
+      "output": "已进入论文总结分支；本练习不生成总结。",
+      "classification_matches_expected": true,
+      "path_matches_route": true,
+      "original_question_preserved": true
+    },
+    {
+      "case_id": "B",
+      "question": "这篇论文的编码器由多少个相同的层堆叠而成？",
+      "documents": [
+        {
+          "document_id": "paper_a",
+          "name": "论文 A"
+        }
+      ],
+      "expected_intent": "qa",
+      "status": "ok",
+      "route": {
+        "intent": "qa",
+        "reason": "用户针对明确所选论文A提出具体的结构事实问题，属于对明确论文对象的提问。",
+        "clarification_question": ""
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "qa_handler"
+      ],
+      "output": "已进入论文问答分支；本练习不执行检索或回答。",
+      "classification_matches_expected": true,
+      "path_matches_route": true,
+      "original_question_preserved": true
+    },
+    {
+      "case_id": "C",
+      "question": "比较这两篇论文使用的训练数据和实验结果。",
+      "documents": [
+        {
+          "document_id": "paper_a",
+          "name": "论文 A"
+        },
+        {
+          "document_id": "paper_b",
+          "name": "论文 B"
+        }
+      ],
+      "expected_intent": "compare",
+      "status": "ok",
+      "route": {
+        "intent": "compare",
+        "reason": "用户明确要求比较两篇已选论文的训练数据和实验结果，属于论文比较任务。",
+        "clarification_question": ""
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "compare_handler"
+      ],
+      "output": "已进入论文对比分支；本练习不生成对比。",
+      "classification_matches_expected": true,
+      "path_matches_route": true,
+      "original_question_preserved": true
+    },
+    {
+      "case_id": "D",
+      "question": "帮我分析一下。",
+      "documents": [
+        {
+          "document_id": "paper_a",
+          "name": "论文 A"
+        },
+        {
+          "document_id": "paper_b",
+          "name": "论文 B"
+        },
+        {
+          "document_id": "paper_c",
+          "name": "论文 C"
+        }
+      ],
+      "expected_intent": "clarify",
+      "status": "ok",
+      "route": {
+        "intent": "clarify",
+        "reason": "用户请求“帮我分析一下”未说明分析任务类型，且所选有三篇论文，未指明针对哪篇或哪两篇，对象和任务均不明确。",
+        "clarification_question": "请问您想分析哪篇（或哪两篇）论文？以及需要做哪类分析，比如具体问题解答、内容概括还是论文间比较？"
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "clarify_handler"
+      ],
+      "output": "请问您想分析哪篇（或哪两篇）论文？以及需要做哪类分析，比如具体问题解答、内容概括还是论文间比较？",
+      "classification_matches_expected": true,
+      "path_matches_route": true,
+      "original_question_preserved": true
+    }
+  ],
+  "limitations": [
+    "只评估四个明确约定的场景，不代表所有请求都能正确分类。",
+    "分支为教学节点，未执行论文检索或内容生成。",
+    "只保存解析后的路由与路径，没有保存原始 API 响应或 token 用量。"
+  ]
+}

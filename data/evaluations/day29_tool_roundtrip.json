@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "purpose": "day29_tool_call_roundtrip",
+  "status": "completed_single_case",
+  "recorded_date": "2026-10-26",
+  "provenance": {
+    "source": "user_returned_console_output",
+    "raw_api_response_saved": false,
+    "run_timestamp": null,
+    "note": "根据学习者回传的终端输出记录；本轮助手未重新调用模型。"
+  },
+  "configured_scope": {
+    "project_id": "demo_project",
+    "selected_document_ids": ["attention_is_all_you_need_neurips2017"],
+    "recall_top_k": 6,
+    "rrf_top_k": 6,
+    "final_top_k": 3,
+    "rank_constant": 60
+  },
+  "question": "训练模型使用了什么硬件？",
+  "first_response": {
+    "message_type": "AIMessage",
+    "finish_reason": "tool_calls",
+    "content": "",
+    "tool_calls": [
+      {
+        "name": "search_papers",
+        "args": {"question": "训练模型使用了什么硬件？"},
+        "id": "call_00_WeGEMgAd5CfyW0LotbBl2395",
+        "type": "tool_call"
+      }
+    ]
+  },
+  "tool_result": {
+    "message_type": "ToolMessage",
+    "tool_call_id": "call_00_WeGEMgAd5CfyW0LotbBl2395",
+    "call_id_matches": true,
+    "content_character_count": 2728,
+    "content": null,
+    "note": "本次回传包含工具结果长度，未包含完整工具消息或实际候选列表。"
+  },
+  "messages_before_final_request": {
+    "count": 4,
+    "roles_from_code": ["system", "user", "assistant", "tool"]
+  },
+  "final_response": {
+    "finish_reason": "stop",
+    "result": {
+      "answer": "训练使用了一台配备 8 块 NVIDIA P100 GPU 的机器。基础模型每步约 0.4 秒，共训练 100,000 步（约 12 小时）；大模型每步约 1.0 秒，共训练 300,000 步（约 3.5 天）。",
+      "evidence": [
+        "We trained our models on one machine with 8 NVIDIA P100 GPUs.",
+        "each training step took about 0.4 seconds. We trained the base models for a total of 100,000 steps or 12 hours.",
+        "For our big models,(described on the bottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps (3.5 days)."
+      ],
+      "insufficient_reason": ""
+    }
+  },
+  "observed_execution_counts": {"model_requests": 2, "local_search_calls": 1},
+  "review": {
+    "answer_structure": "passed",
+    "source_chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+    "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+    "pdf_page": 7,
+    "match_basis": "已保存索引中的原文片段，不是本轮完整工具消息的回放。",
+    "evidence_checks": [
+      {"evidence_number": 1, "exact_substring": true, "whitespace_normalized_substring": true},
+      {"evidence_number": 2, "exact_substring": false, "whitespace_normalized_substring": true},
+      {"evidence_number": 3, "exact_substring": false, "whitespace_normalized_substring": true}
+    ],
+    "fact_review": "回答中的 GPU 数量、型号和训练时间、步数均由第 7 页片段支持。",
+    "citation_note": "第二、三条引用合并了原文换行。现有 parse_answer 只检查结构，未实现自动引用存在性与结论支持校验。"
+  },
+  "limitations": [
+    "仅验证一个问题的一轮工具调用，不代表任意问题、拒答、多工具路由或重试均已验证。",
+    "第二次请求使用原始模型生成 JSON；保留前一轮调用与工具结果，但不继续提供可调用工具。",
+    "未记录本次耗时、token 用量或完整候选集合，不从旧运行补填。",
+    "完整流程在独立教学脚本中验证，尚未替换 Streamlit 的问答流程。"
+  ]
+}

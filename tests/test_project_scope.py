@@ -11,22 +11,22 @@ import tempfile
 import types
 import unittest
 from unittest.mock import patch
+from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.runnables import RunnableLambda
 
 WORKSPACE = Path(__file__).resolve().parents[1]
-if str(WORKSPACE) not in sys.path:
-    sys.path.insert(0, str(WORKSPACE))
 
 import faiss
 import numpy as np
 import streamlit as st
 from streamlit.testing.v1 import AppTest
 
-from chunker import split_pages
-from index_store import save_index
-from pdf_loader import load_pdf_pages
-from project_store import get_index_dir, load_project, save_project
-from retrieval_scope import load_scope_index
-import reranker
+from paper_sage.documents.chunking import split_pages
+from paper_sage.retrieval.index_store import save_index
+from paper_sage.documents.pdf import load_pdf_pages
+from paper_sage.projects.store import get_index_dir, load_project, save_project
+from paper_sage.retrieval.scope import load_scope_index
+import paper_sage.retrieval.reranker as reranker
 
 
 def assert_results_in_scope(results, project_id, selected_document_ids):
@@ -71,6 +71,19 @@ class ProjectScopeTests(unittest.TestCase):
         self.addCleanup(self.cleanup_workspace)
         os.chdir(self.root)
         self.requests = []
+        self.classifications = []
+        self.tool_requests = []
+        self.answer_protocols = []
+        self.route_override = None
+        self.classify_failure = None
+        self.request_failure = None
+        self.search_query_fn = lambda question: question
+        self.answer_finish_reason = "stop"
+        self.rewrite_requests = []
+        self.rewrite_override = {"query": "verification code test document", "reason": "固定改写，仅检查流程"}
+        self.rewrite_failure = None
+        self.summary_requests = []
+        self.summary_failure = None
         self.queries = []
         self.encode_calls = 0
         self.model_instances = 0
@@ -91,6 +104,8 @@ class ProjectScopeTests(unittest.TestCase):
         save_project({"project_id": self.project_a, "name": "Scope A", "documents": [self.doc_a, self.doc_b_in_a]})
         save_project({"project_id": self.project_b, "name": "Scope B", "documents": [self.doc_b]})
 
+        # Reimport the page with this test's controlled dependencies.
+        sys.modules.pop("paper_sage.ui.app", None)
         owner = self
 
         class ControlModel:
@@ -131,11 +146,102 @@ class ProjectScopeTests(unittest.TestCase):
 
         fake_embedding = types.ModuleType("sentence_transformers")
         fake_embedding.SentenceTransformer = ControlModel
-        fake_llm = types.ModuleType("llm")
-        fake_llm.ask_deepseek = simulated_answer
+        fake_llm = types.ModuleType('paper_sage.llm.client')
+        # 仅供测试替换最终回答；页面使用 create_chat_model 和真实图。
+        fake_llm.answer_response = simulated_answer
         fake_llm.IncompleteAnswerError = type("IncompleteAnswerError", (Exception,), {})
+
+        def simulated_cited_answer(messages, api_key):
+            # 将原有固定回答场景映射成新协议；这是测试替身，不是应用的兼容转换。
+            roles = {"system": "system", "human": "user", "ai": "assistant"}
+            records = [{"role": roles[m.type], "content": m.content} for m in messages]
+            result = fake_llm.answer_response(records, api_key)
+            if set(result) != {"answer", "evidence", "insufficient_reason"}:
+                return result  # 故意无效的测试响应继续保持无效。
+            if result["insufficient_reason"]:
+                return {"claims": [], "insufficient_reason": result["insufficient_reason"]}
+            reference = json.loads(messages[-1].content)["reference"]
+            ids = [item["chunk_id"] for item in reference if any(quote in item["text"] for quote in result["evidence"])]
+            return {"claims": [{"text": result["answer"], "chunk_ids": ids}], "insufficient_reason": ""}
+
+        fake_llm.cited_answer_response = simulated_cited_answer
+
+        class ControlledChatModel:
+            def __init__(self, api_key):
+                owner.assertEqual(api_key, "test-only-key")
+                self.api_key = api_key
+
+            def bind_tools(self, tools, **kwargs):
+                owner.assertEqual(set(tools[0].args), {"question"})
+
+                def request(messages):
+                    owner.tool_requests.append(deepcopy(messages))
+                    if owner.request_failure:
+                        raise owner.request_failure
+                    return AIMessage(content="", tool_calls=[{
+                        "name": tools[0].name,
+                        "args": {"question": owner.search_query_fn(messages[-1].content)},
+                        "id": "controlled_call", "type": "tool_call",
+                    }], response_metadata={"finish_reason": "tool_calls"})
+                return RunnableLambda(request)
+
+            def bind(self, **kwargs):
+                owner.assertIn(kwargs, [
+                    {"response_format": {"type": "json_object"}},
+                    {"response_format": {"type": "json_object"}, "max_tokens": 2048},
+                    {"response_format": {"type": "json_object"}, "max_tokens": 4096},
+                    {"response_format": {"type": "json_object"}, "max_tokens": 512},
+                ])
+
+                def respond(messages):
+                    if kwargs.get("max_tokens") == 512:
+                        owner.rewrite_requests.append(json.loads(messages[-1].content))
+                        if owner.rewrite_failure:
+                            raise owner.rewrite_failure
+                        return AIMessage(content=json.dumps(owner.rewrite_override, ensure_ascii=False),
+                                         response_metadata={"finish_reason": "stop"})
+                    if isinstance(messages[-1], ToolMessage):
+                        owner.answer_protocols.append(deepcopy(messages))
+                        # 原有检索验收读取正文；另外保留完整协议供 Agent 验收核对。
+                        roles = {"system": "system", "human": "user", "ai": "assistant", "tool": "tool"}
+                        records = [{"role": roles[m.type], "content": m.content} for m in messages]
+                        result = fake_llm.answer_response(records, self.api_key)
+                        return AIMessage(content=json.dumps(result, ensure_ascii=False),
+                                         response_metadata={"finish_reason": owner.answer_finish_reason})
+                    payload = json.loads(messages[-1].content)
+                    if "reference" in payload and "question" in payload:
+                        owner.answer_protocols.append(deepcopy(messages))
+                        result = fake_llm.cited_answer_response(messages, self.api_key)
+                        return AIMessage(content=json.dumps(result, ensure_ascii=False),
+                                         response_metadata={"finish_reason": owner.answer_finish_reason})
+                    if "parts" in payload or "notes" in payload:
+                        owner.summary_requests.append(deepcopy(payload))
+                        if owner.summary_failure:
+                            raise owner.summary_failure
+                        result = {field: [] for field in ("research_question", "method", "results", "limitations")}
+                        if "parts" in payload:
+                            text = "\n".join(part["text"] for part in payload["parts"])
+                            match = re.search(r"The verification code of this test document is (PROJECT-[AB]-\d+)\.", text)
+                            owner.assertIsNotNone(match)
+                            result["method"] = [{"text": f"测试文档提供的校验码是 {match.group(1)}。",
+                                                 "part_ids": [part["part_id"] for part in payload["parts"]]}]
+                        else:
+                            result["method"] = [{"text": payload["notes"][0]["text"],
+                                                 "note_ids": [payload["notes"][0]["note_id"]]}]
+                        return AIMessage(content=json.dumps(result, ensure_ascii=False), response_metadata={"finish_reason": "stop"})
+                    owner.classifications.append(payload)
+                    if owner.classify_failure:
+                        raise owner.classify_failure
+                    route = owner.route_override or {
+                        "intent": "qa", "reason": "固定分类，仅验证工作流连接", "clarification_question": "",
+                    }
+                    return AIMessage(content=json.dumps(route, ensure_ascii=False),
+                                     response_metadata={"finish_reason": "stop"})
+                return RunnableLambda(respond)
+
+        fake_llm.create_chat_model = ControlledChatModel
         self.patches.enter_context(patch.dict(sys.modules, {
-            "sentence_transformers": fake_embedding, "llm": fake_llm,
+            "sentence_transformers": fake_embedding, 'paper_sage.llm.client': fake_llm,
         }))
         self.patches.enter_context(patch.object(st, "secrets", {"DEEPSEEK_API_KEY": "test-only-key"}))
         self.patches.enter_context(patch.object(reranker, "load_reranker", side_effect=controlled_rerank_loader))
@@ -210,7 +316,8 @@ class ProjectScopeTests(unittest.TestCase):
         question.set_value(self.question)
         submit = next(widget for widget in at.button if widget.label == "提交问题")
         self.checked(submit.click().run())
-        self.assertEqual(len(self.requests[-1]), 2, "切换后不应携带旧范围历史")
+        self.assertEqual(len(self.requests[-1]), 2, "切换后结构化回答只收到系统消息和本次问题与片段")
+        self.assertNotIn("history", self.classifications[-1], "切换后分类也不能携带旧范围历史")
         answer = at.session_state["chat_session"]["messages"][-1]
         results = answer["retrieval_results"]
         self.assertTrue(results, "有答案样例必须实际返回候选")

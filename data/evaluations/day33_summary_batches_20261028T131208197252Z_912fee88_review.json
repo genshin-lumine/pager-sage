@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "purpose": "manual_summary_review",
+  "reviewer": "assistant",
+  "source_report": "data/evaluations/day33_summary_batches_20261028T131208197252Z_912fee88.json",
+  "source_report_sha256": "dfedfd0e2fb92f178794d8db6d9381c994c7496b53446db97ef70b966db857d6",
+  "scope": "仅记录第3批已确认的比较条件误述及人工校正，不代表所有要点已完成事实核验。",
+  "corrections": [
+    {
+      "note_id": "demo_project:attention_is_all_you_need_neurips2017:summary:b3:results:2",
+      "original": {
+        "text": "dk较小时两种注意力机制表现相近，而dk较大时不缩放的加性注意力优于点积注意力，因此需用1/√dk缩放点积。",
+        "part_ids": ["demo_project:attention_is_all_you_need_neurips2017:p4:chars0-2431"]
+      },
+      "replacement": {
+        "text": "当 dk 较小时，加性注意力与点积注意力表现相近；当 dk 较大时，加性注意力优于未进行缩放的点积注意力。",
+        "part_ids": ["demo_project:attention_is_all_you_need_neurips2017:p4:chars0-2431"]
+      },
+      "reason": "第4页的 without scaling 修饰 dot product attention。新响应仍把不缩放修饰加性注意力；人工校正比较条件，并保持原来源。缩放方法已由本批 method 要点单独表述。",
+      "evidence": [
+        {
+          "part_id": "demo_project:attention_is_all_you_need_neurips2017:p4:chars0-2431",
+          "quote": "While for small values ofdk the two mechanisms perform similarly, additive attention outperforms dot product attention without scaling for larger values ofdk [3]."
+        }
+      ]
+    }
+  ]
+}

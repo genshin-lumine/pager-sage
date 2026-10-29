@@ -9,14 +9,11 @@ import unittest
 from unittest.mock import patch
 
 WORKSPACE = Path(__file__).resolve().parents[1]
-if str(WORKSPACE) not in sys.path:
-    sys.path.insert(0, str(WORKSPACE))
 
-import dual_retriever
-from dual_retriever import merge_candidates, retrieve_dual
-from project_store import load_project
-from retrieval_scope import load_scope_index
-from rag_context import build_reference_text
+import paper_sage.retrieval.dual as dual_retriever
+from paper_sage.retrieval.dual import merge_candidates, retrieve_dual
+from paper_sage.projects.store import load_project
+from paper_sage.retrieval.scope import load_scope_index
 import test_project_scope as scope_tests
 
 
@@ -104,6 +101,18 @@ class DualRetrievalScopeTests(scope_tests.ProjectScopeTests):
         # 英文词项让两路都返回候选；中文无词项另有专门场景。
         self.question = "verification code"
 
+    def clear_legacy_session_before_new_query(self, at, session):
+        """旧展示记录可阅读，但不能伪装成当前协议的完整可恢复记录。"""
+        before = (len(self.classifications), len(self.requests), self.encode_calls, len(self.rerank_calls))
+        next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
+        next(w for w in at.button if w.label == "提交问题").click().run()
+        self.assertFalse(at.exception, [item.message for item in at.exception])
+        self.assertTrue(any("流程数据不符合要求" in item.value for item in at.error))
+        self.assertEqual(at.session_state["chat_session"], session)
+        self.assertEqual((len(self.classifications), len(self.requests), self.encode_calls, len(self.rerank_calls)), before)
+        self.checked(next(w for w in at.button if w.label == "清空会话").click().run())
+        self.assert_empty_chat(at)
+
     def ask(self, at, expected_code):
         results = super().ask(at, expected_code)
         answer = at.session_state["chat_session"]["messages"][-1]
@@ -148,10 +157,14 @@ class DualRetrievalScopeTests(scope_tests.ProjectScopeTests):
             self.assertEqual(result["rrf_rank"], fused["rank"])
             self.assertEqual(result["rrf_score"], fused["score"])
             self.assertEqual(result["score"], result["rerank_score"])
-        reference = build_reference_text(results).strip()
+        # 当前问答协议只发送最终入选片段的标识和原文；页码由证据表查回。
+        payload = json.loads(self.requests[-1][-1]["content"])
         self.assertEqual(
-            self.requests[-1][-1]["content"],
-            f"<reference>\n{reference}\n</reference>\n\n问题：{self.question}",
+            payload,
+            {"question": self.question, "reference": [
+                {"chunk_id": result["chunk"]["chunk_id"], "text": result["chunk"]["text"]}
+                for result in results
+            ]},
         )
         self.assertTrue(all(set(message) == {"role", "content"} for message in self.requests[-1]))
         captions = [caption.value for caption in at.caption]
@@ -226,7 +239,9 @@ class DualRetrievalScopeTests(scope_tests.ProjectScopeTests):
             next(widget for widget in at.text_input if str(widget.key).startswith("question_")).set_value("verification code")
             next(widget for widget in at.button if widget.label == "提交问题").click().run()
         self.assertFalse(at.exception, [item.message for item in at.exception])
-        self.assertTrue(any("当前检索范围" in error.value for error in at.error))
+        # 工具失败展示阶段说明；详细的范围校验由底层异常与单元测试检查。
+        self.assertTrue(any("检索工具执行失败" in error.value for error in at.error),
+                        [error.value for error in at.error])
         self.assertEqual(len(self.requests), requests_before)
         self.assertEqual(len(self.rerank_calls), reranks_before)
         self.assertEqual(at.session_state["chat_session"], before)

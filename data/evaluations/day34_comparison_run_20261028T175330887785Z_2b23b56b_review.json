@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "purpose": "manual_comparison_review",
+  "reviewer": "assistant",
+  "reviewed_on": "2026-10-29",
+  "source_report": "data/evaluations/day34_comparison_run_20261028T175330887785Z_2b23b56b.json",
+  "source_report_sha256": "9b09ccfb77864a9f4ad889adbc7a7239c0635531a901eb1cb6720b4dcb7376d8",
+  "source_comparison_sha256": "eba4809a43d77d1f8b55d3e8cd3998374064baf31d3cc6a5d6993f327f136837",
+  "review_scope": "助手对照本次各维度实际候选，对已发现的措辞、截断、缺失说明及评测条件问题作内容核对。只应用到派生副本，不改变模型原始报告，不代表自动事实验证或全面审核整篇论文。未用其他轮次候选补齐本轮缺失信息。",
+  "corrections": [
+    {
+      "path": ["comparisons", 0, "papers", 0, "findings", 1, "text"],
+      "original_text": "英法方向使用规模更大的 WMT 2014 英法数据集，包含 3600 万句，并将 token 切分为 32000 个 word-piece 词表。",
+      "replacement_text": "英法方向使用规模更大的 WMT 2014 英法数据集，包含 3600 万句，分词后使用大小为 32000 的 word-piece 词表。",
+      "reason": "32000 指词表大小，不是词表数量；保留原文 36M sentences 的单位。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3"]
+    },
+    {
+      "path": ["comparisons", 0, "papers", 1, "findings", 1, "text"],
+      "original_text": "除分词和短词表映射外，不应用小写化或词干化等其他特殊预处理。",
+      "replacement_text": "除分词和短词表映射外，不应用小写化或词干化等其他特殊预处理。RNNencdec 和 RNNsearch 都设置了两种训练方式：使用长度至多 30 词或至多 50 词的句子，对应名称中的 -30 和 -50。",
+      "reason": "当前候选明确给出训练句子长度的两种设置，应保留这些已有信息，不能笼统说筛选细节全部缺失。",
+      "evidence_chunk_ids": ["demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c2"]
+    },
+    {
+      "path": ["comparisons", 0, "papers", 1, "findings", 2, "text"],
+      "original_text": "用 news-test-2012 和 news-test-2013 组成开发集，并在 WMT ’14 的 news-test-2014 测试集上评估，该测试集包含 3003 句未出现在训练数据中的句子。",
+      "replacement_text": "当前片段完整给出 news-test-2013 是开发集构成的一部分，另一部分名称在页首截断。模型在 WMT ’14 的 news-test-2014 测试集上评估，该测试集包含 3003 句未出现在训练数据中的句子。",
+      "reason": "本次候选在页首仅显示“2012 and news-test-2013”，没有提供第一个名称的完整前缀，不能凭记忆补全为 news-test-2012。",
+      "evidence_chunk_ids": ["demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1"]
+    },
+    {
+      "path": ["comparisons", 0, "papers", 1, "missing_information"],
+      "original_text": "提供的片段未说明训练集的具体名称、平行语料规模或句对数；也未说明训练集的来源与筛选细节。",
+      "replacement_text": "当前候选未完整给出训练语料名称、来源、语言方向和规模；虽已说明训练句子的 30 词或 50 词长度上限，未给出这些设置对应的训练样本数量。开发集另一部分名称在页首截断，需要相邻原文才能确认。",
+      "reason": "区分确实没有召回的语料信息、已经提供的长度设置和被截断的名称，避免扩大缺失范围。",
+      "evidence_chunk_ids": ["demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c2"]
+    },
+    {
+      "path": ["comparisons", 0, "comparison", "text"],
+      "original_text": "两篇论文都在 WMT 翻译任务上训练：Transformer 论文明确给出了 WMT 2014 英德约 450 万句对与英法 36M 句的规模，并使用 BPE/word-piece 子词词表；Bahdanau 论文则说明使用 Moses 分词与每语言 30000 词短词表、[UNK] 映射、不做小写化或词干化，并给出开发/测试集划分（测试集 3003 句）。",
+      "replacement_text": "Transformer 的候选报告 WMT 2014 英德约 450 万句对及英法 3600 万句，采用 BPE/word-piece 子词词表；Bahdanau 的候选报告每语言 30000 词短词表、[UNK] 映射、不做小写化或词干化，以及部分开发集信息和 3003 句的测试集。当前候选不足以确认 Bahdanau 的训练语料名称与规模，不能用 WMT 测试集名称推断其训练语料。",
+      "reason": "本轮没有召回 Bahdanau 的训练语料名称，不能把测试集信息升级为双方训练语料相同。此比较的原引用也不包含说明 Moses 分词脚本的脚注片段，因此比较正文不保留该专名；单篇发现仍按其原引用保留。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c2"]
+    },
+    {
+      "path": ["comparisons", 1, "papers", 0, "missing_information"],
+      "original_text": "提供的片段未说明英德任务上 Transformer 相对基线的具体训练成本数值与完整测试集条件细节（如是否使用集成、测试集句子数）。",
+      "replacement_text": "当前候选已列出 Transformer 与多种基线的 BLEU 和训练 FLOPs，并提供英法单模型结果及检查点平均说明。尚未充分给出 BLEU 计算工具、分词和大小写处理等用于跨论文对齐评测的细节。",
+      "reason": "表 2 已包含训练成本数值，第 1 页和第 8 页还提供单模型与检查点平均信息，不能将这些信息统称为缺失。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c1", "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2", "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3"]
+    },
+    {
+      "path": ["comparisons", 1, "papers", 1, "findings", 0, "text"],
+      "original_text": "表 1 报告测试集 BLEU：RNNencdec-30 为 13.93（全句）/24.19（无 UNK），RNNsearch-30 为 21.50/31.44，RNNencdec-50 为 17.82/26.71，RNNsearch-50 为 26.75/34.16，RNNsearch-50⋆ 为 28.45/36.15。",
+      "replacement_text": "表 1 的 All / No UNK 两列分别报告：RNNencdec-30 为 13.93/24.19，RNNsearch-30 为 21.50/31.44，RNNencdec-50 为 17.82/26.71，RNNsearch-50 为 26.75/34.16，RNNsearch-50⋆ 为 28.45/36.15。All 使用全部测试句；No UNK 只使用源句和参考译文均不含未知词的子集，并禁止模型生成 [UNK]；星号模型训练更久，直到开发集性能不再改善。",
+      "reason": "保留表注中的评测子集、生成约束与星号模型训练条件，避免将两列数值或模型版本当作完全相同设置。",
+      "evidence_chunk_ids": ["demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1"]
+    },
+    {
+      "path": ["comparisons", 1, "papers", 1, "missing_information"],
+      "original_text": "提供的片段未说明 RNNsearch 与 RNNencdec 在英德/英法具体语言方向、训练成本（FLOPs 或时间）以及与更大规模基线系统的全面对比条件。",
+      "replacement_text": "当前结果候选未明确实验语言方向，也未完整给出 BLEU 计算脚本及大小写等评测设置；表 1 已提供 RNNencdec、RNNsearch 和 Moses 的分数与 All / No UNK 条件。",
+      "reason": "将缺失说明限定到本次比较所需且尚未对齐的信息，不暗示该论文同时做了英德和英法任务，也不把已有基线及子集说明笼统列为未知。",
+      "evidence_chunk_ids": ["demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1"]
+    },
+    {
+      "path": ["comparisons", 1, "comparison", "text"],
+      "original_text": "两篇论文都用 BLEU 在 WMT 2014 newstest2014 上评估。Transformer 论文报告 base/big 在英德为 27.3/28.4、英法为 38.1/41.0，并与多个已发表模型及训练 FLOPs 对比；Bahdanau 论文报告 RNNsearch-50⋆ 在全句/无 UNK 子集上为 28.45/36.15，RNNsearch-50 为 26.75/34.16，并指出无 UNK 子集上可与 Moses 相当。",
+      "replacement_text": "Transformer 表 2 在英德、英法 newstest2014 上报告 base/big 的 BLEU 分别为 27.3/28.4、38.1/41.0，并列出多个基线及训练 FLOPs；Bahdanau 表 1 在 All / No UNK 两列报告 RNNsearch-50⋆ 为 28.45/36.15，RNNsearch-50 为 26.75/34.16，Moses 为 33.30/35.63。No UNK 是带额外生成约束的筛选子集，这些成绩应保留各自模型与评测条件分别列示。",
+      "reason": "当前比较对象仅引用两篇结果表，Bahdanau 测试集名称位于本维度另一个未被该比较引用的片段。调整文字以符合现有引用，保留 All / No UNK 与模型版本条件，不更换引用标识。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c1", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1"]
+    },
+    {
+      "path": ["comparisons", 1, "comparison_limit"],
+      "original_text": "Bahdanau 论文片段未明确其 BLEU 对应的具体语言方向，且提供了全测试集与排除 UNK 句子子集两套分数；Transformer 的英德 28.4 与 Bahdanau 的 28.45（全句）不可直接比较，因为测试子集、语言方向、分词与数据处理未对齐，不能仅凭数值高低宣称架构更优。",
+      "replacement_text": "当前 Bahdanau 结果候选未明确实验语言方向，也没有足够资料确认两篇 BLEU 计算脚本、分词和大小写处理一致，不能把 Transformer 英德 28.4 与 Bahdanau All 列的 28.45 当作同一评测设置直接比较。Bahdanau 的 No UNK 列使用源句和参考译文均无未知词的子集，并禁止生成 [UNK]；All 与 No UNK 不能混为同一范围，星号模型训练更久也应单独说明。数值差异不能单独归因于模型架构。",
+      "reason": "区分尚未确认一致与已经证明条件不同，并补齐子集和训练条件，避免仅凭相近 BLEU 数值直接判断架构优劣。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c1", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1", "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1"]
+    }
+  ]
+}

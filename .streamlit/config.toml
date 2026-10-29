@@ -2,3 +2,16 @@
 # 修改代码后重启 Streamlit；页面按钮交互仍会正常重运行。
 [server]
 fileWatcherType = "none"
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#25634e"
+backgroundColor = "#f6f8f5"
+secondaryBackgroundColor = "#edf2ed"
+textColor = "#233c36"
+font = "sans serif"
+baseRadius = "0.6rem"
+buttonRadius = "0.5rem"

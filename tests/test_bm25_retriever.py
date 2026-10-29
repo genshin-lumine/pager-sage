@@ -4,9 +4,8 @@ import sys
 import unittest
 
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from bm25_retriever import retrieve_bm25
+from paper_sage.retrieval.bm25 import retrieve_bm25
 
 
 def make_chunk(number, text):

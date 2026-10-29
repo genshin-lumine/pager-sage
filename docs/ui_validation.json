@@ -1,0 +1,118 @@
+{
+  "created_at": "2026-10-29T14:06:33.766719+00:00",
+  "purpose": "workbench_ui_refresh",
+  "status": "passed",
+  "regression": {
+    "report": "data/evaluations/day41_regression_20261029T135446203103Z_f3e68b66.json",
+    "passed": 14,
+    "selected": 14
+  },
+  "focused_checks": {
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "raw_log": "C:\\Users\\admin\\AppData\\Local\\Temp\\paper-sage-ui-checks.log",
+    "sha256": "5eaaa8311f092812dcda684c57c2ba79f8c5c7b0cda467c067d19a83405a8602"
+  },
+  "browser": {
+    "desktop": [
+      {
+        "label": "arrow_upward\n\n提交问题",
+        "x": 371,
+        "y": 798.921875,
+        "width": 106
+      },
+      {
+        "label": "restart_alt\n\n清空会话",
+        "x": 493,
+        "y": 798.921875,
+        "width": 106
+      }
+    ],
+    "mobile": {
+      "viewport": 390,
+      "documentWidth": 390,
+      "layout": [
+        {
+          "name": "stMainBlockContainer block-container st-emotion-cache-lhe5w4 e8oj7lc4",
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "box": "border-box"
+        },
+        {
+          "name": "sage-hero",
+          "left": 16,
+          "right": 374,
+          "width": 358,
+          "box": "border-box"
+        },
+        {
+          "name": "sage-scope",
+          "left": 16,
+          "right": 374,
+          "width": 358,
+          "box": "border-box"
+        },
+        {
+          "name": "sage-prompts",
+          "left": 16,
+          "right": 374,
+          "width": 358,
+          "box": "border-box"
+        },
+        {
+          "name": "stVerticalBlock st-key-paper_composer st-emotion-cache-q25c8l e6x7pi3",
+          "left": 16,
+          "right": 374,
+          "width": 358,
+          "box": "border-box"
+        }
+      ],
+      "actions": [
+        {
+          "label": "arrow_upward\n\n提交问题",
+          "x": 32,
+          "y": 804.921875,
+          "width": 106
+        },
+        {
+          "label": "restart_alt\n\n清空会话",
+          "x": 154,
+          "y": 804.921875,
+          "width": 106
+        }
+      ]
+    },
+    "screenshots": "D:/vs-workspace/paper-sage/docs/images",
+    "empty_submit": true,
+    "clear_session": true
+  },
+  "screenshots": {
+    "desktop": "docs/images/workspace-desktop.png",
+    "mobile": "docs/images/workspace-mobile.png"
+  },
+  "existing_data_files_checked": 133,
+  "existing_data_files_changed": [],
+  "source_sha256": {
+    "src/paper_sage/ui/app.py": "a2f28a1c9a56b8a7ecf8c673053eb19e9de5a0aae2fc3852a04e5844f10a5041",
+    "src/paper_sage/ui/theme.py": "2e73c3c5e9e70cea0d74e668f77337650b97b4783a9c1662131ada91bc106352",
+    "src/paper_sage/ui/sessions.py": "ee035947607d741c50e1443a8adaea914e11ffa0657985609a819070c3061e65",
+    "src/paper_sage/ui/workflow.py": "3fb1f3681fbe568bd506dfe1181095c4affead0244d6d4c6a19b6037d021ac38",
+    "src/paper_sage/ui/workflow_log.py": "8edb5527610cd241a87bf10bcc26c5691292247ef07fa0ab47f726023a5f1576",
+    ".streamlit/config.toml": "0647ddd57ed65284f53fd729859902b8266c803103aed85ca168c948c0411885"
+  },
+  "boundaries": {
+    "deepseek_requests": 0,
+    "full_368_test_suite_rerun": false,
+    "real_browser_interactions": [
+      "render workspace",
+      "empty submission",
+      "clear unsent draft",
+      "responsive layout"
+    ],
+    "chat_and_recovery_behavior": "Verified by controlled page tests; no new real-model answer generated.",
+    "temporary_preview_server_stopped": true,
+    "git_commit_or_push": false
+  }
+}

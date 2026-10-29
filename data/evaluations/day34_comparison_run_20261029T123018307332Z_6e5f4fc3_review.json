@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "purpose": "manual_comparison_review",
+  "reviewer": "assistant",
+  "reviewed_on": "2026-10-29",
+  "source_report": "data/evaluations/day34_comparison_run_20261029T123018307332Z_6e5f4fc3.json",
+  "source_report_sha256": "f38f12750861c0f927d47f43eeb0c05e94775934c597ffab2c8ddff29690b930",
+  "source_comparison_sha256": "c875a3f78b08e52b70f565e594c6405fba1c90f325417829aa72dd297768a3d9",
+  "review_scope": "助手对照本轮分组候选核对；不是学习者已确认或程序自动事实验证。只修订派生副本，不新增或更换引用，不把未召回的原文用于补齐答案。",
+  "corrections": [
+    {
+      "path": [
+        "comparisons",
+        0,
+        "papers",
+        0,
+        "findings",
+        1,
+        "text"
+      ],
+      "original_text": "英德数据使用字节对编码，共享源-目标约 37000 词的词表；英法使用规模显著更大的 WMT 2014 英法数据集，含 3600 万句子，并划分为 32000 词片词表。",
+      "replacement_text": "英德句子采用字节对编码，源端与目标端共享约 37000 个 token 的词表；英法使用 WMT 2014 数据集，原文报告 3600 万句，分词后采用大小为 32000 的 word-piece 词表。",
+      "reason": "37000 对应 token，32000 是词表大小；保留原文 sentences 的单位，不改为句对。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3"
+      ]
+    },
+    {
+      "path": [
+        "comparisons",
+        0,
+        "papers",
+        0,
+        "missing_information"
+      ],
+      "original_text": "当前片段未说明英法数据集的具体句对数量单位之外的分词细节、数据过滤规则或开发集/测试集构成。",
+      "replacement_text": "当前片段已给出英德与英法数据规模及 BPE/word-piece 词表大小，但未完整说明数据过滤流程、分词实现细节和开发集、测试集构成。",
+      "reason": "原缺失说明语义不清且混用了英法句子数与句对；明确区分已知信息与缺失细节。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3"
+      ]
+    },
+    {
+      "path": [
+        "comparisons",
+        0,
+        "papers",
+        1,
+        "findings",
+        2,
+        "text"
+      ],
+      "original_text": "由 WMT 数据构造开发集，并在 WMT ’14 的 news-test-2014 测试集上评估，该测试集共 3003 句，未出现在训练数据中。",
+      "replacement_text": "当前片段给出 news-test-2013 是开发集的一部分，另一部分名称在页首截断。模型在 WMT ’14 的 news-test-2014 上评估，测试集含 3003 句，未出现在训练数据中。",
+      "reason": "页首仅有 2012 and news-test-2013，不补全被截断名称，也不将测试集归属推广到开发集或训练集。",
+      "evidence_chunk_ids": [
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1"
+      ]
+    },
+    {
+      "path": [
+        "comparisons",
+        0,
+        "comparison",
+        "text"
+      ],
+      "original_text": "两篇论文都使用 WMT 数据并按词频构建词表：Transformer 采用字节对编码/词片，共享约 37000 词表或 32000 词片词表，并按近似序列长度组织批次；Bahdanau 等采用常规分词后每种语言 30000 最频繁词的 shortlist，并分别以不超过 30 词和 50 词的句子训练模型。Transformer 片段明确给出英德约 450 万句对、英法 36M 句子，而 Bahdanau 等片段只说明使用 WMT 数据并给出 3003 句测试集，未给出训练语料总规模。",
+      "replacement_text": "Transformer 的候选报告 WMT 2014 英德约 450 万句对和英法 3600 万句，采用 BPE/word-piece 词表，并按近似长度组成批次。Bahdanau 的候选报告每语言 30000 个高频词的 shortlist、[UNK] 映射，以及长度至多 30 词或 50 词的训练设置；只给出了 WMT 测试集的名称与 3003 句规模，未完整提供训练语料的名称与用量。",
+      "reason": "Transformer 的当前片段未说按词频选词，不能将 Bahdanau 的高频词规则套用双方；WMT 测试集不能证明训练集来源。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c2"
+      ]
+    },
+    {
+      "path": [
+        "comparisons",
+        0,
+        "comparison_limit"
+      ],
+      "original_text": "两篇论文的数据过滤、开发集构造细节未对齐，且 Bahdanau 等未报告训练语料总规模，因此只能比较已明确的分词/词表与句子长度设置，不能据此判断数据规模或预处理优劣。",
+      "replacement_text": "当前候选未完整提供 Bahdanau 的训练语料名称与规模，也不足以对齐两篇论文的数据过滤与开发集构造；这不等于整篇论文未报告这些内容。只能分别列出已有分词、词表和训练设置，不能用测试集规模代替训练集规模或判断预处理优劣。",
+      "reason": "把缺失限定到本次候选，避免由未召回推断整篇论文没有报告。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c2"
+      ]
+    },
+    {
+      "path": [
+        "comparisons",
+        1,
+        "papers",
+        0,
+        "findings",
+        2,
+        "text"
+      ],
+      "original_text": "标签平滑值 0.1 会降低困惑度表现，但提升准确率和 BLEU 分数。",
+      "replacement_text": "训练采用 0.1 的标签平滑；论文说明这会使困惑度这一指标的表现变差，但提升准确率和 BLEU。",
+      "reason": "原文 hurts perplexity 不是困惑度数值降低；明确措辞以免误解指标方向。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c2"
+      ]
+    }
+  ]
+}

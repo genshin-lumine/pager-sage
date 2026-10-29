@@ -6,8 +6,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-import document_deleter as deletion
-from project_store import load_project, save_project
+import paper_sage.documents.deleter as deletion
+from paper_sage.projects.store import load_project, save_project
 
 
 class DocumentDeletionTests(unittest.TestCase):

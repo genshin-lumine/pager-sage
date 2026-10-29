@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "purpose": "day42_learning_completion",
+  "created_at": "2026-10-29T12:33:26.821912+00:00",
+  "status": "completed_with_documented_limitations",
+  "learning_days_completed": 42,
+  "behavior_case_count": 5,
+  "behavior_passed_count": 5,
+  "all_original_answers_semantically_approved": false,
+  "cases": [
+    {
+      "case_id": "demo_qa",
+      "run_id": "run_5cca28ed8a2a41a7986ab6333bcbbdbf",
+      "report": {
+        "path": "data/evaluations/day42_demo_20261029T122445692254Z_3a8e9ef5.json",
+        "sha256": "c74e15b23508063800697a877d59e83fa2b23646f3b768dc0de5280edb7bbfbf"
+      },
+      "status": "behavior_passed",
+      "checks": {
+        "empty_initial_chat": true,
+        "route": true,
+        "complete_turn": true,
+        "saved_sources": true,
+        "pdf_component_and_download": true,
+        "read_only_no_new_calls": true,
+        "reload_no_duplicate": true,
+        "clear_then_refresh": true
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "request_tool",
+        "begin_attempt",
+        "execute_tool",
+        "generate_answer",
+        "decide_next",
+        "finish_run"
+      ],
+      "model_call_counts": {
+        "model_classify_request": 1,
+        "model_request_tool": 1,
+        "model_generate_answer": 1
+      },
+      "pdf_source_checks": 3,
+      "summary_reused": null,
+      "attempts_used": 1,
+      "stop_reason": "answered"
+    },
+    {
+      "case_id": "demo_insufficient",
+      "run_id": "run_1bb2184d9c8b4b45925b946620e5aa1c",
+      "report": {
+        "path": "data/evaluations/day42_demo_20261029T122445692254Z_3a8e9ef5.json",
+        "sha256": "c74e15b23508063800697a877d59e83fa2b23646f3b768dc0de5280edb7bbfbf"
+      },
+      "status": "behavior_passed",
+      "checks": {
+        "empty_initial_chat": true,
+        "route": true,
+        "complete_turn": true,
+        "saved_sources": true,
+        "read_only_no_new_calls": true,
+        "reload_no_duplicate": true,
+        "clear_then_refresh": true
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "request_tool",
+        "begin_attempt",
+        "execute_tool",
+        "generate_answer",
+        "decide_next",
+        "rewrite_query",
+        "begin_attempt",
+        "execute_tool",
+        "generate_answer",
+        "decide_next",
+        "finish_run"
+      ],
+      "model_call_counts": {
+        "model_classify_request": 1,
+        "model_request_tool": 1,
+        "model_generate_answer": 2,
+        "model_rewrite_query": 1
+      },
+      "pdf_source_checks": 0,
+      "summary_reused": null,
+      "attempts_used": 2,
+      "stop_reason": "attempt_limit"
+    },
+    {
+      "case_id": "demo_clarify",
+      "run_id": "run_3442b8975b9b4473976236ad34cb1163",
+      "report": {
+        "path": "data/evaluations/day42_demo_20261029T122445692254Z_3a8e9ef5.json",
+        "sha256": "c74e15b23508063800697a877d59e83fa2b23646f3b768dc0de5280edb7bbfbf"
+      },
+      "status": "behavior_passed",
+      "checks": {
+        "empty_initial_chat": true,
+        "route": true,
+        "complete_turn": true,
+        "saved_sources": true,
+        "read_only_no_new_calls": true,
+        "reload_no_duplicate": true,
+        "clear_then_refresh": true
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "clarify_handler"
+      ],
+      "model_call_counts": {
+        "model_classify_request": 1
+      },
+      "pdf_source_checks": 0,
+      "summary_reused": null,
+      "attempts_used": null,
+      "stop_reason": null
+    },
+    {
+      "case_id": "demo_summary",
+      "run_id": "run_32188b8f8b9b4767ab9f7c98606a8194",
+      "report": {
+        "path": "data/evaluations/day42_demo_20261029T122445692254Z_3a8e9ef5.json",
+        "sha256": "c74e15b23508063800697a877d59e83fa2b23646f3b768dc0de5280edb7bbfbf"
+      },
+      "status": "behavior_passed",
+      "checks": {
+        "empty_initial_chat": true,
+        "route": true,
+        "complete_turn": true,
+        "saved_sources": true,
+        "pdf_component_and_download": true,
+        "read_only_no_new_calls": true,
+        "reload_no_duplicate": true,
+        "clear_then_refresh": true
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "summary_handler"
+      ],
+      "model_call_counts": {
+        "model_classify_request": 1
+      },
+      "pdf_source_checks": 9,
+      "summary_reused": true,
+      "attempts_used": null,
+      "stop_reason": null
+    },
+    {
+      "case_id": "demo_compare",
+      "run_id": "run_1866e4f8d8834e6590c66c6d491cdd8a",
+      "report": {
+        "path": "data/evaluations/day42_demo_20261029T122948622489Z_34ddd392.json",
+        "sha256": "494cce307d4e716243a7b507048eb8c41011df5327ad52b49b512900c567165b"
+      },
+      "status": "behavior_passed",
+      "checks": {
+        "empty_initial_chat": true,
+        "route": true,
+        "complete_turn": true,
+        "saved_sources": true,
+        "pdf_component_and_download": true,
+        "read_only_no_new_calls": true,
+        "reload_no_duplicate": true,
+        "clear_then_refresh": true
+      },
+      "path": [
+        "start",
+        "classify_request",
+        "compare_handler"
+      ],
+      "model_call_counts": {
+        "model_classify_request": 1,
+        "model_compare_handler": 2
+      },
+      "pdf_source_checks": 7,
+      "summary_reused": null,
+      "attempts_used": null,
+      "stop_reason": null
+    }
+  ],
+  "plan": {
+    "path": "data/evaluations/day42_demo_plan.json",
+    "sha256": "e6ff641579e1720b0416ffe9ccd6f0a096f4bfad09ef4c9fe82289a2bc8d219e"
+  },
+  "model_calls_across_unique_runs_including_failures": 18,
+  "failed_run_model_call_counts": {
+    "model_classify_request": 1,
+    "model_compare_handler": 4
+  },
+  "comparison_review": {
+    "path": "data/evaluations/day34_comparison_run_20261029T123018307332Z_6e5f4fc3_review.json",
+    "sha256": "fde7fbff45e407241f271dc15825d08d40d4c034f741890e439729a702fd77fd"
+  },
+  "reviewed_export": {
+    "path": "data/evaluations/day42_comparison_reviewed.md",
+    "sha256": "24da390a50fd97155131999ae1c0d2af5516fc561f1edf27dac7f00a9db7bf76"
+  },
+  "content_review": [
+    {
+      "case_id": "demo_qa",
+      "reviewer": "assistant",
+      "result": "main_answer_supported_wording_note",
+      "note": "主答案的一台机器、8 块 NVIDIA P100 GPU 得到第 7 页支持；后两条为额外信息。第三条最短12小时易被理解为硬性下限，原文是训练约12小时即可达到文中所述翻译水平。原回答保留。"
+    },
+    {
+      "case_id": "demo_insufficient",
+      "reviewer": "assistant",
+      "result": "appropriate_insufficient",
+      "note": "两次检索后仍无 kWh 依据，结论列表为空；没有把训练时长或 FLOPs 换算成实际电能。"
+    },
+    {
+      "case_id": "demo_clarify",
+      "reviewer": "assistant",
+      "result": "appropriate_clarification",
+      "note": "询问分析对象与任务，只有分类调用，没有检索和回答生成调用。"
+    },
+    {
+      "case_id": "demo_summary",
+      "reviewer": "assistant",
+      "result": "sampled_two_items_supported",
+      "note": "复用既有总结。抽查方法第2条的缩放点积、8头与64维，以及结果第1条的BLEU/训练配置，支持原文在第4、5及第1、8页。仅抽查2条，未审核全部总结；未提取到局限不等于论文没有局限。"
+    },
+    {
+      "case_id": "demo_compare",
+      "reviewer": "assistant",
+      "result": "reviewed_with_six_text_corrections",
+      "note": "训练维度存在高频词规则推广、缺失范围扩大和单位措辞问题，6处文字修订应用到独立副本。结果维度缺少Bahdanau成绩表，训练批次信息与该维度相关性弱；未使用其他轮次候选补齐。"
+    }
+  ],
+  "failures_preserved": [
+    {
+      "report": {
+        "path": "data/evaluations/day42_demo_20261029T121654595052Z_bb672148.json",
+        "sha256": "ee6949493ecbfd75a96979efb1c77d9c7ad481c2a22a7602f4de133925acd6f5"
+      },
+      "cause": "验收脚本在真实QA成功后使用AppTest不支持的filtered_state属性；修复脚本并重载原完成运行，未重复请求。"
+    },
+    {
+      "report": {
+        "path": "data/evaluations/day34_comparison_run_20261029T121944245564Z_e20d983c.json",
+        "sha256": "5f002479e1038108bdf8b471943d57811aa0dc15f5da3dadfcca61a36ac32246"
+      },
+      "cause": "比较模型在完整JSON后额外输出 ]}；严格解析拒绝，失败回复未进入聊天。"
+    },
+    {
+      "report": {
+        "path": "data/evaluations/day34_comparison_run_20261029T122520320683Z_17271d03.json",
+        "sha256": "c4b8b85a7b854cc77699703f568608b91ca2b735b8cef5a3928b4df51dd55806"
+      },
+      "cause": "比较模型在完整JSON后额外输出 ]}；严格解析拒绝，失败回复未进入聊天。"
+    },
+    {
+      "report": {
+        "path": "data/evaluations/day41_regression_20261029T123028273917Z_43cdca7d.json",
+        "sha256": "4bd9044c51e2542032c30e510593eb2c93a40326b905e25269fd720cf4f67daa"
+      },
+      "cause": "回归与真实运行同时执行时，工作区快照读取遇文件占用；2项通过、12项未通过或未执行。演示退出后串行重跑14项全部通过，未跳过保护检查。"
+    }
+  ],
+  "change": "比较提示词增加单对象结束约束并记录v2；旧v1报告按原提示词校验。未修剪模型输出、放宽解析或改变重试次数。一次新运行成功不能证明格式错误已被彻底解决。",
+  "validation": {
+    "regression": {
+      "path": "data/evaluations/day41_regression_20261029T123138836946Z_95a8cfd1.json",
+      "sha256": "7f96e68664f99543146f31305111a300d144c7c63e4b62bb6fdf9871b4dc2bcf"
+    },
+    "comparison_model_tests": 6,
+    "comparison_service_tests": 11,
+    "historical_comparison_reports_validated": 2,
+    "clean_workspace": {
+      "path": "data/evaluations/day42_setup_20261029T122323838805Z_a259d2d5.json",
+      "sha256": "60d3d429f380e941483333b637817a8afd0d0ce6c9e70ec29cc67d3ee195ee2e"
+    }
+  },
+  "limits": [
+    "页面验收使用真实Streamlit AppTest与真实模型，PDF字节与组件入口已检查；没有人工浏览器视觉验收。",
+    "空工作区验证真实PDF导入与索引重载，但复用现有Python依赖及模型缓存；没有重新安装整套依赖或测试浏览器上传传输。",
+    "完成5项行为验收使用不同执行报告，包含2次失败的比较请求；不声称同一轮5/5或一次全部成功。",
+    "结构、来源匹配与小样本内容核对不是整库问答准确率或生产可靠性证明。"
+  ],
+  "next_priorities": [
+    "扩大中英文检索评估题集，优先改善比较维度的候选覆盖和无关片段过滤。",
+    "持续记录JSON失败率和结论支持率；缺失说明、单位及评测条件纳入内容评估。",
+    "整理最小依赖与独立安装验收，再按需要扩展OCR和部署。"
+  ]
+}

@@ -6,6 +6,18 @@
       "document_id": "attention_is_all_you_need_neurips2017",
       "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
       "index_version": "v1"
+    },
+    {
+      "document_id": "doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7",
+      "source": "data/papers/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/bahdanau_align_and_translate_1409.0473v7.pdf",
+      "index_version": "v1",
+      "file_hash": "84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7",
+      "page_count": 15,
+      "chunk_count": 77,
+      "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+      "arxiv_id": "1409.0473v7",
+      "download_url": "https://arxiv.org/pdf/1409.0473v7",
+      "imported_at": "2026-10-28T16:05:35.009870+00:00"
     }
   ]
 }

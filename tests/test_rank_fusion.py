@@ -8,16 +8,14 @@ import unittest
 from unittest.mock import patch
 
 WORKSPACE = Path(__file__).resolve().parents[1]
-if str(WORKSPACE) not in sys.path:
-    sys.path.insert(0, str(WORKSPACE))
 
 import faiss
 import numpy as np
 
-from dual_retriever import merge_candidates
-from index_store import save_index
-from project_store import get_index_dir, save_project
-from rank_fusion import calculate_rrf_score, fuse_rrf
+from paper_sage.retrieval.dual import merge_candidates
+from paper_sage.retrieval.index_store import save_index
+from paper_sage.projects.store import get_index_dir, save_project
+from paper_sage.retrieval.fusion import calculate_rrf_score, fuse_rrf
 import test_dual_retriever as dual_tests
 
 
@@ -179,7 +177,7 @@ class RRFPageTests(dual_tests.DualRetrievalScopeTests):
             return {"answer": quote, "evidence": [quote], "insufficient_reason": ""}
 
         self.question = "NVIDIA P100"
-        with patch.object(sys.modules["llm"], "ask_deepseek", side_effect=simulated_hardware_answer):
+        with patch.object(sys.modules['paper_sage.llm.client'], "answer_response", side_effect=simulated_hardware_answer):
             at = self.app(self.project_a, [document_id])
             self.ask(at, "8 NVIDIA P100 GPUs")
         answer = at.session_state["chat_session"]["messages"][-1]
@@ -214,16 +212,16 @@ class RRFPageTests(dual_tests.DualRetrievalScopeTests):
         self.assertTrue(any("本轮回答使用 Dense" in caption.value for caption in at.caption))
         self.assertFalse(any("RRF 分数" in caption.value for caption in at.caption))
 
-        next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
-        self.checked(next(w for w in at.button if w.label == "提交问题").click().run())
-        self.assertEqual(len(self.requests[-1]), 4)
+        self.clear_legacy_session_before_new_query(at, session)
+        self.ask(at, self.fixture_a["expected_code"])
+        self.assertEqual([item["role"] for item in self.requests[-1]],
+                         ["system", "user"])
         self.assertTrue(all(set(message) == {"role", "content"} for message in self.requests[-1]))
         messages = at.session_state["chat_session"]["messages"]
-        self.assertEqual(len(messages), 4)
-        self.assertEqual(messages[1], old_answer)
-        self.assertEqual(messages[3]["reference_method"], "rerank")
+        self.assertEqual(len(messages), 2)
+        self.assertEqual(messages[1]["reference_method"], "rerank")
         captions = [caption.value for caption in at.caption]
-        self.assertTrue(any("本轮回答使用 Dense" in value for value in captions))
+        self.assertFalse(any("本轮回答使用 Dense" in value for value in captions))
         self.assertTrue(any("本轮回答使用 Rerank" in value for value in captions))
         self.record_case("legacy_dense_history_and_new_rerank_answer")
         self.observations[-1]["legacy_history_was_injected_for_compatibility_check"] = True

@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "purpose": "day37_saved_claim_review",
+  "recorded_at": "2026-10-29T07:42:34.848236+00:00",
+  "source_report": "data/evaluations/day36_cited_answer_20261029T064406343506Z_f3e9cd39.json",
+  "source_report_sha256": "28c71d2702a7ab4dadf8ce871ed02269e714e16936d53c5ae575411a4ab37238",
+  "retrieval_report": "data/evaluations/day35_qa_retry_20261029T055525983139Z_4131c22c.json",
+  "retrieval_report_sha256": "7b992764a71434af36ea9e60cb60b8bacee7c66c21753a2b4f81c4ca7e6aa2e4",
+  "question": "训练模型使用了什么硬件？",
+  "configured_scope": {
+    "project_id": "demo_project",
+    "documents": [
+      {
+        "document_id": "attention_is_all_you_need_neurips2017",
+        "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+        "index_version": "v1"
+      }
+    ]
+  },
+  "input_files": [
+    {
+      "path": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+      "sha256": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+    },
+    {
+      "path": "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/metadata.json",
+      "sha256": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546"
+    },
+    {
+      "path": "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/index.faiss",
+      "sha256": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e"
+    }
+  ],
+  "source_checks": [
+    {
+      "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+      "pdf_page": 7,
+      "index_fields_match": true,
+      "page_text_found": true
+    },
+    {
+      "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+      "pdf_page": 1,
+      "index_fields_match": true,
+      "page_text_found": true
+    },
+    {
+      "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+      "pdf_page": 2,
+      "index_fields_match": true,
+      "page_text_found": true
+    }
+  ],
+  "judgment_provenance": {
+    "learner_response": "支持支持支持\n全部保留",
+    "verdicts_provided_by": "learner",
+    "reasons_provided_by": "assistant",
+    "assistant_reasons_confirmed_by_learner": false
+  },
+  "review": {
+    "schema_version": 1,
+    "purpose": "manual_claim_review",
+    "source_answer_sha256": "12bd1370052631c71294f9153dc2a1704e308df2b702e5f1cfd7f7dd2b030c31",
+    "reviewer": "学习者提供支持关系分类，助手补充原文理由",
+    "entries": [
+      {
+        "claim_number": 1,
+        "original_text": "模型在一台配备8块NVIDIA P100 GPU的机器上训练。",
+        "chunk_ids": [
+          "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4"
+        ],
+        "verdict": "supported",
+        "reason": "PDF 第 7 页原文明确写明 one machine with 8 NVIDIA P100 GPUs，机器数量、GPU 数量和型号与结论一致。"
+      },
+      {
+        "claim_number": 2,
+        "original_text": "英法翻译任务在八块GPU上训练了3.5天。",
+        "chunk_ids": [
+          "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2"
+        ],
+        "verdict": "supported",
+        "reason": "PDF 第 1 页在 WMT 2014 English-to-French 任务的语境中写明 training for 3.5 days on eight GPUs，支持该任务的训练时长与 GPU 数量。"
+      },
+      {
+        "claim_number": 3,
+        "original_text": "模型可在八块P100 GPU上训练仅十二小时达到新的翻译质量最佳水平。",
+        "chunk_ids": [
+          "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2"
+        ],
+        "verdict": "supported",
+        "reason": "PDF 第 2 页写明模型可在八块 P100 GPU 上训练 as little as twelve hours，达到文中所述的翻译质量新最佳水平；该结论限定在论文当时的任务与实验语境。"
+      }
+    ]
+  },
+  "focus_feedback": {
+    "learner_choice": "全部保留",
+    "assistant_recommendation": "原问题只问训练硬件，建议直接保留结论 1；训练时长和翻译成绩可作为补充，但不是回答本题所必需。",
+    "suggested_core_claim_numbers": [
+      1
+    ],
+    "suggested_core_answer": "模型在一台配备 8 块 NVIDIA P100 GPU 的机器上训练。",
+    "applied_to_original_answer": false,
+    "accepted_by_learner": false
+  },
+  "boundary": "来源检查确认记录与当前文件一致；支持分类来自人工判读，不是程序自动验证结论为真。"
+}

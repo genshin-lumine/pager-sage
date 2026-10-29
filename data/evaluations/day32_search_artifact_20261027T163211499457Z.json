@@ -1,0 +1,1248 @@
+{
+  "schema_version": 1,
+  "purpose": "day32_search_tool_artifact",
+  "status": "completed_single_case",
+  "recorded_at": "2026-10-27T16:32:11.499457+00:00",
+  "configured_scope": {
+    "project_id": "demo_project",
+    "selected_document_ids": [
+      "attention_is_all_you_need_neurips2017"
+    ]
+  },
+  "tool_call": {
+    "name": "search_papers",
+    "args": {
+      "question": "训练模型使用了什么硬件？"
+    },
+    "id": "day32_real_search",
+    "type": "tool_call"
+  },
+  "tool_result": {
+    "tool_call_id": "day32_real_search",
+    "content": "[片段 1]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：7\n原文：\nWe trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,\n\n[片段 2]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：1\n原文：\nmechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction\n\n[片段 3]\n片段标识：demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2\n来源：data/papers/attention_is_all_you_need_neurips2017.pdf\nPDF 页码：2\n原文：\nconstraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs.",
+    "artifact": {
+      "question": "训练模型使用了什么硬件？",
+      "retrieval_results": [
+        {
+          "score": -4.322816371917725,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 3,
+              "score": 0.814387321472168
+            }
+          },
+          "rank": 1,
+          "rrf_rank": 3,
+          "rrf_score": 0.015873015873015872,
+          "rerank_score": -4.322816371917725
+        },
+        {
+          "score": -6.855827808380127,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 1,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+            "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 5,
+              "score": 0.8130940198898315
+            }
+          },
+          "rank": 2,
+          "rrf_rank": 5,
+          "rrf_score": 0.015384615384615385,
+          "rerank_score": -6.855827808380127
+        },
+        {
+          "score": -7.395294666290283,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 2,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+            "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 6,
+              "score": 0.8080662488937378
+            }
+          },
+          "rank": 3,
+          "rrf_rank": 6,
+          "rrf_score": 0.015151515151515152,
+          "rerank_score": -7.395294666290283
+        }
+      ],
+      "retrieval_channels": {
+        "dense": [
+          {
+            "rank": 1,
+            "score": 0.8232443332672119,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 11,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+              "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+            }
+          },
+          {
+            "rank": 2,
+            "score": 0.8210774660110474,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 10,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+              "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+            }
+          },
+          {
+            "rank": 3,
+            "score": 0.814387321472168,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 7,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+              "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+            }
+          },
+          {
+            "rank": 4,
+            "score": 0.8134558200836182,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 8,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+              "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+            }
+          },
+          {
+            "rank": 5,
+            "score": 0.8130940198898315,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 1,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+              "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+            }
+          },
+          {
+            "rank": 6,
+            "score": 0.8080662488937378,
+            "chunk": {
+              "project_id": "demo_project",
+              "document_id": "attention_is_all_you_need_neurips2017",
+              "chunk_size": 800,
+              "chunk_overlap": 100,
+              "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+              "pdf_page": 2,
+              "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+              "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+            }
+          }
+        ],
+        "bm25": []
+      },
+      "retrieval_candidates": [
+        {
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 11,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+            "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 1,
+              "score": 0.8232443332672119
+            }
+          }
+        },
+        {
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 2,
+              "score": 0.8210774660110474
+            }
+          }
+        },
+        {
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 3,
+              "score": 0.814387321472168
+            }
+          }
+        },
+        {
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 8,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+            "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 4,
+              "score": 0.8134558200836182
+            }
+          }
+        },
+        {
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 1,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+            "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 5,
+              "score": 0.8130940198898315
+            }
+          }
+        },
+        {
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 2,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+            "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 6,
+              "score": 0.8080662488937378
+            }
+          }
+        }
+      ],
+      "rrf_results": [
+        {
+          "score": 0.01639344262295082,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 11,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+            "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 1,
+              "score": 0.8232443332672119
+            }
+          },
+          "rank": 1
+        },
+        {
+          "score": 0.016129032258064516,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 2,
+              "score": 0.8210774660110474
+            }
+          },
+          "rank": 2
+        },
+        {
+          "score": 0.015873015873015872,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 3,
+              "score": 0.814387321472168
+            }
+          },
+          "rank": 3
+        },
+        {
+          "score": 0.015625,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 8,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+            "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 4,
+              "score": 0.8134558200836182
+            }
+          },
+          "rank": 4
+        },
+        {
+          "score": 0.015384615384615385,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 1,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+            "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 5,
+              "score": 0.8130940198898315
+            }
+          },
+          "rank": 5
+        },
+        {
+          "score": 0.015151515151515152,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 2,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+            "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 6,
+              "score": 0.8080662488937378
+            }
+          },
+          "rank": 6
+        }
+      ],
+      "rerank_results": [
+        {
+          "score": -4.322816371917725,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 3,
+              "score": 0.814387321472168
+            }
+          },
+          "rank": 1,
+          "rrf_rank": 3,
+          "rrf_score": 0.015873015873015872,
+          "rerank_score": -4.322816371917725
+        },
+        {
+          "score": -6.855827808380127,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 1,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+            "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 5,
+              "score": 0.8130940198898315
+            }
+          },
+          "rank": 2,
+          "rrf_rank": 5,
+          "rrf_score": 0.015384615384615385,
+          "rerank_score": -6.855827808380127
+        },
+        {
+          "score": -7.395294666290283,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 2,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+            "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 6,
+              "score": 0.8080662488937378
+            }
+          },
+          "rank": 3,
+          "rrf_rank": 6,
+          "rrf_score": 0.015151515151515152,
+          "rerank_score": -7.395294666290283
+        },
+        {
+          "score": -9.03947639465332,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 8,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+            "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 4,
+              "score": 0.8134558200836182
+            }
+          },
+          "rank": 4,
+          "rrf_rank": 4,
+          "rrf_score": 0.015625,
+          "rerank_score": -9.03947639465332
+        },
+        {
+          "score": -9.139448165893555,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 2,
+              "score": 0.8210774660110474
+            }
+          },
+          "rank": 5,
+          "rrf_rank": 2,
+          "rrf_score": 0.016129032258064516,
+          "rerank_score": -9.139448165893555
+        },
+        {
+          "score": -10.196806907653809,
+          "chunk": {
+            "project_id": "demo_project",
+            "document_id": "attention_is_all_you_need_neurips2017",
+            "chunk_size": 800,
+            "chunk_overlap": 100,
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 11,
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+            "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+          },
+          "retrievals": {
+            "dense": {
+              "rank": 1,
+              "score": 0.8232443332672119
+            }
+          },
+          "rank": 6,
+          "rrf_rank": 1,
+          "rrf_score": 0.01639344262295082,
+          "rerank_score": -10.196806907653809
+        }
+      ],
+      "reference_method": "rerank",
+      "rerank_elapsed_seconds": 1.632949799997732,
+      "retrieval_trace": {
+        "schema_version": 1,
+        "question": "训练模型使用了什么硬件？",
+        "stages": [
+          {
+            "stage": "dense",
+            "input_count": 51,
+            "output_count": 6,
+            "elapsed_seconds": 0.32493100001011044,
+            "results": [
+              {
+                "rank": 1,
+                "score": 0.8232443332672119,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 11,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+                  "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+                }
+              },
+              {
+                "rank": 2,
+                "score": 0.8210774660110474,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 10,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+                  "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+                }
+              },
+              {
+                "rank": 3,
+                "score": 0.814387321472168,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 7,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+                  "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+                }
+              },
+              {
+                "rank": 4,
+                "score": 0.8134558200836182,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 8,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+                  "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+                }
+              },
+              {
+                "rank": 5,
+                "score": 0.8130940198898315,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 1,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+                  "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+                }
+              },
+              {
+                "rank": 6,
+                "score": 0.8080662488937378,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 2,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+                  "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+                }
+              }
+            ]
+          },
+          {
+            "stage": "bm25",
+            "input_count": 51,
+            "output_count": 0,
+            "elapsed_seconds": 0.00018360000103712082,
+            "results": []
+          },
+          {
+            "stage": "merge",
+            "input_count": 6,
+            "output_count": 6,
+            "elapsed_seconds": 1.7299898900091648e-05,
+            "results": [
+              {
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 11,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+                  "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 1,
+                    "score": 0.8232443332672119
+                  }
+                }
+              },
+              {
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 10,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+                  "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 2,
+                    "score": 0.8210774660110474
+                  }
+                }
+              },
+              {
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 7,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+                  "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 3,
+                    "score": 0.814387321472168
+                  }
+                }
+              },
+              {
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 8,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+                  "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 4,
+                    "score": 0.8134558200836182
+                  }
+                }
+              },
+              {
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 1,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+                  "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 5,
+                    "score": 0.8130940198898315
+                  }
+                }
+              },
+              {
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 2,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+                  "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 6,
+                    "score": 0.8080662488937378
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "stage": "rrf",
+            "input_count": 6,
+            "output_count": 6,
+            "elapsed_seconds": 0.0001631999621167779,
+            "results": [
+              {
+                "score": 0.01639344262295082,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 11,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+                  "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 1,
+                    "score": 0.8232443332672119
+                  }
+                },
+                "rank": 1
+              },
+              {
+                "score": 0.016129032258064516,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 10,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+                  "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 2,
+                    "score": 0.8210774660110474
+                  }
+                },
+                "rank": 2
+              },
+              {
+                "score": 0.015873015873015872,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 7,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+                  "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 3,
+                    "score": 0.814387321472168
+                  }
+                },
+                "rank": 3
+              },
+              {
+                "score": 0.015625,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 8,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+                  "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 4,
+                    "score": 0.8134558200836182
+                  }
+                },
+                "rank": 4
+              },
+              {
+                "score": 0.015384615384615385,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 1,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+                  "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 5,
+                    "score": 0.8130940198898315
+                  }
+                },
+                "rank": 5
+              },
+              {
+                "score": 0.015151515151515152,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 2,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+                  "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 6,
+                    "score": 0.8080662488937378
+                  }
+                },
+                "rank": 6
+              }
+            ]
+          },
+          {
+            "stage": "rerank",
+            "input_count": 6,
+            "output_count": 6,
+            "elapsed_seconds": 1.632949799997732,
+            "results": [
+              {
+                "score": -4.322816371917725,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 7,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+                  "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 3,
+                    "score": 0.814387321472168
+                  }
+                },
+                "rank": 1,
+                "rrf_rank": 3,
+                "rrf_score": 0.015873015873015872,
+                "rerank_score": -4.322816371917725
+              },
+              {
+                "score": -6.855827808380127,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 1,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+                  "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 5,
+                    "score": 0.8130940198898315
+                  }
+                },
+                "rank": 2,
+                "rrf_rank": 5,
+                "rrf_score": 0.015384615384615385,
+                "rerank_score": -6.855827808380127
+              },
+              {
+                "score": -7.395294666290283,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 2,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+                  "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 6,
+                    "score": 0.8080662488937378
+                  }
+                },
+                "rank": 3,
+                "rrf_rank": 6,
+                "rrf_score": 0.015151515151515152,
+                "rerank_score": -7.395294666290283
+              },
+              {
+                "score": -9.03947639465332,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 8,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+                  "text": "the competitive models.\nOn the WMT 2014 English-to-French translation task, our big model achieves a BLEU score of 41.0,\noutperforming all of the previously published single models, at less than 1/4 the training cost of the\nprevious state-of-the-art model. The Transformer (big) model trained for English-to-French used\ndropout ratePdrop = 0.1, instead of 0.3.\nFor the base models, we used a single model obtained by averaging the last 5 checkpoints, which\nwere written at 10-minute intervals. For the big models, we averaged the last 20 checkpoints. We\nused beam search with a beam size of 4 and length penaltyα = 0.6 [31]. These hyperparameters\nwere chosen after experimentation on the development set. We set the maximum output length during"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 4,
+                    "score": 0.8134558200836182
+                  }
+                },
+                "rank": 4,
+                "rrf_rank": 4,
+                "rrf_score": 0.015625,
+                "rerank_score": -9.03947639465332
+              },
+              {
+                "score": -9.139448165893555,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 10,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+                  "text": "arXiv:1308.0850, 2013.\n[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for im-\nage recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern\nRecognition, pages 770–778, 2016.\n[11] Sepp Hochreiter, Yoshua Bengio, Paolo Frasconi, and Jürgen Schmidhuber. Gradient ﬂow in\nrecurrent nets: the difﬁculty of learning long-term dependencies, 2001.\n[12] Sepp Hochreiter and Jürgen Schmidhuber. Long short-term memory. Neural computation,\n9(8):1735–1780, 1997.\n[13] Rafal Jozefowicz, Oriol Vinyals, Mike Schuster, Noam Shazeer, and Yonghui Wu. Exploring\nthe limits of language modeling. arXiv preprint arXiv:1602.02410, 2016.\n[14] Łukasz Kaiser and Ilya Sutskever. Neural GPUs learn algorithms. In International Conference"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 2,
+                    "score": 0.8210774660110474
+                  }
+                },
+                "rank": 5,
+                "rrf_rank": 2,
+                "rrf_score": 0.016129032258064516,
+                "rerank_score": -9.139448165893555
+              },
+              {
+                "score": -10.196806907653809,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 11,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+                  "text": "arXiv:1609.08144, 2016.\n[32] Jie Zhou, Ying Cao, Xuguang Wang, Peng Li, and Wei Xu. Deep recurrent models with\nfast-forward connections for neural machine translation. CoRR, abs/1606.04199, 2016.\n11"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 1,
+                    "score": 0.8232443332672119
+                  }
+                },
+                "rank": 6,
+                "rrf_rank": 1,
+                "rrf_score": 0.01639344262295082,
+                "rerank_score": -10.196806907653809
+              }
+            ]
+          },
+          {
+            "stage": "select",
+            "input_count": 6,
+            "output_count": 3,
+            "elapsed_seconds": 1.00000761449337e-06,
+            "results": [
+              {
+                "score": -4.322816371917725,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 7,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+                  "text": "We trained our models on one machine with 8 NVIDIA P100 GPUs. For our base models using\nthe hyperparameters described throughout the paper, each training step took about 0.4 seconds. We\ntrained the base models for a total of 100,000 steps or 12 hours. For our big models,(described on the\nbottom line of table 3), step time was 1.0 seconds. The big models were trained for 300,000 steps\n(3.5 days).\n5.3 Optimizer\nWe used the Adam optimizer [17] withβ1 = 0.9,β2 = 0.98 andϵ = 10−9. We varied the learning\nrate over the course of training, according to the formula:\nlrate =d−0.5model· min(step_num−0.5,step _num·warmup_steps−1.5) (3)\nThis corresponds to increasing the learning rate linearly for the ﬁrstwarmup_steps training steps,"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 3,
+                    "score": 0.814387321472168
+                  }
+                },
+                "rank": 1,
+                "rrf_rank": 3,
+                "rrf_score": 0.015873015873015872,
+                "rerank_score": -4.322816371917725
+              },
+              {
+                "score": -6.855827808380127,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 1,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+                  "text": "mechanism. We propose a new simple network architecture, the Transformer,\nbased solely on attention mechanisms, dispensing with recurrence and convolutions\nentirely. Experiments on two machine translation tasks show these models to\nbe superior in quality while being more parallelizable and requiring signiﬁcantly\nless time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-\nto-German translation task, improving over the existing best results, including\nensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,\nour model establishes a new single-model state-of-the-art BLEU score of 41.0 after\ntraining for 3.5 days on eight GPUs, a small fraction of the training costs of the\nbest models from the literature.\n1 Introduction"
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 5,
+                    "score": 0.8130940198898315
+                  }
+                },
+                "rank": 2,
+                "rrf_rank": 5,
+                "rrf_score": 0.015384615384615385,
+                "rerank_score": -6.855827808380127
+              },
+              {
+                "score": -7.395294666290283,
+                "chunk": {
+                  "project_id": "demo_project",
+                  "document_id": "attention_is_all_you_need_neurips2017",
+                  "chunk_size": 800,
+                  "chunk_overlap": 100,
+                  "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+                  "pdf_page": 2,
+                  "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+                  "text": "constraint of sequential computation, however, remains.\nAttention mechanisms have become an integral part of compelling sequence modeling and transduc-\ntion models in various tasks, allowing modeling of dependencies without regard to their distance in\nthe input or output sequences [2, 16]. In all but a few cases [22], however, such attention mechanisms\nare used in conjunction with a recurrent network.\nIn this work we propose the Transformer, a model architecture eschewing recurrence and instead\nrelying entirely on an attention mechanism to draw global dependencies between input and output.\nThe Transformer allows for signiﬁcantly more parallelization and can reach a new state of the art in\ntranslation quality after being trained for as little as twelve hours on eight P100 GPUs."
+                },
+                "retrievals": {
+                  "dense": {
+                    "rank": 6,
+                    "score": 0.8080662488937378
+                  }
+                },
+                "rank": 3,
+                "rrf_rank": 6,
+                "rrf_score": 0.015151515151515152,
+                "rerank_score": -7.395294666290283
+              }
+            ]
+          }
+        ],
+        "candidate_paths": [
+          {
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p11:c4",
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 11,
+            "dense_rank": 1,
+            "dense_score": 0.8232443332672119,
+            "bm25_rank": null,
+            "bm25_score": null,
+            "rrf_rank": 1,
+            "rrf_score": 0.01639344262295082,
+            "rerank_rank": 6,
+            "rerank_score": -10.196806907653809,
+            "final_selected": false,
+            "selection_status": "excluded_by_final_top_k"
+          },
+          {
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p10:c3",
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 10,
+            "dense_rank": 2,
+            "dense_score": 0.8210774660110474,
+            "bm25_rank": null,
+            "bm25_score": null,
+            "rrf_rank": 2,
+            "rrf_score": 0.016129032258064516,
+            "rerank_rank": 5,
+            "rerank_score": -9.139448165893555,
+            "final_selected": false,
+            "selection_status": "excluded_by_final_top_k"
+          },
+          {
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c4",
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 7,
+            "dense_rank": 3,
+            "dense_score": 0.814387321472168,
+            "bm25_rank": null,
+            "bm25_score": null,
+            "rrf_rank": 3,
+            "rrf_score": 0.015873015873015872,
+            "rerank_rank": 1,
+            "rerank_score": -4.322816371917725,
+            "final_selected": true,
+            "selection_status": "selected"
+          },
+          {
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c3",
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 8,
+            "dense_rank": 4,
+            "dense_score": 0.8134558200836182,
+            "bm25_rank": null,
+            "bm25_score": null,
+            "rrf_rank": 4,
+            "rrf_score": 0.015625,
+            "rerank_rank": 4,
+            "rerank_score": -9.03947639465332,
+            "final_selected": false,
+            "selection_status": "excluded_by_final_top_k"
+          },
+          {
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p1:c2",
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 1,
+            "dense_rank": 5,
+            "dense_score": 0.8130940198898315,
+            "bm25_rank": null,
+            "bm25_score": null,
+            "rrf_rank": 5,
+            "rrf_score": 0.015384615384615385,
+            "rerank_rank": 2,
+            "rerank_score": -6.855827808380127,
+            "final_selected": true,
+            "selection_status": "selected"
+          },
+          {
+            "chunk_id": "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p2:c2",
+            "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+            "pdf_page": 2,
+            "dense_rank": 6,
+            "dense_score": 0.8080662488937378,
+            "bm25_rank": null,
+            "bm25_score": null,
+            "rrf_rank": 6,
+            "rrf_score": 0.015151515151515152,
+            "rerank_rank": 3,
+            "rerank_score": -7.395294666290283,
+            "final_selected": true,
+            "selection_status": "selected"
+          }
+        ]
+      },
+      "fusion_config": {
+        "recall_top_k": 6,
+        "rrf_top_k": 6,
+        "final_top_k": 3,
+        "rank_constant": 60
+      },
+      "rerank_config": {
+        "model_name": "BAAI/bge-reranker-base",
+        "model_revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+        "device": "cpu",
+        "max_length": 512,
+        "batch_size": 3,
+        "score_type": "logit"
+      }
+    }
+  },
+  "checks": {
+    "call_id_matches": true,
+    "reference_matches_results": true,
+    "all_stages_in_scope": true
+  },
+  "limitations": [
+    "本次只有一次真实本地检索，没有调用 DeepSeek 或验证答案质量。",
+    "正式图与工作台接入待后续步骤；阶段耗时不含资源加载。"
+  ]
+}

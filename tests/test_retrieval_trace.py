@@ -12,14 +12,12 @@ from unittest.mock import Mock, patch
 import pyarrow as pa
 
 WORKSPACE = Path(__file__).resolve().parents[1]
-if str(WORKSPACE) not in sys.path:
-    sys.path.insert(0, str(WORKSPACE))
 
-import dual_retriever
-import retrieval_trace
-from retrieval_trace import run_stage, build_candidate_paths
-from rank_fusion import fuse_rrf
-from reranker import rerank_candidates
+import paper_sage.retrieval.dual as dual_retriever
+import paper_sage.retrieval.trace as retrieval_trace
+from paper_sage.retrieval.trace import run_stage, build_candidate_paths
+from paper_sage.retrieval.fusion import fuse_rrf
+from paper_sage.retrieval.reranker import rerank_candidates
 import test_dual_retriever as dual_tests
 import test_reranker as rerank_tests
 
@@ -150,7 +148,12 @@ class RetrievalTracePageTests(rerank_tests.RerankPageTests):
                 self.assertNotIn(row["chunk_id"], self.requests[-1][-1]["content"])
         self.assertTrue(any(exp.label == "查看本轮检索流程" for exp in at.expander))
         # 直接解码页面发送的 Arrow 数据，避免 AppTest 的 pandas 反序列化类型冲突。
-        table = pa.RecordBatchStreamReader(at.dataframe[-1].proto.arrow_data.data).read_all().to_pylist()
+        # 页面还包含调用日志表；按列选择片段路径表，不依赖它是最后一个表格。
+        tables = [pa.RecordBatchStreamReader(widget.proto.arrow_data.data).read_all().to_pylist()
+                  for widget in at.dataframe]
+        path_tables = [table for table in tables if table and "片段标识" in table[0]]
+        self.assertTrue(path_tables)
+        table = path_tables[-1]
         self.assertEqual([r["片段标识"] for r in table], [r["chunk_id"] for r in rows])
         self.assertEqual(sum(r["最终状态"] == "已入选参考资料" for r in table), len(results))
         self.assertTrue(any("是否支持回答" in info.value for info in at.info))
@@ -169,11 +172,12 @@ class RetrievalTracePageTests(rerank_tests.RerankPageTests):
         self.assertEqual(at.session_state["chat_session"], session)
         self.assertEqual((len(self.requests), self.encode_calls, len(self.rerank_calls)), before_calls)
         self.assertFalse(any(exp.label == "查看本轮检索流程" for exp in at.expander))
-        next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
-        self.checked(next(w for w in at.button if w.label == "提交问题").click().run())
+        self.clear_legacy_session_before_new_query(at, session)
+        self.ask(at, self.fixture_a["expected_code"])
         messages = at.session_state["chat_session"]["messages"]
-        self.assertNotIn("retrieval_trace", messages[1])
-        self.assertIn("retrieval_trace", messages[3])
+        self.assertNotIn("retrieval_trace", session["messages"][1])
+        self.assertEqual(len(messages), 2)
+        self.assertIn("retrieval_trace", messages[1])
         self.assertEqual(len(self.rerank_calls), 2)
         self.assertTrue(all(set(m) == {"role", "content"} for m in self.requests[-1]))
         self.record_case("legacy_rerank_trace_not_fabricated")
@@ -182,12 +186,15 @@ class RetrievalTracePageTests(rerank_tests.RerankPageTests):
         at = self.app(self.project_a, [self.aid])
         self.ask(at, self.fixture_a["expected_code"])
         before = deepcopy(at.session_state["chat_session"])
-        error_type = sys.modules["llm"].IncompleteAnswerError
-        with patch.object(sys.modules["llm"], "ask_deepseek", side_effect=error_type("simulated incomplete answer")):
+        error_type = sys.modules['paper_sage.llm.client'].IncompleteAnswerError
+        with patch.object(sys.modules['paper_sage.llm.client'], "answer_response", side_effect=error_type("simulated incomplete answer")):
             next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
             next(w for w in at.button if w.label == "提交问题").click().run()
         self.assertFalse(at.exception)
-        self.assertTrue(any("simulated incomplete answer" in item.value for item in at.error))
+        # 页面给出失败阶段，不向用户回显 SDK 或客户端异常正文。
+        self.assertTrue(any("回答调用失败" in item.value for item in at.error),
+                        [item.value for item in at.error])
+        self.assertFalse(any("simulated incomplete answer" in item.value for item in at.error))
         self.assertEqual(at.session_state["chat_session"], before)
         self.assertEqual(len(self.rerank_calls), 2)
         self.record_case("answer_failure_preserves_existing_trace")

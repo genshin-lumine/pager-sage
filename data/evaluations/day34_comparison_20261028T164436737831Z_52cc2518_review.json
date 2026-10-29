@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "purpose": "manual_comparison_review",
+  "reviewer": "assistant",
+  "reviewed_on": "2026-10-29",
+  "source_report": "data/evaluations/day34_comparison_20261028T164436737831Z_52cc2518.json",
+  "source_report_sha256": "822ba0de758e4eae52ceb75f6f38e17bb8571f365bc157c2103cf1da2e658a11",
+  "source_comparison_sha256": "662cbba95bb47ee7c48e9391184081eb2a645ed7d031fa21be057a13c4bd79d9",
+  "review_scope": "对照本次四组候选核对数字、单位、缺失信息和比较条件。修订仅作用于派生副本，不改写原始模型响应；此记录不代表检查了全部论文内容或完成自动事实验证。",
+  "corrections": [
+    {
+      "path": ["comparisons", 0, "papers", 0, "missing_information"],
+      "original_text": "所提供片段未说明英德、英法数据经过哪些具体筛选步骤后用于训练的句对数，也未给出开发集和测试集的规模。",
+      "replacement_text": "当前训练数据片段已给出英德约 450 万句对、英法 3600 万句的规模描述，但未详述语料筛选流程，也未给出开发集和测试集的规模。",
+      "reason": "原缺失说明可能让人误以为训练规模也未提供。将已知的规模与未说明的筛选细节分开，并保留句对与句子的原文单位。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3"]
+    },
+    {
+      "path": ["comparisons", 0, "comparison", "text"],
+      "original_text": "两篇论文都使用 WMT 2014 平行语料，但任务和数据规模描述不同：Attention 论文报告英德约 450 万句对、英法 3600 万句，并按约 25000 源/目标 token 的批次训练；Bahdanau 论文报告英法 WMT '14 原始语料合计 8.5 亿词，但片段只说明按 Cho 等人的程序缩小规模，未给出缩小后的句对数，其批次为 80 句的小批量并在更新前取出 1600 个句对。",
+      "replacement_text": "两篇都涉及 WMT 2014 英法平行语料，Transformer 还报告英德训练数据：英德约 450 万句对、英法 3600 万句，每批约含 25000 个源 token 和 25000 个目标 token。Bahdanau 的候选给出英法原始语料合计 8.5 亿词，但筛选后的用量未完整显示；其每次 SGD 更新使用 80 句的小批量，并在每 20 次更新前取出 1600 个句对排序、分成 20 个小批量。",
+      "reason": "保留双方任务重叠及计量单位，并补回原文中每 20 次更新的条件，避免将取出 1600 个句对理解为每次更新都执行。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p4:c5",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p15:c1"
+      ]
+    },
+    {
+      "path": ["comparisons", 0, "comparison_limit"],
+      "original_text": "两篇论文的训练数据统计口径不一致：Attention 论文报告筛选后句对数（英德约 450 万句对、英法 3600 万句），Bahdanau 论文报告的是 WMT '14 原始语料词数（8.5 亿词）且片段未给出筛选后的训练句对数；批次大小分别按 token 数和句子数报告，不能直接换算或据此比较数据使用效率。",
+      "replacement_text": "Transformer 的候选报告英德约 450 万句对、英法 3600 万句，未明确将这些数字标为筛选后统计；Bahdanau 的候选给出 WMT '14 原始语料合计 8.5 亿词，但缺少缩小后的用量。词、句子和句对的计量单位及原始语料与实际使用规模的口径尚未对齐，批次单位也不同，不能直接换算或据此判断数据使用效率。",
+      "reason": "删除没有直接原文依据的筛选后标签，避免把 Transformer 的句子数统称为句对数，并区分 Bahdanau 的原始语料规模与实际训练用量。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p7:c3",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p4:c5",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p15:c1"
+      ]
+    },
+    {
+      "path": ["comparisons", 1, "papers", 0, "missing_information"],
+      "original_text": "所提供片段未给出 base 与 big 模型在全部测试样本上的完整逐项结果，也未说明 BLEU 计算的预处理和统计口径细节。",
+      "replacement_text": "当前片段已给出 base 与 big 在英德、英法 newstest2014 上的汇总 BLEU；缺少足以核对两篇评测一致性的 BLEU 计算工具、分词与大小写设置等细节。",
+      "reason": "表 2 已提供四项汇总 BLEU，原文中的完整逐项结果含义不清。将缺失说明收紧为本次公平比较需要、当前候选未充分提供的评测实现细节。",
+      "evidence_chunk_ids": ["demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c1"]
+    },
+    {
+      "path": ["comparisons", 1, "papers", 1, "findings", 1, "text"],
+      "original_text": "表 1 给出测试集 BLEU：RNNencdec-30 为 13.93（全部）/24.19（无 UNK），RNNsearch-30 为 21.50/31.44，RNNencdec-50 为 17.82/26.71，RNNsearch-50 为 26.75/34.16，RNNsearch-50⋆ 为 28.45/36.15，Moses 为 33.30/35.63。",
+      "replacement_text": "表 1 的 All/No UNK BLEU 分别为：RNNencdec-30 13.93/24.19、RNNsearch-30 21.50/31.44、RNNencdec-50 17.82/26.71、RNNsearch-50 26.75/34.16、RNNsearch-50⋆ 28.45/36.15、Moses 33.30/35.63。No UNK 仅评估源句和参考译文均不含未知词的子集，并禁止生成 [UNK]；⋆ 表示该模型训练更久，直到开发集性能不再改善。",
+      "reason": "保留全部数值，并补全同一引用片段中的测试子集、生成约束与星号模型训练条件，避免仅列标签时丢失比较口径。",
+      "evidence_chunk_ids": ["demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1"]
+    },
+    {
+      "path": ["comparisons", 1, "comparison", "text"],
+      "original_text": "两篇论文报告的任务和测试条件不同：Attention 论文在 WMT 2014 英德和英法 newstest2014 上报告 BLEU，big 模型为 28.4/41.0；Bahdanau 论文在 WMT '14 英法 3003 句测试集上报告模型 BLEU，RNNsearch-50⋆ 为 28.45（全部句子），而 Moses 基线为 33.30。两者不宜直接按 BLEU 高低判断架构优劣。",
+      "replacement_text": "Transformer 的 big 模型在英德、英法 newstest2014 上分别报告 28.4、41.0 BLEU；Bahdanau 的结果表在 WMT '14 news-test-2014 全部 3003 句的 All 列报告 RNNsearch-50⋆ 为 28.45、Moses 为 33.30。当前结果候选不足以确认两篇 BLEU 评测实现与预处理完全一致，因此可分别列出这些成绩，但不能仅凭它们判定架构优劣。",
+      "reason": "无法确认评测一致性不等于已证明测试条件不同。删除过强断言，并仅使用当前实验结果组及比较结论已引用的片段陈述任务与指标。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c1",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p5:c1"
+      ]
+    },
+    {
+      "path": ["comparisons", 1, "comparison_limit"],
+      "original_text": "两篇论文共享英法测试方向，但 Attention 论文的 41.0 是英法 newstest2014 上的 big 模型单模型结果，Bahdanau 论文的 28.45 是 RNNsearch-50⋆ 在 3003 句测试集上的结果，且后者还列出了 Moses 33.30 作为对照；所提供片段未说明两文 BLEU 预处理和评测脚本是否一致，未对齐时不能直接比较数值高低。",
+      "replacement_text": "当前候选未充分提供两篇 BLEU 预处理与评测脚本是否一致的信息，模型配置和评测口径需要进一步核对。Bahdanau 表 1 的 No UNK 列使用筛选子集并限制生成 [UNK]，不能把该列与未经对齐的其他成绩当作同一评测设置；已列出的数值也不足以单独归因于架构差异。",
+      "reason": "让本维度的比较限制由本维度候选支持，强调尚未对齐而非断言设置不同，并保留 No UNK 子集与生成条件。",
+      "evidence_chunk_ids": [
+        "demo_project:attention_is_all_you_need_neurips2017:s800:o100:p8:c1",
+        "demo_project:doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7:s800:o100:p7:c1"
+      ]
+    }
+  ]
+}

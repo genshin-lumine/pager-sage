@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "purpose": "day42_demo_plan",
+  "status": "prepared_not_executed",
+  "created_at": "2026-10-29T12:09:15.457189+00:00",
+  "project_id": "demo_project",
+  "project_name": "Demo project",
+  "project_record_sha256": "de263c2e00541071dac28db734253334a6d1beb1974d8f07cf1303b910fb0833",
+  "python_version": "3.12.6",
+  "documents": [
+    {
+      "document_id": "attention_is_all_you_need_neurips2017",
+      "source": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+      "index_version": "v1",
+      "pdf_page_count": 11,
+      "index_chunk_count": 51,
+      "index_dimension": 384,
+      "embedding_config": {
+        "model_name": "intfloat/multilingual-e5-small",
+        "normalize_embeddings": true,
+        "passage_prefix": "passage: ",
+        "query_prefix": "query: "
+      },
+      "files": [
+        {
+          "path": "data/papers/attention_is_all_you_need_neurips2017.pdf",
+          "sha256": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537"
+        },
+        {
+          "path": "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/metadata.json",
+          "sha256": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546"
+        },
+        {
+          "path": "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/index.faiss",
+          "sha256": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e"
+        }
+      ]
+    },
+    {
+      "document_id": "doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7",
+      "source": "data/papers/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/bahdanau_align_and_translate_1409.0473v7.pdf",
+      "index_version": "v1",
+      "file_hash": "84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7",
+      "page_count": 15,
+      "chunk_count": 77,
+      "title": "Neural Machine Translation by Jointly Learning to Align and Translate",
+      "arxiv_id": "1409.0473v7",
+      "download_url": "https://arxiv.org/pdf/1409.0473v7",
+      "imported_at": "2026-10-28T16:05:35.009870+00:00",
+      "pdf_page_count": 15,
+      "index_chunk_count": 77,
+      "index_dimension": 384,
+      "embedding_config": {
+        "model_name": "intfloat/multilingual-e5-small",
+        "normalize_embeddings": true,
+        "passage_prefix": "passage: ",
+        "query_prefix": "query: "
+      },
+      "files": [
+        {
+          "path": "data/papers/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/bahdanau_align_and_translate_1409.0473v7.pdf",
+          "sha256": "84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7"
+        },
+        {
+          "path": "data/indexes/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/v1/metadata.json",
+          "sha256": "75d9b912067a0b7c7b92b3dd6ebd5795a7a5d9d42e71e6524add6d065fe9098e"
+        },
+        {
+          "path": "data/indexes/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/v1/index.faiss",
+          "sha256": "51308a96846e3519baea4b30094b37e0ecdb6eede44bad1c86906252c4a913b3"
+        }
+      ]
+    }
+  ],
+  "combined_chunk_count": 128,
+  "preflight": {
+    "index_and_metadata_loaded": true,
+    "pdf_page_counts_read": true,
+    "pip_check": "passed",
+    "embedding_or_rerank_models_loaded": false,
+    "deepseek_requested": false,
+    "new_environment_installation_verified": false
+  },
+  "procedure": [
+    "各场景开始前选择指定文档并清空当前会话。",
+    "本次演示关闭问答暂停选项；逐场景执行，每项提交一次。",
+    "保存或回传本次实际运行编号、路径、结果与来源，失败也记录，不用历史结果替代。"
+  ],
+  "cases": [
+    {
+      "case_id": "demo_qa",
+      "document_ids": [
+        "attention_is_all_you_need_neurips2017"
+      ],
+      "question": "训练模型使用了什么硬件？",
+      "expected_intent": "qa",
+      "expected_response_kind": "answer",
+      "checks": [
+        "回答训练硬件数量与型号，每条结论有本次引用片段支持。",
+        "能从结论定位原文、文档与 PDF 原页。",
+        "记录实际工作流路径、尝试次数和运行编号。"
+      ],
+      "status": "not_run",
+      "observed": null
+    },
+    {
+      "case_id": "demo_insufficient",
+      "document_ids": [
+        "attention_is_all_you_need_neurips2017"
+      ],
+      "question": "模型训练实际消耗了多少千瓦时（kWh）的电能？",
+      "expected_intent": "qa",
+      "expected_response_kind": "answer",
+      "checks": [
+        "当前候选不足时明确说明，claims 为空。",
+        "不把训练时长或 FLOPs 当作电能数值，不凭 GPU 型号估算。",
+        "最多两次检索，停止原因与实际尝试一致。"
+      ],
+      "status": "not_run",
+      "observed": null
+    },
+    {
+      "case_id": "demo_clarify",
+      "document_ids": [
+        "attention_is_all_you_need_neurips2017",
+        "doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7"
+      ],
+      "question": "帮我分析一下。",
+      "expected_intent": "clarify",
+      "expected_response_kind": "clarify",
+      "checks": [
+        "询问论文对象或分析任务。",
+        "分类后直接追问，不执行论文检索、总结或比较。"
+      ],
+      "status": "not_run",
+      "observed": null
+    },
+    {
+      "case_id": "demo_summary",
+      "document_ids": [
+        "attention_is_all_you_need_neurips2017"
+      ],
+      "question": "请概括这篇论文的研究问题、方法、主要结果和局限。",
+      "expected_intent": "summary",
+      "expected_response_kind": "summary",
+      "checks": [
+        "展示四类总结；缺少局限要点时说明现有材料的不足。",
+        "至少抽查一条要点到原文页的支持关系。",
+        "如复用报告，明确记录为复用，不能算本次重新生成。"
+      ],
+      "status": "not_run",
+      "observed": null
+    },
+    {
+      "case_id": "demo_compare",
+      "document_ids": [
+        "attention_is_all_you_need_neurips2017",
+        "doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7"
+      ],
+      "question": "比较这两篇论文的训练数据和实验结果。",
+      "expected_intent": "compare",
+      "expected_response_kind": "compare",
+      "checks": [
+        "两个维度共四项逐篇检索，保留双方原文和页码。",
+        "比较结论引用双方来源，缺失信息如实标明。",
+        "核对数据计量单位及 BLEU 评测条件，不直接由分数高低推出架构优劣。"
+      ],
+      "status": "not_run",
+      "observed": null
+    }
+  ]
+}

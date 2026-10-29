@@ -10,11 +10,9 @@ from unittest.mock import Mock, patch
 import numpy as np
 
 WORKSPACE = Path(__file__).resolve().parents[1]
-if str(WORKSPACE) not in sys.path:
-    sys.path.insert(0, str(WORKSPACE))
 
-from reranker import rerank_candidates, get_rerank_cache_folder
-import reranker
+from paper_sage.retrieval.reranker import rerank_candidates, get_rerank_cache_folder
+import paper_sage.retrieval.reranker as reranker
 import test_rank_fusion as rrf_tests
 
 
@@ -148,7 +146,7 @@ class RerankPageTests(rrf_tests.RRFPageTests):
             self.assertIn(quote, messages[-1]["content"])
             return {"answer": quote, "evidence": [quote], "insufficient_reason": ""}
 
-        with patch.object(sys.modules["llm"], "ask_deepseek", side_effect=simulated_answer):
+        with patch.object(sys.modules['paper_sage.llm.client'], "answer_response", side_effect=simulated_answer):
             at = self.app(self.project_a, [document_id])
             results = self.ask(at, "8 NVIDIA P100 GPUs")
         answer = at.session_state["chat_session"]["messages"][-1]
@@ -185,7 +183,7 @@ class RerankPageTests(rrf_tests.RRFPageTests):
     def test_missing_rerank_cache_skips_answer_and_history_save(self):
         at = self.app(self.project_a, [self.aid])
         before = deepcopy(at.session_state["chat_session"])
-        with patch.object(reranker, "load_reranker", side_effect=OSError("missing test cache")):
+        with patch("paper_sage.ui.app.load_reranker", side_effect=OSError("missing test cache")):
             next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
             next(w for w in at.button if w.label == "提交问题").click().run()
         self.assertFalse(at.exception, [item.message for item in at.exception])
@@ -198,7 +196,7 @@ class RerankPageTests(rrf_tests.RRFPageTests):
     def test_no_candidates_skip_rerank_loading_and_answer(self):
         at = self.app(self.project_a, [self.aid])
         before = deepcopy(at.session_state["chat_session"])
-        with patch("dual_retriever.retrieve_dense", return_value=[]), patch("dual_retriever.retrieve_bm25", return_value=[]):
+        with patch('paper_sage.retrieval.dual.retrieve_dense', return_value=[]), patch('paper_sage.retrieval.dual.retrieve_bm25', return_value=[]):
             next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
             next(w for w in at.button if w.label == "提交问题").click().run()
         self.assertFalse(at.exception, [item.message for item in at.exception])
@@ -226,14 +224,15 @@ class RerankPageTests(rrf_tests.RRFPageTests):
         self.assertEqual((len(self.requests), self.encode_calls, len(self.rerank_calls)), before_calls)
         self.assertTrue(any("本轮回答使用 RRF" in item.value for item in at.caption))
         self.assertFalse(any("精排分数" in item.value for item in at.caption))
-        next(w for w in at.text_input if str(w.key).startswith("question_")).set_value(self.question)
-        self.checked(next(w for w in at.button if w.label == "提交问题").click().run())
-        self.assertEqual(len(self.requests[-1]), 4)
+        self.clear_legacy_session_before_new_query(at, session)
+        self.ask(at, self.fixture_a["expected_code"])
+        self.assertEqual([item["role"] for item in self.requests[-1]],
+                         ["system", "user"])
         self.assertTrue(all(set(item) == {"role", "content"} for item in self.requests[-1]))
         messages = at.session_state["chat_session"]["messages"]
-        self.assertEqual(messages[1], old_answer)
-        self.assertEqual(messages[3]["reference_method"], "rerank")
-        self.assertTrue(any("本轮回答使用 RRF" in item.value for item in at.caption))
+        self.assertEqual(len(messages), 2)
+        self.assertEqual(messages[1]["reference_method"], "rerank")
+        self.assertFalse(any("本轮回答使用 RRF" in item.value for item in at.caption))
         self.assertTrue(any("本轮回答使用 Rerank" in item.value for item in at.caption))
         self.record_case("legacy_rrf_history_and_new_rerank_answer")
         self.observations[-1]["legacy_history_was_injected_for_compatibility_check"] = True

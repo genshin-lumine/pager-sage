@@ -1,0 +1,604 @@
+{
+  "created_at": "2026-10-29T12:43:15.074299+00:00",
+  "formal_modules": {
+    "project_store": "src/paper_sage/projects/store.py",
+    "pdf_loader": "src/paper_sage/documents/pdf.py",
+    "chunker": "src/paper_sage/documents/chunking.py",
+    "document_importer": "src/paper_sage/documents/importer.py",
+    "document_deleter": "src/paper_sage/documents/deleter.py",
+    "llm": "src/paper_sage/llm/client.py",
+    "index_store": "src/paper_sage/retrieval/index_store.py",
+    "retrieval_scope": "src/paper_sage/retrieval/scope.py",
+    "retriever": "src/paper_sage/retrieval/dense.py",
+    "bm25_retriever": "src/paper_sage/retrieval/bm25.py",
+    "dual_retriever": "src/paper_sage/retrieval/dual.py",
+    "rank_fusion": "src/paper_sage/retrieval/fusion.py",
+    "reranker": "src/paper_sage/retrieval/reranker.py",
+    "retrieval_trace": "src/paper_sage/retrieval/trace.py",
+    "rag_context": "src/paper_sage/retrieval/context.py",
+    "paper_tools": "src/paper_sage/retrieval/tools.py",
+    "answer_parser": "src/paper_sage/qa/legacy_parser.py",
+    "answer_evidence": "src/paper_sage/qa/evidence.py",
+    "answer_source_checks": "src/paper_sage/qa/source_checks.py",
+    "cited_answer_model": "src/paper_sage/qa/model.py",
+    "cited_answer_report": "src/paper_sage/qa/report.py",
+    "claim_review": "src/paper_sage/qa/review.py",
+    "pdf_evidence": "src/paper_sage/qa/pdf.py",
+    "qa_retry": "src/paper_sage/qa/retry.py",
+    "qa_retry_records": "src/paper_sage/qa/retry_records.py",
+    "retry_policy": "src/paper_sage/qa/retry_policy.py",
+    "query_rewrite": "src/paper_sage/qa/query_rewrite.py",
+    "agent_graph": "src/paper_sage/agents/graph.py",
+    "agent_workflow": "src/paper_sage/agents/workflow.py",
+    "intent_router": "src/paper_sage/agents/router.py",
+    "summary_inputs": "src/paper_sage/summarization/inputs.py",
+    "summary_parser": "src/paper_sage/summarization/parser.py",
+    "summary_model": "src/paper_sage/summarization/model.py",
+    "summary_runner": "src/paper_sage/summarization/runner.py",
+    "summary_reduce": "src/paper_sage/summarization/reduce.py",
+    "summary_synthesis": "src/paper_sage/summarization/synthesis.py",
+    "summary_report": "src/paper_sage/summarization/report.py",
+    "summary_service": "src/paper_sage/summarization/service.py",
+    "comparison_inputs": "src/paper_sage/comparison/inputs.py",
+    "comparison_plan": "src/paper_sage/comparison/plan.py",
+    "comparison_tools": "src/paper_sage/comparison/tools.py",
+    "comparison_retrieval": "src/paper_sage/comparison/retrieval.py",
+    "comparison_context": "src/paper_sage/comparison/context.py",
+    "comparison_parser": "src/paper_sage/comparison/parser.py",
+    "comparison_model": "src/paper_sage/comparison/model.py",
+    "comparison_review": "src/paper_sage/comparison/review.py",
+    "comparison_runner": "src/paper_sage/comparison/runner.py",
+    "comparison_service": "src/paper_sage/comparison/service.py",
+    "comparison_report": "src/paper_sage/comparison/report.py",
+    "chat_session": "src/paper_sage/sessions/chat.py",
+    "session_store": "src/paper_sage/sessions/store.py",
+    "session_recovery": "src/paper_sage/sessions/recovery.py",
+    "workflow_runner": "src/paper_sage/workflows/runner.py",
+    "workflow_checkpoint": "src/paper_sage/workflows/checkpoint.py",
+    "workflow_context": "src/paper_sage/workflows/context.py",
+    "workflow_store": "src/paper_sage/workflows/store.py",
+    "workflow_events": "src/paper_sage/workflows/events.py",
+    "workflow_observation": "src/paper_sage/workflows/observation.py",
+    "app": "src/paper_sage/ui/app.py",
+    "comparison_view": "src/paper_sage/ui/comparison.py",
+    "cited_answer_view": "src/paper_sage/ui/citations.py",
+    "pdf_evidence_view": "src/paper_sage/ui/pdf.py",
+    "qa_retry_view": "src/paper_sage/ui/qa_retry.py",
+    "session_view": "src/paper_sage/ui/sessions.py",
+    "workflow_view": "src/paper_sage/ui/workflow.py",
+    "workflow_log_view": "src/paper_sage/ui/workflow_log.py",
+    "retrieval_metrics": "src/paper_sage/evaluation/metrics.py",
+    "evaluate_retrieval": "src/paper_sage/evaluation/retrieval.py",
+    "compare_retrievers": "src/paper_sage/evaluation/compare_retrievers.py",
+    "compare_recall_limits": "src/paper_sage/evaluation/recall_limits.py",
+    "validate_recall_limits": "src/paper_sage/evaluation/validate_recall.py",
+    "run_regression": "src/paper_sage/evaluation/regression.py",
+    "run_demo": "src/paper_sage/evaluation/demo.py"
+  },
+  "examples": {
+    "practice_graph.py": "examples/langgraph_state.py",
+    "practice_tools.py": "examples/tool_call.py",
+    "practice_checkpoint.py": "examples/memory_checkpoint.py",
+    "practice_retry_policy.py": "examples/retry_decision.py"
+  },
+  "removed_practice_files": [
+    {
+      "path": "practice_agent_graph.py",
+      "sha256": "b7d8b148c557f44cbff91da74908e7d419c3edeeaae66f71de3ac3e7f5f72606",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_answer_citations.py",
+      "sha256": "382d92a81b68eab790604808d10b3701cb81f6a90f611e6bd04e503b1040b02c",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_bm25.py",
+      "sha256": "d6af1c0c5fa25b685e74bb388c01f79893df6b46f93850d12f44c04815de02eb",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_chat_session.py",
+      "sha256": "d1f2b6f8fe3eeb34f7dbe7b6fa851dbd5cac9d902aca08b5f0c31b4f9db0c664",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_checkpoint_binding.py",
+      "sha256": "530e0676488798705d664efc070cb1b77dc2a42146a77a2a3d0970ecbeb39bf5",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_checkpoint_resume.py",
+      "sha256": "357e056f967fe5ac40605301e87539e9ed1b4d580e2acb17962dcfcfcbac9c61",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_chunks.py",
+      "sha256": "8b824654470c4263442675ef5eb14793eabffb010af7229b55b07e9b5aaa6ef0",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_cited_answer_graph.py",
+      "sha256": "3abee8e304d0194bb8b78879fc208be4ec94e8b847900cd07c3c2c498c1ffb80",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_cited_answer_model.py",
+      "sha256": "7dc5a258687dcb23a0ffb2d25bdb143fe56483fe5cd5cca0b370d991a55df7ed",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_claim_review.py",
+      "sha256": "bf656b30ea60457ea8e2416c5017e43079f7b838fecc50c2a138110cbe78d453",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_claim_support.py",
+      "sha256": "4a0105083d54b7fa0b36360de0e2deb2d7559151453215597ee085e715b06b3c",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_context.py",
+      "sha256": "5d3ab2eefa81418a10a15871aca38e71a79a94efe8730c8cbe17d844a61b1485",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_graph.py",
+      "sha256": "ac73ca99495486a83ac5f3caec9eae9869909866c5482d959d646fca7f2fda60",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_indexes.py",
+      "sha256": "351a23c0b3ff0ca5867b99be5232c19b747bed1439696f3d47f28fd6c775e933",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_inputs.py",
+      "sha256": "06492dc79f4478a753ffc468ca20a8115f49f9d5f01e29faf2cfd3fe11dd5fa7",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_model.py",
+      "sha256": "c8ebe168b3e6088dbbb5770df2baca2a19ba09b2412bacb550fc925f31a76e68",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_plan.py",
+      "sha256": "f682636d5cef20e03c494e347a69cafb04617f545916606a4890f4349b56fa03",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_plan_tasks.py",
+      "sha256": "5d369ecaa1b2c3c7ccc20342358ba9d5fb1b097d7d50f0d1c6c8af0c9be397f4",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_retrieval.py",
+      "sha256": "1713d856dd6fd4cf7d2aecbf02bcfc35da5b63c667fce8b3c582bcf1bdb63ec2",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_review.py",
+      "sha256": "d53adcfb754edce0bcbca22241c5ebdbe32a7018c6c3105de40f76d4b6b9e7ae",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_run_review.py",
+      "sha256": "e17dfc17034cebc1b988894dabd15eae1ddf1a80e1f1648d7791d8fc71394bcc",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_runner.py",
+      "sha256": "5ef4b8e6e9e0d3e26fc7e65e5f2e1fa870849e8fa291c9b08dcf727addb2adf7",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_schema.py",
+      "sha256": "1ea212ac9f804b81dac920be5a912af7b08714130468366a12041805cb4f944d",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_search.py",
+      "sha256": "be5146bf728c1ed955d75387e9b0ca5b69b9313c87a6e1d6ce06e58083ac35c7",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_service.py",
+      "sha256": "2bbb20e1cf4786a70715fd948c2447f14bd9bf9796609631501aa4649ded691f",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_comparison_session.py",
+      "sha256": "a5afa5fd38230bbf13112f1f5b8234030d5b429be4ca9a0cc625b5ffafa20f34",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_day42_review.py",
+      "sha256": "b1efd0f24844f86f79a7f84c01ba32c167c712303fcd3b424d3bd22a09fcdbc3",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_day42_setup.py",
+      "sha256": "a79780516a377e8fb8b1b89b689ae4be81a2713fedaa462c65a11940b5453fc6",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_dual_retrieval.py",
+      "sha256": "daeb996455e7548db56375ebbcb0fdf6214fa43783b6e2a673046c8617f5cb57",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_embeddings.py",
+      "sha256": "c357b30f166d291fd037fea683dda67416bcf572f2adca6db598be42aaa45e7a",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_evaluation.py",
+      "sha256": "19d5c4b357eda6c812d43a8db43085c7505c66c39ed6011bb810440d7390a1f2",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_event_log.py",
+      "sha256": "055989fd3a5a441ad14ab835c7775f00e2343ea9f70b75d357bb4ffbd38f8965",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_evidence_catalog.py",
+      "sha256": "4e0fe0f5c808b2e4b832c56f0b7f2b24558c137c4803674f864df1180f5b397e",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_graph_artifact.py",
+      "sha256": "d989959c701fdbbbc7eb7eae4c45ed90c43f1c842c731303c52d607a11ed793d",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_index.py",
+      "sha256": "cbfdc8eab799ca6d2e07db5a0ae09ad78fb4a21e2a00a21cb931120dcf3846c7",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_intent_router.py",
+      "sha256": "617735fbfcd057a3b291e395e0cc7a308260164c6aad435907d6ca6dae1da263",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_load_index.py",
+      "sha256": "c99cdef74daee2a195399dbbf9122efe5cf9a3213179017ca8511ba537be35dc",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_model_router.py",
+      "sha256": "392c46930c960fba26a092512011e64d352e9f4e8941901f1cecd57002d2ada7",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_paper_checkpoint.py",
+      "sha256": "63529d968b0486207645d0cbdc281e57f32f522a8a22448d8014668af2ac70ad",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_paper_tool.py",
+      "sha256": "6051c26951dbe1de93b473c86cf56c3133d9c0a2c9b53ca05fe187932d43b4bf",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_pdf_page.py",
+      "sha256": "4ded3f5b4b0cb24f8bc7ac5e33bb695379ed4a77c441681c1a8e68d3414b20a3",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_pdf_target.py",
+      "sha256": "d7383b5f7d8e52b8d3adc56d2042a69ca21b95b62600899348df3822822c63c9",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_pdf_viewer.py",
+      "sha256": "3d5506c06e2f460b89525659737d0be4503226c34e4af9542bbe723cbcbe6ea4",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_persisted_workflow.py",
+      "sha256": "3965692a92c6288bf59eff14e86a88ef939d1eb92b974f71dc1338ab4990a441",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_qa_retry_graph.py",
+      "sha256": "49d208599b71113047e5fa8e4ccb596d5143adf41894974c9ddf8cbb2e9bf5ae",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_qa_retry_real.py",
+      "sha256": "bca1062025ea2df80f17ed7b800761453c41abc19e8bafeaea16251e515714c4",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_query_rewrite.py",
+      "sha256": "b5db9c091e9f0e162de7e78e9812976b3bc9ece2f34c0071c56cdd4a46271c73",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_relevance_labels.py",
+      "sha256": "b2646b020371507b1acb7fe2a6e9a565cb00a63f0642c20ae30b7b721bd6fb2e",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_rerank.py",
+      "sha256": "c45ec52b3cb6b31e7cc73241c91523de78537f08d0b60eb08f7a3917118b6768",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_rerank_candidates.py",
+      "sha256": "db62bb8fb490474f41f949b8841a1498390801c6dab1439aff8c81ed50b1fc64",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_resource_cache.py",
+      "sha256": "c5bd9846ad4c5361d760ab57b298076151f00e8d818cab70eed87c8e6160a026",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_retrieval.py",
+      "sha256": "1891d214346399ef8dfd25030d02c8cceaebafe3be707885fa17d6e52107638f",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_retrieval_metrics.py",
+      "sha256": "51d1aeec8da72e2d9a38fccde1545f44d67a14aab969a2f4f877bb40d5368161",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_retrieval_trace.py",
+      "sha256": "960fdb1a9a5b7a83d17caba0bfcfd8088331bea19009f1cee3c95a5c24fe4a92",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_retrieval_tuning.py",
+      "sha256": "6ff5666b9b7d0a9d9eafc8bc62b5f01e0ba0c3a286e9fabbeeeb286c26e02754",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_retry_graph.py",
+      "sha256": "7b984b37197197dcd0fa560c08938adc79e344b5274e923ac725bc860f945139",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_retry_query.py",
+      "sha256": "33ebc30f8c7a33e181a5042621dcc752dbb92242349d86879a79c3220ae7e624",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_rewrite_retrieval.py",
+      "sha256": "992b53475f672f66a0a9630bc87643a3ee49f16aad74c3730867399e4651d21a",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_route_graph.py",
+      "sha256": "db07217dbde037ddc708363bb7027b868117c8259146be1de4e3609e857f49f8",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_routed_qa.py",
+      "sha256": "acdec080ba8b0367644572797a521116f8710f0db448b367cc7c0418192c7994",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_rrf.py",
+      "sha256": "d6b4126ed6b742a88e3264ee60619ed8ab3346d1d38ac65908d034ca6f09bc9e",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_saved_claim_review.py",
+      "sha256": "ce73bd39f5dcbeb56be3b150a22bf7b7b5600e363be5ad132ef659b88ca8f2b7",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_search_artifact.py",
+      "sha256": "6bf92fe20c34bbd3293662acb8353fecc41ae9ea400bb1b1c71379707b76f14b",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_source_consistency.py",
+      "sha256": "61590e2e0dc6506f9edcbea011b37a9d9ded9bd36fa3cc316867771bccb0dcf8",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_sqlite_checkpoint.py",
+      "sha256": "4dd4e22bbaecd74c58882f999e57bca319df10d8648b3209ea077bb78158ccbb",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_step_events.py",
+      "sha256": "a522da143299af4ff6a5e757e467472f2902f7397995dbc00204a9796e1e331f",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_summary_batch.py",
+      "sha256": "db0365f31919a43465ed5b9628b5d89e35f434a4089c037296397e36d0ba5051",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_summary_graph.py",
+      "sha256": "951d10a025d50af6f4530bf66112a35ec3d44502e631c0da0ee81d3f84fe09d8",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_summary_inputs.py",
+      "sha256": "e31bb41ae310b5eedb26f3f473a7f102bc874227fba903b72736ca814ce50b64",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_summary_map.py",
+      "sha256": "5ec3f37b3b644e8b502595c282f6091ce958df0eab447a55c20e4ee442500d64",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_summary_reduce.py",
+      "sha256": "482ff450c9acd21fd55478e1a84ef5150ab540de0e21a045f611c0576a837577",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_summary_schema.py",
+      "sha256": "c052c08ecbfe77d748e7736b7e145973bac8ce5c894cbfd7328e820b7699e33c",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_tool_artifact.py",
+      "sha256": "3402afac50089b4a24ca9ea495eafecfa944b5e44457fa8526aec7b32b61816c",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_tool_request.py",
+      "sha256": "338002a4d6545557f147540e464b97f03775437d190c1ba5d8e4ba375a8ac90f",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_workflow_context.py",
+      "sha256": "bf68e3cc4fff02acf7b5c459f4e91b0924861294797adacbae3b7c8006b01108",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    },
+    {
+      "path": "practice_workflow_run.py",
+      "sha256": "4a5e0d09a56c6c9fdd52c4f28b05c1dfec7d5656abd0ceee47ed59bfc3b85f1a",
+      "reason": "已完成的阶段练习或一次性报告脚本；正式模块和测试不导入，历史报告与日志保留。"
+    }
+  ],
+  "removed_count": 76,
+  "protected_data_files": 133,
+  "data_before_sha256": {
+    "data/evaluation_questions.json": "294b424918df86c120acc3ebf50a8eb18669ac0a5e1630e60121df02554e22df",
+    "data/sample_questions.json": "f7f818d8b734c2d8e7b180385824c3af4e9dc4f10767c48c8cec194d11c9178c",
+    "data/evaluations/day14_baseline.json": "277c40eea755a24a2c589aa8ecff6f7c8d48ffa08ec9e4811837bdaa95b8a271",
+    "data/evaluations/day14_q10.json": "a9e935cbb4b2378020d0ee13f0e767ee373d52a0d90c071c4625ebafa45e5f8d",
+    "data/evaluations/day14_q11_q20.json": "91c70acaf704d2cec278c0132f020c28415123aa86f642a820fefaa91330b160",
+    "data/evaluations/day14_q5_q8.json": "dc7794988c97cfe5ad459e29ae6a6355c4e0347a7651edae0c24915fe8555cde",
+    "data/evaluations/day14_q9.json": "53c49456cb0f95722ea3cd6facd377f97c8b79f5a9059fe52d2abea954792ab7",
+    "data/evaluations/day14_summary.json": "fd02417eab8e3991c2e1f63740218f25005d8aa325f03a22f4a3f119af7328c7",
+    "data/evaluations/day21_project_management.json": "a20c153aaf9cebfb4df0f40f846cd8ecc4aad8caf31b00ac245b8e4cc8e09d79",
+    "data/evaluations/day22_retrieval_comparison.json": "5d5ab7125a85bb8c7e46fce74df69003ea3fa380915ab11e8cfb90d72ec008b6",
+    "data/evaluations/day23_dual_retrieval.json": "9921cafe57d3951ca93a5dfe631fcb39bda5710cc61c9522680fdcfb59eafaef",
+    "data/evaluations/day24_rrf.json": "b217c7efe139d92f09b02ce0cb1f1cf8b1629f86507ed2c17b7138b6f6522012",
+    "data/evaluations/day25_rerank.json": "3622ce4ebc546ea825df4367d69c9b843cee1d508bfed3973079ad1395bd3888",
+    "data/evaluations/day26_retrieval_trace.json": "714631029543791f7107ea645b05dc2938abd743a480b7138ed1da8be1920e45",
+    "data/evaluations/day27_relevance_labels.json": "99e465b4a7d6159bc708b6efdc973bf46d74abd9095cc871e81b554432166485",
+    "data/evaluations/day27_retrieval_comparison.json": "a57fef07d47a51b73f9fa74a20517337cb22589d8738c4fb0b90564757cd24ab",
+    "data/evaluations/day28_conclusion.json": "6ad640e79b5172544714f4e56c06453d343d8cb489035127ca82a867a1bb0861",
+    "data/evaluations/day28_development_comparison.json": "937a7728c800b08078c926af640d28f0d047f8f89ba07a9ed20c3a852434a700",
+    "data/evaluations/day28_selection.json": "f939a3b42f891e1be90ecd3ca042a015f79c265e138ed33bf50b8742d7a0abd1",
+    "data/evaluations/day28_tuning_plan.json": "48dbfadc6c8742c98b55ca3c6fd84c557303c23d9d67c54ddc1815d7fa95b982",
+    "data/evaluations/day28_validation_comparison.json": "dce6939d615040466b96111bc3568665d4da42395e2da68e2763f0b00ba3ca18",
+    "data/evaluations/day29_tool_roundtrip.json": "a227963188d89f07fa5503729bdd069c05f62b73798b6c3c581ebe46935b0e88",
+    "data/evaluations/day30_graph_run.json": "d21e75a4b1535167ad1c2e4981c2a5d8561f01e53b0e979815ba2bb4a3acc043",
+    "data/evaluations/day31_router_20261027T161720510397Z.json": "cccb853af3ec42e4eb37cdc014f5b8fadf2df2b7e9840a6d09789e8c86e0f1d0",
+    "data/evaluations/day32_search_artifact_20261027T163211499457Z.json": "076c65fe55419b153cc8de35e7ab6b288dfa6e4e3e4976938502a82d5172ff22",
+    "data/evaluations/day33_summary_batches_20261028T130132597101Z_3e03a53b.json": "56d46046322393fe1c0eff119cd80e8664bcbc6333d358acaafbac8d98cad47f",
+    "data/evaluations/day33_summary_batches_20261028T131208197252Z_912fee88.json": "dfedfd0e2fb92f178794d8db6d9381c994c7496b53446db97ef70b966db857d6",
+    "data/evaluations/day33_summary_batches_20261028T131208197252Z_912fee88_review.json": "fb1b8f6f6cdd11862f9712cd2c9e4a29134a228ee74aff32a90c13a298381b0c",
+    "data/evaluations/day33_summary_batch_20261028T124837167868Z.json": "a798b70bed7c1d76a9d1650ef1e0efcceac6d84f515ee66298846161035feb18",
+    "data/evaluations/day33_summary_reduce_20261028T133258343149Z_464f1f78.json": "fc009f5ea73d5dfde2f23c2a340b7ddb6ab7f4ccacb8b18945c688e2dd17515c",
+    "data/evaluations/day34_comparison_20261028T164436737831Z_52cc2518.json": "822ba0de758e4eae52ceb75f6f38e17bb8571f365bc157c2103cf1da2e658a11",
+    "data/evaluations/day34_comparison_20261028T164436737831Z_52cc2518_review.json": "e1a36f500e86d8f504e4dca31a98f636ff1448ec38e7256b16a8ff790e9d7851",
+    "data/evaluations/day34_comparison_plan_20261028T170958184281Z_16566606.json": "b5564dffea7b52abf3e2ff6e7030c4eca33b30eadd2f76d8c69447de7de71dc6",
+    "data/evaluations/day34_comparison_retrieval_20261028T161603841551Z_02473e32.json": "235837972901a5f9cfd317a236be928d5b4440e203a21d994b40e468aa4527b9",
+    "data/evaluations/day34_comparison_retrieval_20261028T162304935922Z_35cdfc4b.json": "be167bc1090ad195c76c50985fb9ae730e88f8c7f768ce621da5b3577b6e07ba",
+    "data/evaluations/day34_comparison_run_20261028T175330887785Z_2b23b56b.json": "9b09ccfb77864a9f4ad889adbc7a7239c0635531a901eb1cb6720b4dcb7376d8",
+    "data/evaluations/day34_comparison_run_20261028T175330887785Z_2b23b56b_review.json": "99aad65e777a6a3593f3fb505e838ddec27f2cb55d0255e371d6ad3a0cda3062",
+    "data/evaluations/day34_comparison_run_20261028T181614209254Z_248de511.json": "98cc84c72b90e7370deca820559ed8d2c054e4665a5f0c91b28fe46a069f4a7c",
+    "data/evaluations/day34_comparison_run_20261029T121944245564Z_e20d983c.json": "5f002479e1038108bdf8b471943d57811aa0dc15f5da3dadfcca61a36ac32246",
+    "data/evaluations/day34_comparison_run_20261029T122520320683Z_17271d03.json": "c4b8b85a7b854cc77699703f568608b91ca2b735b8cef5a3928b4df51dd55806",
+    "data/evaluations/day34_comparison_run_20261029T123018307332Z_6e5f4fc3.json": "f38f12750861c0f927d47f43eeb0c05e94775934c597ffab2c8ddff29690b930",
+    "data/evaluations/day34_comparison_run_20261029T123018307332Z_6e5f4fc3_review.json": "fde7fbff45e407241f271dc15825d08d40d4c034f741890e439729a702fd77fd",
+    "data/evaluations/day35_qa_retry_20261029T055525983139Z_4131c22c.json": "7b992764a71434af36ea9e60cb60b8bacee7c66c21753a2b4f81c4ca7e6aa2e4",
+    "data/evaluations/day35_qa_retry_20261029T060448362547Z_91621391.json": "3069edced184b4b167b3a051bba7569fd51aabba9377aae083100c30b1ec6ab8",
+    "data/evaluations/day35_query_rewrite_20261029T052524887584Z_0998032c.json": "48eac89f21876d7e6e98320bba8722f99b7bd826b80f05ceecd070ac55841174",
+    "data/evaluations/day35_rewrite_retrieval_20261029T053051721474Z_93c72e66.json": "b81818a7103f405bbe2420fb9344f9a906c5c9776ed08d0e887ae94a74319627",
+    "data/evaluations/day36_cited_answer_20261029T064406343506Z_f3e9cd39.json": "28c71d2702a7ab4dadf8ce871ed02269e714e16936d53c5ae575411a4ab37238",
+    "data/evaluations/day36_cited_answer_20261029T064406343506Z_f3e9cd39_review.json": "6b46da198759de78fa13ada52f8f354da49dfac032195aa6f5f1aeeda32e940e",
+    "data/evaluations/day41_regression_20261029T120011572083Z_eeea1949.json": "871e305bfc73903f94bbd7c18eeeaacfa68eaf760957dc456f5b98dbca1156d8",
+    "data/evaluations/day41_regression_20261029T120549146017Z_12ed85ee.json": "4c5c25e172ee6a8a2c1cab7d93208751547828a5377d327ea698ed0e12137a70",
+    "data/evaluations/day41_regression_20261029T123028273917Z_43cdca7d.json": "4bd9044c51e2542032c30e510593eb2c93a40326b905e25269fd720cf4f67daa",
+    "data/evaluations/day41_regression_20261029T123138836946Z_95a8cfd1.json": "7f96e68664f99543146f31305111a300d144c7c63e4b62bb6fdf9871b4dc2bcf",
+    "data/evaluations/day42_comparison_reviewed.md": "24da390a50fd97155131999ae1c0d2af5516fc561f1edf27dac7f00a9db7bf76",
+    "data/evaluations/day42_completion.json": "4be83e482e7daa10a85e4fa035125781663f7b47e253a0bf3ea79365e1b910dd",
+    "data/evaluations/day42_demo_20261029T121654595052Z_bb672148.json": "ee6949493ecbfd75a96979efb1c77d9c7ad481c2a22a7602f4de133925acd6f5",
+    "data/evaluations/day42_demo_20261029T121844731830Z_80d2f98d.json": "e7d6877119add99289f62ebf1b01f5797ccc922cf245babc581918b534dca17d",
+    "data/evaluations/day42_demo_20261029T122445692254Z_3a8e9ef5.json": "c74e15b23508063800697a877d59e83fa2b23646f3b768dc0de5280edb7bbfbf",
+    "data/evaluations/day42_demo_20261029T122948622489Z_34ddd392.json": "494cce307d4e716243a7b507048eb8c41011df5327ad52b49b512900c567165b",
+    "data/evaluations/day42_demo_plan.json": "e6ff641579e1720b0416ffe9ccd6f0a096f4bfad09ef4c9fe82289a2bc8d219e",
+    "data/evaluations/day42_setup_20261029T122323838805Z_a259d2d5.json": "60d3d429f380e941483333b637817a8afd0d0ce6c9e70ec29cc67d3ee195ee2e",
+    "data/fixtures/day18_scope_note.pdf": "3dd65aff86fe7cd8dfb4215beb9e7eef645bc2bc13f54b8c00ca2de7163506a6",
+    "data/papers/attention_is_all_you_need_neurips2017.pdf": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537",
+    "data/checkpoints/practice_day39/checkpoints.sqlite": "da2daf303e6ddf47012025d14bde49248e4c74342d133a53d50a43f2833abc09",
+    "data/checkpoints/practice_day39/session.json": "325dd0b61625741a1c907522661dfbb7015b1222472b76c11f020fbc20f3e3c3",
+    "data/checkpoints/practice_day39_backend/practice.json": "c8b399f75501a830976487744856be150159159c67268dda78ad67418740a26f",
+    "data/checkpoints/practice_day39_paper_graph/checkpoints.sqlite": "a6e6376e3fac762fd12712a21319276db7340dced5388371113abd902cbaaf19",
+    "data/checkpoints/practice_day39_paper_graph/run.json": "e1d5b2c4d4b5e94b7bd9637fb6a607ceae69acc21b7e44800ee1626dc8192c3e",
+    "data/checkpoints/practice_day39_resume/checkpoints.sqlite": "ef4956c64f85daef18e0bf1891fdd531a4957ce4b15f36f348472f7930911d15",
+    "data/checkpoints/practice_day39_resume/session.json": "f50c9d17ce95b90048cfe0dc279adeb0f022c68eded6660a780ac710139ed880",
+    "data/checkpoints/practice_day39_backend/data/papers/attention_is_all_you_need_neurips2017.pdf": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537",
+    "data/checkpoints/practice_day39_backend/data/checkpoints/runs/demo_project/run_96b0de0caf344106a89a18168cfb551c/checkpoints.sqlite": "ad2b791688310e15f4ba420a47caa49ff2a85d03a661e328560d242f15b210c0",
+    "data/checkpoints/practice_day39_backend/data/checkpoints/runs/demo_project/run_96b0de0caf344106a89a18168cfb551c/context.json": "fbbebe44d53948f91895271edb53f108f0d999a429ee395be0594e98618f6b38",
+    "data/checkpoints/practice_day39_backend/data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/index.faiss": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "data/checkpoints/practice_day39_backend/data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/metadata.json": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546",
+    "data/checkpoints/practice_day39_backend/data/projects/demo_project/project.json": "de263c2e00541071dac28db734253334a6d1beb1974d8f07cf1303b910fb0833",
+    "data/checkpoints/practice_day39_backend/data/sessions/demo_project/session_1d2d4aea4de14d9fb0d2aff6898c5044.json": "f84eeb264fd7e57c671f5d745519b9045c3cb619e5d1a366483f56b4477b01a7",
+    "data/checkpoints/runs/demo_project/run_1866e4f8d8834e6590c66c6d491cdd8a/checkpoints.sqlite": "13b39c59b2b7cf01f9c975a0ba26c69f5e74afa0edbb9dce5aaa37233829286f",
+    "data/checkpoints/runs/demo_project/run_1866e4f8d8834e6590c66c6d491cdd8a/context.json": "229ba316e6298a77b43d6647ab6341a2a3fe0394fc6a399429c298fec2a0c852",
+    "data/checkpoints/runs/demo_project/run_1866e4f8d8834e6590c66c6d491cdd8a/events.jsonl": "ce30b6bbed81bd8ac96adb8d5fcd1cad0ff7664728f07277bfed544d3e05c32b",
+    "data/checkpoints/runs/demo_project/run_1bb2184d9c8b4b45925b946620e5aa1c/checkpoints.sqlite": "a0a37458bb6e3f3a643944da682305bb7b9da95fb22682f6e3b989c4612302a4",
+    "data/checkpoints/runs/demo_project/run_1bb2184d9c8b4b45925b946620e5aa1c/context.json": "e5d22b657e3c0f581e9a1172c739e04d90ca4fd2616bb5444927e6f368f73439",
+    "data/checkpoints/runs/demo_project/run_1bb2184d9c8b4b45925b946620e5aa1c/events.jsonl": "032f8d5ab6762b64ce35ac8c2ea42157d975eceec54831473ad6db0cd26971ef",
+    "data/checkpoints/runs/demo_project/run_32188b8f8b9b4767ab9f7c98606a8194/checkpoints.sqlite": "6703e684b31cebeb3ce8cdd639c45a1d14e3da64a2834293c966f599d53e6ef0",
+    "data/checkpoints/runs/demo_project/run_32188b8f8b9b4767ab9f7c98606a8194/context.json": "2659480e560d4fdd8df57889950f5967f43f91db88d47df1ef21d7adb09b7714",
+    "data/checkpoints/runs/demo_project/run_32188b8f8b9b4767ab9f7c98606a8194/events.jsonl": "94b897f14db7c1aa5569f838d55a85402ac28b36685db32f936bdcef309d5a9a",
+    "data/checkpoints/runs/demo_project/run_3442b8975b9b4473976236ad34cb1163/checkpoints.sqlite": "f5c523bca7967a9c512f6f5054ea973cb891a29f4d8bfc964067c9fafc7f4b01",
+    "data/checkpoints/runs/demo_project/run_3442b8975b9b4473976236ad34cb1163/context.json": "bbe2a48c072ab36dd5d4db47d782abb8c2bb5915b515b90ac3d0ecf7f98ba66e",
+    "data/checkpoints/runs/demo_project/run_3442b8975b9b4473976236ad34cb1163/events.jsonl": "31637f33a4961415dc8049377bb76dd8cbfa4cf121f45b9300dad8c9aa949c1c",
+    "data/checkpoints/runs/demo_project/run_4757f8fc416242e9af53abe0922ad4a6/checkpoints.sqlite": "a2e95b46255f0a2b218404f98cf63868137e09ae54b9a57be15bbdb74e5b91e7",
+    "data/checkpoints/runs/demo_project/run_4757f8fc416242e9af53abe0922ad4a6/context.json": "7a5d4f8eac4441987b744490941bba59384dae25c4a727819f4bc41ba0626ee9",
+    "data/checkpoints/runs/demo_project/run_5cca28ed8a2a41a7986ab6333bcbbdbf/checkpoints.sqlite": "b801774ba52bd3631843fbdfa98aedeb1c68602fe20cf24e62036a193158f52b",
+    "data/checkpoints/runs/demo_project/run_5cca28ed8a2a41a7986ab6333bcbbdbf/context.json": "38652545e28cbfc8be869858b6ac715af63a1af0359572a2a1b84b2a6250f262",
+    "data/checkpoints/runs/demo_project/run_5cca28ed8a2a41a7986ab6333bcbbdbf/events.jsonl": "87f1ff71d4a629b2911510c83abc036b9c00652b5c5a3b91c71e1d6109e321c3",
+    "data/checkpoints/runs/demo_project/run_63fa4b3cafc54ae99759b46f961ca745/checkpoints.sqlite": "dbd38b2112c1f2db97b751217fafe8ee8f1836e3b0874b2688b44965dffda018",
+    "data/checkpoints/runs/demo_project/run_63fa4b3cafc54ae99759b46f961ca745/context.json": "704595045a5aac87b9c91846bca1ff9310e3e04cae7ac21915084acb18b0ace1",
+    "data/checkpoints/runs/demo_project/run_63fa4b3cafc54ae99759b46f961ca745/events.jsonl": "b45261cfada6e7f17d3ea7c9b1416fe09541d16665904325d167390821ce4863",
+    "data/checkpoints/runs/demo_project/run_6a53f2c21f3540c0975e94228680fc83/checkpoints.sqlite": "226d1d20198e972b7affe3cde541402b94a6ce9398a02d401b7add290db70524",
+    "data/checkpoints/runs/demo_project/run_6a53f2c21f3540c0975e94228680fc83/context.json": "94512ff0337d006a435675d2cfb2bcd3a596965650fb491134a4c00bdeed715a",
+    "data/checkpoints/runs/demo_project/run_6a53f2c21f3540c0975e94228680fc83/events.jsonl": "16fb926ade8d2c1d65a8090b04bc54d72e12f0fcba30fc8f098eda1382e8204d",
+    "data/checkpoints/runs/demo_project/run_c647b3a61b0c47d2a0d34d8eb6f318a9/checkpoints.sqlite": "3223841dba5cfa532b7b1d2a3e2c946b95c48ebdd2428947a5368c154951fdd5",
+    "data/checkpoints/runs/demo_project/run_c647b3a61b0c47d2a0d34d8eb6f318a9/context.json": "9d748a31dc03c468bdbc5a6484aa5293d625d86f64966ed313dc34afda7062a0",
+    "data/fixtures/day21/manifest.json": "801dd7aca2eb276f1570de9912e06e43df1677911a60e8e26400256ada059c86",
+    "data/fixtures/day21/project_a/scope_note.pdf": "fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+    "data/fixtures/day21/project_b/scope_note.pdf": "77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+    "data/indexes/day11_s800_o100/index.faiss": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "data/indexes/day11_s800_o100/metadata.json": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546",
+    "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/index.faiss": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "data/indexes/demo_project/attention_is_all_you_need_neurips2017/v1/metadata.json": "7227cbb11e1eb2d8bdba232be8a7acae2c081aae5d8d07e828f254375ff55546",
+    "data/indexes/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/v1/index.faiss": "51308a96846e3519baea4b30094b37e0ecdb6eede44bad1c86906252c4a913b3",
+    "data/indexes/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/v1/metadata.json": "75d9b912067a0b7c7b92b3dd6ebd5795a7a5d9d42e71e6524add6d065fe9098e",
+    "data/indexes/project_44060e54164642f79aee119dbceb00ed/doc_d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537/v1/index.faiss": "a89edcc22b55bb7ac3c2d035e41dae07b059084177554d0c79919a1e822e0b2e",
+    "data/indexes/project_44060e54164642f79aee119dbceb00ed/doc_d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537/v1/metadata.json": "1f39b6fdd085c112aa81b0a1d8ab6755bda8ee85ad40f2bed22e2b207eec9510",
+    "data/indexes/project_62b1386263ae413fab44271f7ab9334b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/v1/index.faiss": "82f37f854038c20b68005cd23b84f0bedaaeae1f85691059462c9fc91798a5b9",
+    "data/indexes/project_62b1386263ae413fab44271f7ab9334b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/v1/metadata.json": "9683e722d966c2dea4d11c7075fd7edf757a4ce40c7a6c1a6e79d1410bfd5f73",
+    "data/indexes/project_c034f4cf84d4423c8324d8680c663653/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/v1/index.faiss": "479d5659a2ba228fd359a40ae229fdf2d11e7b2703a09cd2e82027ec78813189",
+    "data/indexes/project_c034f4cf84d4423c8324d8680c663653/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/v1/metadata.json": "f17e88f72f8cae526d8cae04ddafe44717fd2b6b5c254a879b55bad92bcc9535",
+    "data/logs/practice_day40/20261029T113151721570Z_run_6e61d595ff3b4ad4b7ef0c1e864904f2.jsonl": "a4381e9eb2f473f880c5d24c04608aa442a567f3c9341548eb868b9ca7ec995a",
+    "data/papers/demo_project/doc_84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7/bahdanau_align_and_translate_1409.0473v7.pdf": "84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7",
+    "data/papers/project_44060e54164642f79aee119dbceb00ed/doc_d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537/attention_is_all_you_need_neurips2017.pdf": "d87d482d5ae7960e2e43d7dd6d21377e60e73e8fce1bf2a01aff7aca8a08c537",
+    "data/papers/project_62b1386263ae413fab44271f7ab9334b/doc_77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1/scope_note.pdf": "77df760b846cb7cc473d0ab51182c43d20cbda504b51bdf3f9055ee627d9fcc1",
+    "data/papers/project_c034f4cf84d4423c8324d8680c663653/doc_fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6/scope_note.pdf": "fa7ea4afc284b207718e61271496eb4887401fd420f4ca5170172c3abf6ac3f6",
+    "data/projects/demo_project/project.json": "de263c2e00541071dac28db734253334a6d1beb1974d8f07cf1303b910fb0833",
+    "data/projects/project_44060e54164642f79aee119dbceb00ed/project.json": "a6c26226b585ff2439d666912fe04c86328a4a3f3c3bbd41bd251f061e938b4a",
+    "data/projects/project_5f222433c9164763a4e2539f9177b308/project.json": "267bcb8db363ec08c53e2e70a8b5b33c154495c73baf55ccfa9df8bc71e4db4b",
+    "data/projects/project_62b1386263ae413fab44271f7ab9334b/project.json": "0dcdc122ac3fc40f12c802ab9191951fa56c62d94d143888ceb7bea238ced9f7",
+    "data/projects/project_c034f4cf84d4423c8324d8680c663653/project.json": "6bd6ba9f044a74506a5186d78fe762c46d3e8731d849b061e48e6a9b94a577a4",
+    "data/sessions/demo_project/session_0dca4d12fc2941a6a825d9aa9c4e54f9.json": "cf53b17e56327a62ca43aa33ee842875f241eacdf3b506d85cfa00c7c51d0346",
+    "data/sessions/demo_project/session_61658390538f48c1b3f1ea36510ef37d.json": "751818eb6ac0b509b0e87a80a7c24c82cf3db73286fd3d119fe318a7c794a9ec",
+    "data/sessions/demo_project/session_7733ef273911495389124f7157688138.json": "7ec161dd5478f6e051ed07ee395b6cff5a10020ecfd92c2abb65077974f97f72",
+    "data/sessions/demo_project/session_a883eb577802476fb37792854cf7a771.json": "19727d45539f89c107893d42dbd8493d01f06eeedf871aa854b98e3b9401592e",
+    "data/sessions/demo_project/session_b9a09d74a0b04373b0c58c5956935464.json": "4c01e21c4b6924c62905766dbdf455d067df393c819515c20b237207c2d1b1de",
+    "data/sessions/demo_project/session_c238ccd6eb734818b8f6394a3a0feb84.json": "48458cd6a703867e7a5a54dcf5348dd54ac9cb4a121b34a4da6856833a0c56ae",
+    "data/sessions/practice_project/session_d77370c7169446e784f06bc183700626.json": "17c35d559ad760b801535f91a738b56d7e7c4c976aaa8a2c3474577fa082f9d3"
+  },
+  "backup_archive": "C:\\Users\\admin\\AppData\\Local\\Temp\\paper-sage-before-layout-20261029T124314190229Z.zip"
+}
